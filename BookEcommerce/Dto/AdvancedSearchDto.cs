@@ -19,5 +19,9 @@ public record class AdvancedSearchDto(
     int? minPrice,
     int? maxPrice,
     int? providerId,
-    BookSortType? sort = BookSortType.Newest
-);
+    BookSortType sort = BookSortType.Newest
+)
+{
+
+
+}

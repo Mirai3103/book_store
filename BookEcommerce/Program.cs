@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using BookStore.Data;
+using BookStore.Middleware;
 using BookStore.Services;
 using BookStore.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,7 @@ namespace BookStore
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseExceptionMiddleware();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
