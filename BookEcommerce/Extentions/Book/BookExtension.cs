@@ -16,7 +16,8 @@ public static class BookExtensions
             book.Author.SelectPreview(),
             book.Price,
             book.Episode,
-            book.ThumbnailUrl
+            book.ThumbnailUrl,
+            book.CreatedAt
         );
     }
     public static IQueryable<Book> SetupQuery(this IQueryable<Book> books)
@@ -34,9 +35,9 @@ public static class BookExtensions
         .Include(b => b.Series)
         .AsNoTracking();
     }
-    public static Book SelectDetail(this Book book)
+    public static BookDto SelectDetail(this Book book)
     {
-        return new Book()
+        return new BookDto()
         {
             BookImages = book.BookImages.Select(bi => bi.SelectPreview()).ToList(),
             BookAttributes = book.BookAttributes.Select(ba => ba.SelectPreview()).ToList(),
@@ -56,7 +57,7 @@ public static class BookExtensions
             Episode = book.Episode,
             Stock = book.Stock,
             CreatedAt = book.CreatedAt,
-            Provider = book.Provider,
+            Provider = book.Provider.SelectPreview(),
             Series = book.Series.SelectPreview(),
             AuthorId = book.AuthorId,
             CategoryId = book.CategoryId,

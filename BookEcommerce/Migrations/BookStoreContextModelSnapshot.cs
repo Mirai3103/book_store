@@ -29,7 +29,6 @@ namespace BookStore.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
@@ -175,7 +174,6 @@ namespace BookStore.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
@@ -199,7 +197,6 @@ namespace BookStore.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
@@ -282,25 +279,25 @@ namespace BookStore.Migrations
             modelBuilder.Entity("BookStore.Models.Book", b =>
                 {
                     b.HasOne("BookStore.Models.Author", "Author")
-                        .WithMany()
+                        .WithMany("Books")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookStore.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("Books")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookStore.Models.Provider", "Provider")
-                        .WithMany()
+                        .WithMany("Books")
                         .HasForeignKey("ProviderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookStore.Models.Publisher", "Publisher")
-                        .WithMany()
+                        .WithMany("Books")
                         .HasForeignKey("PublisherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -334,7 +331,7 @@ namespace BookStore.Migrations
             modelBuilder.Entity("BookStore.Models.BookImage", b =>
                 {
                     b.HasOne("BookStore.Models.Book", "Book")
-                        .WithMany()
+                        .WithMany("BookImages")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -361,9 +358,31 @@ namespace BookStore.Migrations
                     b.Navigation("Publisher");
                 });
 
+            modelBuilder.Entity("BookStore.Models.Author", b =>
+                {
+                    b.Navigation("Books");
+                });
+
             modelBuilder.Entity("BookStore.Models.Book", b =>
                 {
                     b.Navigation("BookAttributes");
+
+                    b.Navigation("BookImages");
+                });
+
+            modelBuilder.Entity("BookStore.Models.Category", b =>
+                {
+                    b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("BookStore.Models.Provider", b =>
+                {
+                    b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("BookStore.Models.Publisher", b =>
+                {
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("BookStore.Models.Series", b =>

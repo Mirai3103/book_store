@@ -32,6 +32,11 @@ namespace BookStore.Models
         public DateTime? DeletedAt { get; set; }
 
         public List<Book> Books { get; set; }
+        public Series()
+        {
+            Books = new List<Book>();
+
+        }
 
 
     }

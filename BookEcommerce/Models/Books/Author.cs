@@ -14,7 +14,7 @@ namespace BookStore.Models
         public string Name { get; set; } = null!;
 
         [MaxLength(255)]
-        public string Description { get; set; } = "";
+        public string? Description { get; set; }
 
         public DateTime? DeletedAt { get; set; }
         public ICollection<Book> Books { get; set; } = new List<Book>();

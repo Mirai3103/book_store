@@ -11,10 +11,15 @@ namespace BookStore.Models
 
         [Required][MaxLength(255)] public string Name { get; set; } = null!;
 
-        [MaxLength(255)] public string Description { get; set; } = "";
+        [MaxLength(255)] public string? Description { get; set; }
 
         public DateTime? DeletedAt { get; set; }
-        public virtual ICollection<Book> Books { get; set; } = null!;
+        public virtual ICollection<Book> Books { get; set; }
+        public Provider()
+        {
+            Books = new List<Book>();
+
+        }
 
     }
 }

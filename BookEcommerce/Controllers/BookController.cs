@@ -1,4 +1,5 @@
 using BookStore.Dto;
+using BookStore.Exceptions;
 using BookStore.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,12 @@ namespace BookStore.Controllers
         [HttpGet("{slug}", Name = "GetBook")]
         public async Task<IActionResult> GetBookDetail(string slug)
         {
+
             var book = await _bookService.GetBookDetailAsync(slug);
+            if (book == null)
+            {
+                throw new NotFoundException("Book not found");
+            }
             return Ok(book);
         }
         [HttpGet("search", Name = "AdvancedSearch")]

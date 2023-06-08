@@ -20,13 +20,14 @@ public class BookService : IBookService
 
     public Task<PaginationDto<BookPreviewDto>> AdvancedSearchAsync(AdvancedSearchDto advancedSearchDto, int page, int limit)
     {
+
         var bookPreviews = _context.Books
             .SetupQuery()
             .Include(b => b.Author)
             .AsNoTracking();
         if (advancedSearchDto.keyword != null)
         {
-            bookPreviews = bookPreviews.Where(b => b.Title.Contains(advancedSearchDto.keyword));
+            bookPreviews = bookPreviews.Where(b => b.Name.ContainIgnoreAll(advancedSearchDto.keyword));
         }
         if (advancedSearchDto.authorId != null)
         {
@@ -58,7 +59,7 @@ public class BookService : IBookService
         return Task.FromResult(bookPreviewsPagination);
     }
 
-    public async Task<Book?> GetBookDetailAsync(string slug)
+    public async Task<BookDto?> GetBookDetailAsync(string slug)
     {
         var book = await _context.Books
         .SetupQuery()
@@ -66,17 +67,14 @@ public class BookService : IBookService
         .Where(b => b.Slug == slug)
         .Select(b => b.SelectDetail())
         .FirstOrDefaultAsync();
-        if (book == null)
-        {
-            throw new NotFoundException("Book not found");
-        }
+
 
         return book;
     }
 
     public Task<PaginationDto<BookPreviewDto>> GetBooksPreviewAsync(int page, int limit)
     {
-        var bookPreviews = _context.Books.SetupQuery().Include(b => b.Author).SortBy(BookSortType.Newest).Select(b => b.SelectPreview()).ToPagination<BookPreviewDto>(page, limit);
-        return Task.FromResult(bookPreviews);
+        var bookPreviews = _context.Books.SetupQuery().Include(b => b.Author).SortBy(BookSortType.Newest).Select(b => b.SelectPreview()).ToPaginationAsync<BookPreviewDto>(page, limit);
+        return bookPreviews;
     }
 }

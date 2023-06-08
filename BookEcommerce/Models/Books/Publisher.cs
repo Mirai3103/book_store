@@ -16,7 +16,12 @@ namespace BookStore.Models
         [MaxLength(255)] public string Description { get; set; } = "";
 
         public DateTime? DeletedAt { get; set; } = null;
-        public virtual ICollection<Book> Books { get; set; } = null!;
+        public virtual ICollection<Book> Books { get; set; }
+        public Publisher()
+        {
+            Books = new List<Book>();
+
+        }
 
     }
 }

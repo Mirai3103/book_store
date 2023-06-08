@@ -18,13 +18,20 @@ namespace BookStore
 
             });
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.EnableAnnotations();
+            });
             var connectionString = builder.Configuration.GetConnectionString("MySQLConnectionString") ?? Environment.GetEnvironmentVariable("MySQLConnectionString");
-            builder.Services.AddDbContext<BookStoreContext>(
-                options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+            builder.Services.AddDbContextPool<BookStoreContext>(
+                options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)), 24
             );
             builder.Services.AddTransient<IBookService, BookService>();
-
+            builder.Services.AddTransient<ICategoryService, CategoryService>();
+            builder.Services.AddTransient<IAuthorService, AuthorService>();
+            builder.Services.AddTransient<IPublisherService, PublisherService>();
+            builder.Services.AddTransient<ISeriesService, SeriesService>();
+            builder.Services.AddTransient<IProviderService, ProviderService>();
 
             var app = builder.Build();
 

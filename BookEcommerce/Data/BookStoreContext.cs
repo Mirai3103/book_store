@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BookStore.Models;
+using BookStore.Utils;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+
 namespace BookStore.Data
 {
     public class BookStoreContext : DbContext
@@ -27,7 +30,29 @@ namespace BookStore.Data
         {
             modelBuilder.Entity<BookAttribute>()
                 .HasKey(c => new { c.BookId, c.AttributeName });
+            modelBuilder.HasDbFunction(typeof(LikeOperator).GetMethod(nameof(LikeOperator.ContainIgnoreAll)))
+                   .HasName("ContainIgnoreAll")
+                   .HasTranslation(args =>
+                   {
+                       var str = args.ElementAt(0);
+                       var keyword = args.ElementAt(1);
+                       return new SqlFunctionExpression("ContainIgnoreAll", args, nullable: true, argumentsPropagateNullability: new[] { false, false }, typeof(bool), null);
+                   });
+        }
+        [DbFunction("ContainIgnoreAll")]
+        public static bool ContainIgnoreAll(string str, string keyword)
+        {
+            throw new NotSupportedException();
+        }
 
+
+    }
+    public static class LikeOperator
+    {
+        [DbFunction("ContainIgnoreAll")]
+        public static bool ContainIgnoreAll(this string str, string keyword)
+        {
+            throw new NotSupportedException();
         }
     }
 }

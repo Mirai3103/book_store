@@ -43,27 +43,22 @@ let newDatabaseConnectionPromise = mysql.createConnection({
 // new table: book, BookImage, BookAttribute
 // 	Id	Title	Name	Slug	AuthorId	ProviderId	PublisherId	ThumbnailUrl	Price	PublishDate	Language	Description	SeriesId	Episode	Stock	CategoryId	CreatedAt	DeletedAt
 //
+//   const query = `SELECT book.id, book.name, book.title, book.alias, book.author, book.price, book.language, book.description, book.episode, book.stock, book.createdAt, book.updatedAt, book.deletedAt, book.imageCover, provider.name AS providerName, publisher.name as publisherName, series.name as seriesName, category.name as categoryName, book.Attributes FROM book JOIN provider ON book.providerId = provider.id LEFT  JOIN publisher ON book.publisherId = publisher.id LEFT JOIN series ON book.seriesId = series.id LEFT JOIN category ON book.categoryId = category.id WHERE categoryId = 2`;
 //
 async function main() {
     const [oldDatabaseConnection, newDatabaseConnection] = await Promise.all([
         oldDatabaseConnectionPromise,
         newDatabaseConnectionPromise,
     ]);
-    const query = `select * from image`;
+    const query = "select * from book";
     const [rows] = await oldDatabaseConnection.query(query);
-    const queryInsert = `INSERT INTO bookimages (BookId, Url) VALUES (?,?)`;
-    for await (const row of rows) {
-        const bookId = row.BookId;
-        const url = row.url;
-        const queryIsExist = `SELECT * FROM bookimages WHERE BookId = ? AND Url like ?`;
-        const [rowsexisted] = await newDatabaseConnection.query(queryIsExist, [bookId, url]);
-        if (rowsexisted.length > 0) {
-            continue;
-        }
-        const [rows] = await newDatabaseConnection.query(queryInsert, [bookId, url]);
+    for (const row of rows) {
+        const authorId = await findAuthorIdByName(row.author);
+        const updateQuery = `UPDATE books SET authorId = ? WHERE slug = ?`;
+        const [updateRows] = await newDatabaseConnection.query(updateQuery, [authorId, row.alias]);
     }
 }
-// 2,172 hours
+
 const insertNewBook = async ({
     Id,
     Title,
@@ -150,6 +145,7 @@ const findAuthorIdByName = async (name) => {
     if (!name) {
         return 2325;
     }
+    name = name.split(",")[0].trim();
     name = name.replaceAll(`"`, ``);
     const query = `SELECT id FROM authors WHERE name like "%${name}%"`;
     const [rows] = await newDatabaseConnection.query(query);
