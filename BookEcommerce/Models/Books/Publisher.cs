@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BookStore.Attribute;
 
 namespace BookStore.Models
 {
+
+    [TimeStamp(deletedAtColumnName: nameof(DeletedAt))]
     public class Publisher
     {
         [Key]

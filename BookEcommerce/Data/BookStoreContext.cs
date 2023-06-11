@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using BookStore.Attribute;
+using System.Reflection;
 
 namespace BookStore.Data
 {
@@ -39,6 +41,7 @@ namespace BookStore.Data
         public BookStoreContext(DbContextOptions options) : base(options)
         {
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BookAttribute>()
@@ -51,6 +54,29 @@ namespace BookStore.Data
                        var keyword = args.ElementAt(1);
                        return new SqlFunctionExpression("ContainIgnoreAll", args, nullable: true, argumentsPropagateNullability: new[] { false, false }, typeof(bool), null);
                    });
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                TimeStampAttribute? timeStampAttribute = entityType.ClrType.GetCustomAttribute<TimeStampAttribute>();
+                if (timeStampAttribute != null)
+                {
+                    // entityType.AddProperty(timeStampAttribute.DeletedAtColumnName, typeof(DateTime?));
+                    // entityType.AddProperty(timeStampAttribute.CreatedAtColumnName, typeof(DateTime));
+                    // entityType.AddProperty(timeStampAttribute.UpdatedAtColumnName, typeof(DateTime?));
+                    // entityType.AddProperty(timeStampAttribute.DeletedByColumnName, typeof(string));
+                    // entityType.AddProperty(timeStampAttribute.CreatedByColumnName, typeof(string));
+                    // entityType.AddProperty(timeStampAttribute.UpdatedByColumnName, typeof(string));
+                    if (timeStampAttribute.DeletedAtColumnName != null)
+                    {
+                        // add query filter
+                        var parameter = Expression.Parameter(entityType.ClrType, "e");
+                        var propertyMethodInfo = typeof(EF).GetMethod("Property").MakeGenericMethod(typeof(DateTime?));
+                        var property = Expression.Call(propertyMethodInfo, parameter, Expression.Constant(timeStampAttribute.DeletedAtColumnName));
+                        BinaryExpression compareExpression = Expression.MakeBinary(ExpressionType.Equal, property, Expression.Constant(null, typeof(DateTime?)));
+                        var lambda = Expression.Lambda(compareExpression, parameter);
+                        modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+                    }
+                }
+            }
         }
         [DbFunction("ContainIgnoreAll")]
         public static bool ContainIgnoreAll(string str, string keyword)
@@ -61,16 +87,31 @@ namespace BookStore.Data
 
         public override int SaveChanges()
         {
-            var deletedEntities = ChangeTracker.Entries()
-                .Where(e => e.State == EntityState.Deleted);
-            foreach (var entity in deletedEntities)
-            {
-                entity.State = EntityState.Modified;
-                entity.Property("DeletedAt").CurrentValue = DateTime.Now;
-            }
+            HandleDelete();
+
             return base.SaveChanges();
         }
+        private void HandleDelete()
+        {
+            var deletedEntities = ChangeTracker.Entries()
+                          .Where(e => e.State == EntityState.Deleted);
+            foreach (var entity in deletedEntities)
+            {
 
+                var deletedAtColumnName = entity.GetDeletedAtColumnName();
+                Console.WriteLine(deletedAtColumnName);
+                if (deletedAtColumnName != null)
+                {
+                    entity.State = EntityState.Modified;
+                    entity.Property(deletedAtColumnName).CurrentValue = DateTime.Now;
+                }
+            }
+        }
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            HandleDelete();
+            return await base.SaveChangesAsync(cancellationToken);
+        }
 
     }
     public static class LikeOperator
