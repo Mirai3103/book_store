@@ -47,15 +47,17 @@ public class PublisherService : IPublisherService
         return Task.FromResult(publisher);
     }
 
-    public async Task<PaginationDto<PublisherDto>> GetPublishersPreviewAsync(int page, int limit)
+    public Task<PaginationDto<PublisherDto>> GetPublishersPreviewAsync(int page, int limit, string? search)
     {
-        var publishers = await _dbContext.Publishers.Select(a => new PublisherDto()
+        var publishers = _dbContext.Publishers
+        .Where(a => a.Name.ContainIgnoreAll(search ?? ""))
+        .Select(a => new PublisherDto()
         {
             Id = a.Id,
             Name = a.Name,
-            TotalBooks = a.Books.Count(),
-        }).ToPaginationAsync(page, limit);
-        return publishers;
+            TotalBooks = _dbContext.Books.Count(b => b.PublisherId == a.Id),
+        }).ToPagination(page, limit);
+        return Task.FromResult(publishers);
     }
 
     public async Task<PublisherDto> UpdatePublisherAsync(int id, PublisherDto publisherDto)

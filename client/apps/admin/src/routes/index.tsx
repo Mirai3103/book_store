@@ -1,8 +1,7 @@
 import { createBrowserRouter, RouteObject } from 'react-router-dom';
 import Layout from '../components/Layout';
 import BookManagementIndexPage from '../pages/Book';
-import CategoryRoute from '@/pages/Category';
-import AuthorRoute from '@/pages/Author';
+import AppRoute from '@/pages';
 
 const routes: RouteObject[] = [
   {
@@ -17,8 +16,7 @@ const routes: RouteObject[] = [
         path: '/book',
         element: <BookManagementIndexPage />,
       },
-      ...CategoryRoute,
-      ...AuthorRoute,
+      ...AppRoute,
     ],
   },
 ];

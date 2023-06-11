@@ -31,4 +31,26 @@ const getInvertKey = {
     grade: "Cấp Học",
     genre: "Genre",
 };
-module.exports = { getKey, getInvertKey };
+function stringToSlug(str) {
+    // remove accents
+    var from = "àáãảạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệđùúủũụưừứửữựòóỏõọôồốổỗộơờớởỡợìíỉĩịäëïîöüûñçýỳỹỵỷ",
+        to = "aaaaaaaaaaaaaaaaaeeeeeeeeeeeduuuuuuuuuuuoooooooooooooooooiiiiiaeiiouuncyyyyy";
+    for (var i = 0, l = from.length; i < l; i++) {
+        str = str.replace(RegExp(from[i], "gi"), to[i]);
+    }
+
+    str = str
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\-]/g, "-")
+        .replace(/-+/g, "-");
+    if (str[str.length - 1] === "-") {
+        str = str.slice(0, -1);
+    }
+    // remove - from start & end of string
+    str = str.replace(/^-+|-+$/g, "");
+
+    return str;
+}
+
+module.exports = { getKey, getInvertKey, stringToSlug };

@@ -2,7 +2,7 @@ namespace BookStore.Services.Interfaces;
 using BookStore.Dto;
 public interface IPublisherService
 {
-    Task<PaginationDto<PublisherDto>> GetPublishersPreviewAsync(int page, int limit);
+    Task<PaginationDto<PublisherDto>> GetPublishersPreviewAsync(int page, int limit, string? search);
     Task<PublisherDto?> GetPublisherDetailAsync(int id);
     Task<PublisherDto> CreatePublisherAsync(PublisherDto publisherDto);
     Task DeletePublisherAsync(int id);

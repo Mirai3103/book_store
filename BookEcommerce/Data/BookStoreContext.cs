@@ -2,6 +2,11 @@
 using BookStore.Models;
 using BookStore.Utils;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 
 namespace BookStore.Data
 {
@@ -18,6 +23,14 @@ namespace BookStore.Data
         public DbSet<Series> Series { get; set; }
         public DbSet<Provider> Providers { get; set; }
         public DbSet<BookImage> BookImages { get; set; }
+
+        public override DatabaseFacade Database => base.Database;
+
+        public override ChangeTracker ChangeTracker => base.ChangeTracker;
+
+        public override IModel Model => base.Model;
+
+        public override DbContextId ContextId => base.ContextId;
 
         protected BookStoreContext() : base()
         {
@@ -43,6 +56,19 @@ namespace BookStore.Data
         public static bool ContainIgnoreAll(string str, string keyword)
         {
             throw new NotSupportedException();
+        }
+
+
+        public override int SaveChanges()
+        {
+            var deletedEntities = ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Deleted);
+            foreach (var entity in deletedEntities)
+            {
+                entity.State = EntityState.Modified;
+                entity.Property("DeletedAt").CurrentValue = DateTime.Now;
+            }
+            return base.SaveChanges();
         }
 
 

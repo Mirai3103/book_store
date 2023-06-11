@@ -1,26 +1,28 @@
-import { AuthorDto } from "@/types/authorDto";
-import axios from "axios";
+import { AuthorDto } from '@/types/authorDto';
+import api from '../api';
 
 class AuthorApiService {
-    async getAllCategories(page: number, limit: number, search = "") {
-        const response = await axios.get(`/api/Author?page=${page}&limit=${limit}&search=${search}`);
-        return response.data;
-    }
-    async deleteAuthor(id: number) {
-        const response = await axios.delete(`/api/Author/${id}`);
-        return response.data;
-    }
-    async getAuthorById(id: number) {
-        const response = await axios.get(`/api/Author/${id}`);
-        return response.data;
-    }
-    async createAuthor(createAuthorDto: Omit<AuthorDto, "id">) {
-        const response = await axios.post("/api/Author", createAuthorDto);
-        return response.data;
-    }
-    async updateAuthor(id: number, updateAuthorDto: AuthorDto) {
-        const response = await axios.put(`/api/Author/${id}`, updateAuthorDto);
-        return response.data;
-    }
+  async getAllAuthors(page: number, limit: number, search = '') {
+    const response = await api.get(
+      `Author?page=${page}&limit=${limit}&search=${search}`
+    );
+    return response.data;
+  }
+  async deleteAuthor(id: number) {
+    const response = await api.delete(`Author/${id}`);
+    return response.data;
+  }
+  async getAuthorById(id: number) {
+    const response = await api.get(`Author/${id}`);
+    return response.data;
+  }
+  async createAuthor(createAuthorDto: Omit<AuthorDto, 'id'>) {
+    const response = await api.post('Author', createAuthorDto);
+    return response.data;
+  }
+  async updateAuthor(id: number, updateAuthorDto: AuthorDto) {
+    const response = await api.put(`Author/${id}`, updateAuthorDto);
+    return response.data;
+  }
 }
 export default new AuthorApiService();

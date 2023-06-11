@@ -14,9 +14,9 @@ namespace BookStore.Controllers
             this._providerService = providerService;
         }
         [HttpGet(Name = "GetProviders")]
-        public async Task<IActionResult> GetProviders([FromQuery] int page = 1, [FromQuery] int limit = 10)
+        public async Task<IActionResult> GetProviders([FromQuery] int page = 1, [FromQuery] int limit = 10, [FromQuery] string? search = null)
         {
-            var providers = await _providerService.GetProvidersPreviewAsync(page, limit);
+            var providers = await _providerService.GetProvidersPreviewAsync(page, limit, search);
             return Ok(providers);
         }
         [HttpPost(Name = "CreateProvider")]

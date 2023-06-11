@@ -47,15 +47,17 @@ public class ProviderService : IProviderService
         return Task.FromResult(provider);
     }
 
-    public async Task<PaginationDto<ProviderDto>> GetProvidersPreviewAsync(int page, int limit)
+    public Task<PaginationDto<ProviderDto>> GetProvidersPreviewAsync(int page, int limit, string? search)
     {
-        var providers = await _dbContext.Providers.Select(a => new ProviderDto()
+        var providers = _dbContext.Providers
+        .Where(a => a.Name.ContainIgnoreAll(search ?? ""))
+        .Select(a => new ProviderDto()
         {
             Id = a.Id,
             Name = a.Name,
-            TotalBooks = a.Books.Count(),
-        }).ToPaginationAsync(page, limit);
-        return providers;
+            TotalBooks = _dbContext.Books.Count(b => b.ProviderId == a.Id),
+        }).ToPagination(page, limit);
+        return Task.FromResult(providers);
     }
 
     public async Task<ProviderDto> UpdateProviderAsync(int id, ProviderDto providerDto)

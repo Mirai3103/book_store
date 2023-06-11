@@ -1,5 +1,5 @@
 const mysql = require("mysql2/promise.js");
-const { getInvertKey, getKey } = require("./utils.js");
+const { getInvertKey, getKey, stringToSlug } = require("./utils.js");
 const bluebird = require("bluebird");
 let oldDatabaseConnectionPromise = mysql.createConnection({
     host: "localhost",
@@ -50,12 +50,19 @@ async function main() {
         oldDatabaseConnectionPromise,
         newDatabaseConnectionPromise,
     ]);
-    const query = "select * from book";
-    const [rows] = await oldDatabaseConnection.query(query);
+    const query = `SELECT id FROM series`;
+    const [rows] = await newDatabaseConnection.query(query);
     for (const row of rows) {
-        const authorId = await findAuthorIdByName(row.author);
-        const updateQuery = `UPDATE books SET authorId = ? WHERE slug = ?`;
-        const [updateRows] = await newDatabaseConnection.query(updateQuery, [authorId, row.alias]);
+        const getOldestBookQuery = `SELECT * FROM books WHERE seriesId = ? ORDER BY createdAt ASC LIMIT 1`;
+        const [oldestBookRows] = await newDatabaseConnection.query(getOldestBookQuery, [row.id]);
+        const oldestBook = oldestBookRows[0];
+        const updateQuery = `UPDATE series SET createdAt = ?, AuthorId = ?, PublisherId = ? WHERE id = ?`;
+        await newDatabaseConnection.query(updateQuery, [
+            oldestBook.CreatedAt,
+            oldestBook.AuthorId,
+            oldestBook.PublisherId,
+            row.id,
+        ]);
     }
 }
 

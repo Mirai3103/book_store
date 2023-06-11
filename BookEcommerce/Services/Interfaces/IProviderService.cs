@@ -2,7 +2,7 @@ namespace BookStore.Services.Interfaces;
 using BookStore.Dto;
 public interface IProviderService
 {
-    Task<PaginationDto<ProviderDto>> GetProvidersPreviewAsync(int page, int limit);
+    Task<PaginationDto<ProviderDto>> GetProvidersPreviewAsync(int page, int limit, string? search);
     Task<ProviderDto?> GetProviderDetailAsync(int id);
     Task<ProviderDto> CreateProviderAsync(ProviderDto providerDto);
     Task DeleteProviderAsync(int id);

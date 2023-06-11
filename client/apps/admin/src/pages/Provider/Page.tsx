@@ -1,30 +1,30 @@
 import React from 'react';
-import { AuthorDto } from '@/types/authorDto';
+import { ProviderDto } from '@/types/providerDto';
 import { PaginationDto } from '@/types/paginationDto';
 import { BsThreeDots, BsThreeDotsVertical } from 'react-icons/bs';
 import { AiFillDelete, AiFillEdit, AiOutlinePlus } from 'react-icons/ai';
 import Pagination from '@/components/Pagination';
 import { useDialog } from '@shared/dialog';
-import authorApiService from '@/Utils/Services/authorApiService';
+import providerApiService from '@/Utils/Services/providerApiService';
 import { useQuery } from 'react-query';
 import { useToggle } from 'usehooks-ts';
 import CreateFormModal from './CreateFormModal';
 import { useNotification } from '@shared/toast';
 import EditFormModal from './EditFormModal';
 import { useDebounceState, usePagination } from '@shared/hooks';
-export default function AuthorManagementIndexPage() {
+export default function ProviderManagementIndexPage() {
   const { currentPage, onChangePage, setTotalPages, totalPages } =
     usePagination();
   const [keyword, setKeyword] = useDebounceState('', 2000);
   const { createConfirmDialog } = useDialog();
   const [isOpenCreateDialog, toggleOpenCreateDialog] = useToggle(false);
   const [isOpenEditDialog, toggleOpenEditDialog] = useToggle(false);
-  const { isLoading, data, refetch } = useQuery<PaginationDto<AuthorDto>>({
-    queryKey: ['author', currentPage, keyword],
-    queryFn: () => authorApiService.getAllAuthors(currentPage, 16, keyword),
+  const { isLoading, data, refetch } = useQuery<PaginationDto<ProviderDto>>({
+    queryKey: ['provider', currentPage, keyword],
+    queryFn: () => providerApiService.getAllProviders(currentPage, 16, keyword),
   });
   const { show } = useNotification();
-  const [selectedData, setSelectedData] = React.useState<AuthorDto>();
+  const [selectedData, setSelectedData] = React.useState<ProviderDto>();
 
   React.useEffect(() => {
     if (data) {
@@ -34,13 +34,13 @@ export default function AuthorManagementIndexPage() {
 
   const onDelete = (id: string) => {
     createConfirmDialog({
-      content: `Bạn có chắc chắn muốn xóa tác giả với id ${id} không?`,
+      content: `Bạn có chắc chắn muốn xóa nhà cung cấp với id ${id} không?`,
       title: 'Bạn có chắc chắn không?',
       onCancel: () => {
         show({ message: 'Đã huỷ', type: 'info' });
       },
       onConfirm: () => {
-        authorApiService.deleteAuthor(Number(id)).then((res) => {
+        providerApiService.deleteProvider(Number(id)).then((res) => {
           refetch();
           show({ message: 'Đã xóa', type: 'success' });
         });
@@ -49,7 +49,7 @@ export default function AuthorManagementIndexPage() {
       confirmText: 'Xác nhận xóa',
     });
   };
-  const handleEditClick = (data: AuthorDto) => {
+  const handleEditClick = (data: ProviderDto) => {
     setSelectedData(data);
     toggleOpenEditDialog();
   };
@@ -65,12 +65,12 @@ export default function AuthorManagementIndexPage() {
         oldData={selectedData}
       />
       <div className="flex justify-between mb-8">
-        <h1 className="text-2xl font-bold">Quản lý tác giả </h1>
+        <h1 className="text-2xl font-bold">Quản lý nhà cung cấp </h1>
         <button
           className="btn btn-primary font-bold text-lg"
           onClick={toggleOpenCreateDialog}
         >
-          <AiOutlinePlus className="font-bold text-2xl" /> Thêm tác giả mới
+          <AiOutlinePlus className="font-bold text-2xl" /> Thêm nhà cung cấp mới
         </button>
       </div>
       <div className=" h-full shadow-xl mx-1 md:mx-4 rounded-lg">
@@ -95,8 +95,8 @@ export default function AuthorManagementIndexPage() {
           <table className="table table-md">
             <thead>
               <tr className="font-medium text-xl">
-                <th>Mã tác giả</th>
-                <th>Tên tác giả</th>
+                <th>Mã nhà cung cấp</th>
+                <th>Tên nhà cung cấp</th>
                 <th>Giới thiệu</th>
                 <th>Tổng số sách</th>
                 <th>Thao tác</th>
@@ -112,12 +112,12 @@ export default function AuthorManagementIndexPage() {
                   </td>
                 </tr>
               ) : (
-                data?.items.map((author) => (
-                  <tr className="hover" key={author.id}>
-                    <td>{author.id}</td>
-                    <td className="font-semibold">{author.name}</td>
-                    <td className="truncate">{author.description}</td>
-                    <td>{author.totalBooks}</td>
+                data?.items.map((provider) => (
+                  <tr className="hover" key={provider.id}>
+                    <td>{provider.id}</td>
+                    <td className="font-semibold">{provider.name}</td>
+                    <td className="truncate">{provider.description}</td>
+                    <td>{provider.totalBooks}</td>
                     <td>
                       <div className="dropdown dropdown-bottom dropdown-end">
                         <label
@@ -133,7 +133,7 @@ export default function AuthorManagementIndexPage() {
                           <li>
                             <button
                               className="bg-warning text-warning-content"
-                              onClick={() => handleEditClick(author)}
+                              onClick={() => handleEditClick(provider)}
                             >
                               <AiFillEdit />
                               Sửa thông tin
@@ -142,10 +142,10 @@ export default function AuthorManagementIndexPage() {
                           <li>
                             <button
                               className="bg-error text-error-content"
-                              onClick={() => onDelete(author.id + '')}
+                              onClick={() => onDelete(provider.id + '')}
                             >
                               <AiFillDelete />
-                              Xoá tác giả
+                              Xoá nhà cung cấp
                             </button>
                           </li>
                         </ul>
