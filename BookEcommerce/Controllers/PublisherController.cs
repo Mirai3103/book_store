@@ -14,9 +14,9 @@ namespace BookStore.Controllers
             this._publisherService = publisherService;
         }
         [HttpGet(Name = "GetPublishers")]
-        public async Task<IActionResult> GetPublishers([FromQuery] int page = 1, [FromQuery] int limit = 10, [FromQuery] string? search = null)
+        public async Task<IActionResult> GetPublishers([FromQuery] int page = 1, [FromQuery] int limit = 10, [FromQuery] string? search = null, [FromQuery] string? orderBy = null, [FromQuery] bool isAscending = true)
         {
-            var publishers = await _publisherService.GetPublishersPreviewAsync(page, limit, search);
+            var publishers = await _publisherService.GetPublishersPreviewAsync(page, limit, search, orderBy, isAscending);
             return Ok(publishers);
         }
         [HttpPost(Name = "CreatePublisher")]

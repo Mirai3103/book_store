@@ -1,29 +1,35 @@
-import publisherApiService from '@/Utils/Services/publisherApiService';
+import seriesApiService from '@/Utils/Services/seriesApiService';
 import TextArea from '@/components/TextArea';
 import TextInput from '@/components/TextInput';
 import { useNotification } from '@shared/toast';
-import { PublisherDto } from '@/types/publisherDto';
-import React from 'react';
+import ComboBox from '@shared/combobox';
+import { CreateSeriesDto, SeriesDto } from '@/types/seriesDto';
+import React, { Fragment } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
-
+import { useMutation, useQuery } from 'react-query';
+import { useDebounceState } from '@client/libs/shared/src/lib/hooks';
+import authorApiService from '@/Utils/Services/authorApiService';
+import publisherApiService from '@/Utils/Services/publisherApiService';
+import { AuthorDto } from '@/types/authorDto';
+import { PaginationDto } from '@/types/paginationDto';
+import { MdOutlineCheckCircleOutline } from 'react-icons/md';
+import { BiChevronDown } from 'react-icons/bi';
+import { PublisherDto } from '@/types/publisherDto';
+import AuthorComboBox from './AuthorComboBox';
+import PublisherCombobox from './PublisherCombobox';
 interface IProps {
   isOpen: boolean;
   toggle: () => void;
-  oldData?: PublisherDto;
 }
 
-export default function EditFormModal({ isOpen, toggle, oldData }: IProps) {
+export default function CreateFormModal({ isOpen, toggle }: IProps) {
   const { show } = useNotification();
-  const { data, isLoading, error, mutate } = useMutation({
-    mutationFn: (createPublisherDto: PublisherDto) =>
-      publisherApiService.updatePublisher(
-        createPublisherDto.id,
-        createPublisherDto
-      ),
+  const { isLoading, error, mutate } = useMutation({
+    mutationFn: (createSeriesDto: CreateSeriesDto) =>
+      seriesApiService.createSeries(createSeriesDto),
     onSuccess: () => {
       toggle();
-      show({ message: 'Sửa nhà xuất bản thành công', type: 'success' });
+      show({ message: 'Đã tạo bộ sách', type: 'success' });
     },
   });
   const {
@@ -31,47 +37,29 @@ export default function EditFormModal({ isOpen, toggle, oldData }: IProps) {
     handleSubmit,
     getValues,
     setValue,
-
     formState: { errors },
-  } = useForm<PublisherDto, any, PublisherDto>({
+  } = useForm<CreateSeriesDto, any, CreateSeriesDto>({
     defaultValues: {
-      id: 0,
       name: '',
       description: '',
     },
   });
-  const onSubmit = (data: PublisherDto) => {
+
+  const onSubmit = (data: CreateSeriesDto) => {
     mutate(data);
   };
-  React.useEffect(() => {
-    if (oldData) {
-      setValue('id', oldData.id);
-      setValue('name', oldData.name);
-      setValue('description', oldData.description);
-    }
-  }, [oldData, setValue]);
+
   return (
     <dialog className="modal modal-bottom sm:modal-middle" open={isOpen}>
       <div className="modal-box">
-        <h3 className="font-bold text-xl">
-          Sửa nhà xuất bản {oldData?.name || ''}
-        </h3>
+        <h3 className="font-bold text-xl">Tạo bộ sách</h3>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="py-4">
             <TextInput
-              label="Mã nhà xuất bản"
-              error={errors.id?.message}
+              error={errors.name?.message}
               type="text"
-              placeholder="Mã nhà xuất bản"
-              className="input input-bordered w-full "
-              readOnly
-              {...register('id', { required: true, disabled: true })}
-            />
-
-            <TextInput
-              type="text"
-              label="Tên nhà xuất bản"
-              placeholder="Nhập tên nhà xuất bản"
+              label="Tên nhà bộ sách"
+              placeholder="Nhập tên nhà bộ sách"
               className="input input-bordered w-full "
               {...register('name', {
                 required: true,
@@ -79,6 +67,19 @@ export default function EditFormModal({ isOpen, toggle, oldData }: IProps) {
                 maxLength: 50,
               })}
             />
+            <AuthorComboBox
+              onChange={(value) => {
+                setValue('authorId', Number(value));
+              }}
+              value={getValues('authorId')}
+            ></AuthorComboBox>
+
+            <PublisherCombobox
+              onChange={(value) => {
+                setValue('publisherId', Number(value));
+              }}
+              value={getValues('publisherId')}
+            ></PublisherCombobox>
 
             <TextArea
               label="Chú thích"
@@ -98,7 +99,7 @@ export default function EditFormModal({ isOpen, toggle, oldData }: IProps) {
               Hủy
             </button>
             <button className="btn btn-primary" disabled={isLoading}>
-              Tạo nhà xuất bản
+              Tạo bộ sách
             </button>
           </div>
         </form>

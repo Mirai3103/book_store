@@ -1,9 +1,18 @@
 import { PublisherDto } from '@/types/publisherDto';
 import api from '../api';
+import { camelCaseToPascalCase } from '@client/libs/shared/src/lib/Utils';
 class PublisherApiService {
-  async getAllPublishers(page: number, limit: number, search = '') {
+  async getAllPublishers(
+    page: number,
+    limit: number,
+    search = '',
+    orderBy = 'id',
+    isAscending = true
+  ) {
     const response = await api.get(
-      `Publisher?page=${page}&limit=${limit}&search=${search}`
+      `Publisher?page=${page}&limit=${limit}&search=${search}&orderBy=${camelCaseToPascalCase(
+        orderBy
+      )}&isAscending=${isAscending}`
     );
     return response.data;
   }

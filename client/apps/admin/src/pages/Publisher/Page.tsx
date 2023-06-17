@@ -12,6 +12,9 @@ import CreateFormModal from './CreateFormModal';
 import { useNotification } from '@shared/toast';
 import EditFormModal from './EditFormModal';
 import { useDebounceState, usePagination } from '@shared/hooks';
+import { IOrderBy } from '@/types/orderByDto';
+import { THeadText } from './Data';
+import { BiCaretDown, BiCaretUp } from 'react-icons/bi';
 export default function PublisherManagementIndexPage() {
   const { currentPage, onChangePage, setTotalPages, totalPages } =
     usePagination();
@@ -19,10 +22,26 @@ export default function PublisherManagementIndexPage() {
   const { createConfirmDialog } = useDialog();
   const [isOpenCreateDialog, toggleOpenCreateDialog] = useToggle(false);
   const [isOpenEditDialog, toggleOpenEditDialog] = useToggle(false);
+  const [order, setOrder] = React.useState<IOrderBy<PublisherDto>>({
+    orderBy: 'id',
+    isAscending: true,
+  });
   const { isLoading, data, refetch } = useQuery<PaginationDto<PublisherDto>>({
-    queryKey: ['publisher', currentPage, keyword],
+    queryKey: [
+      'publisher',
+      currentPage,
+      keyword,
+      order.orderBy,
+      order.isAscending,
+    ],
     queryFn: () =>
-      publisherApiService.getAllPublishers(currentPage, 16, keyword),
+      publisherApiService.getAllPublishers(
+        currentPage,
+        16,
+        keyword,
+        order.orderBy,
+        order.isAscending
+      ),
   });
   const { show } = useNotification();
   const [selectedData, setSelectedData] = React.useState<PublisherDto>();
@@ -96,10 +115,30 @@ export default function PublisherManagementIndexPage() {
           <table className="table table-md">
             <thead>
               <tr className="font-medium text-xl">
-                <th>Mã nhà xuất bản</th>
-                <th>Tên nhà xuất bản</th>
-                <th>Giới thiệu</th>
-                <th>Tổng số sách</th>
+                {THeadText.map((item) => (
+                  <th
+                    key={item.key}
+                    onClick={() => {
+                      item.withOrder &&
+                        setOrder({
+                          orderBy: item.key,
+                          isAscending: !order.isAscending,
+                        });
+                    }}
+                    className={item.withOrder ? 'cursor-pointer' : ''}
+                  >
+                    {item.label}
+                    {order.orderBy === item.key ? (
+                      order.isAscending ? (
+                        <BiCaretUp className="inline-block ml-2" />
+                      ) : (
+                        <BiCaretDown className="inline-block ml-2" />
+                      )
+                    ) : (
+                      ''
+                    )}
+                  </th>
+                ))}
                 <th>Thao tác</th>
               </tr>
             </thead>
@@ -117,7 +156,7 @@ export default function PublisherManagementIndexPage() {
                   <tr className="hover" key={publisher.id}>
                     <td>{publisher.id}</td>
                     <td className="font-semibold">{publisher.name}</td>
-                    <td className="truncate">{publisher.description}</td>
+                    <td>{publisher.description}</td>
                     <td>{publisher.totalBooks}</td>
                     <td>
                       <div className="dropdown dropdown-bottom dropdown-end">

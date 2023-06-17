@@ -4,6 +4,7 @@ import { BsGraphUpArrow } from 'react-icons/bs';
 import { BiBookAlt, BiCategoryAlt } from 'react-icons/bi';
 import { MdOutlinePublic } from 'react-icons/md';
 import { GiFactory } from 'react-icons/gi';
+import { FaLayerGroup } from 'react-icons/fa';
 const AppSidebarItems: ISidebarGroup[] = [
   {
     label: 'Tổng quan',
@@ -47,6 +48,11 @@ const AppSidebarItems: ISidebarGroup[] = [
         Icon: GiFactory,
         to: '/provider',
         label: 'Nhà cung cấp',
+      },
+      {
+        Icon: FaLayerGroup,
+        to: '/series',
+        label: 'Bộ sách',
       },
     ],
   },

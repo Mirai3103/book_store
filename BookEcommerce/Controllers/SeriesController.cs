@@ -1,6 +1,7 @@
 using BookStore.Dto;
 using BookStore.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace BookStore.Controllers
 {
@@ -14,13 +15,10 @@ namespace BookStore.Controllers
             this._seriesService = seriesService;
         }
         [HttpGet(Name = "GetAllSeries")]
-        public async Task<IActionResult> GetAllSeries([FromQuery] int page = 1, [FromQuery] int limit = 10, [FromQuery] string? search = null)
+        public async Task<IActionResult> GetAllSeries([FromQuery] int page = 1, [FromQuery] int limit = 10, [FromQuery] string? search = null, [FromQuery] string? orderBy = null, [FromQuery] bool isAscending = true)
         {
-            if (search != null)
-            {
-                return Ok(await _seriesService.SearchSeriesAsync(search, page, limit));
-            }
-            var series = await _seriesService.GetAllSeriesPreviewAsync(page, limit);
+
+            var series = await _seriesService.GetAllSeriesPreviewAsync(page, limit, search, orderBy, isAscending);
             return Ok(series);
         }
         [HttpPost(Name = "CreateSeries")]

@@ -50,7 +50,7 @@ public class AuthorService : IAuthorService
         return author;
     }
 
-    public Task<PaginationDto<AuthorDto>> GetAuthorsPreviewAsync(int page, int limit, string? search = null)
+    public Task<PaginationDto<AuthorDto>> GetAuthorsPreviewAsync(int page, int limit, string? search = null, string? orderBy = null, bool isAscending = true)
     {
         var authors = _dbContext.Authors
         .Where(a => search == null || a.Name.ContainIgnoreAll(search))
@@ -61,8 +61,17 @@ public class AuthorService : IAuthorService
             Name = a.Name,
             TotalBooks = _dbContext.Books.Count(b => b.AuthorId == a.Id),
         }
-        ).ToPagination(page, limit);
-        return Task.FromResult(authors);
+        );
+        if (isAscending)
+        {
+            authors = authors.OrderBy(a => EF.Property<object>(a, orderBy ?? "Id"));
+        }
+        else
+        {
+            authors = authors.OrderByDescending(a => EF.Property<object>(a, orderBy ?? "Id"));
+        }
+        var result = authors.ToPagination(page, limit);
+        return Task.FromResult(result);
     }
 
     public async Task<AuthorDto> UpdateAuthorAsync(int id, AuthorDto authorDto)

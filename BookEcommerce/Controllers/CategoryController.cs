@@ -14,9 +14,9 @@ namespace BookStore.Controllers
             this._categoryService = categoryService;
         }
         [HttpGet(Name = "GetCategories")]
-        public async Task<IActionResult> GetCategories([FromQuery] int page = 1, [FromQuery] int limit = 10, [FromQuery] string? search = null)
+        public async Task<IActionResult> GetCategories([FromQuery] int page = 1, [FromQuery] int limit = 10, [FromQuery] string? search = null, [FromQuery] string? orderBy = null, [FromQuery] bool isAscending = true)
         {
-            var categories = await _categoryService.GetCategoriesPreviewAsync(page, limit, search);
+            var categories = await _categoryService.GetCategoriesPreviewAsync(page, limit, search, orderBy, isAscending);
             return Ok(categories);
         }
         [HttpPost(Name = "CreateCategory")]

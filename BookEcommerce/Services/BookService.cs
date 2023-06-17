@@ -55,7 +55,9 @@ public class BookService : IBookService
             bookPreviews = bookPreviews.Where(b => b.Price <= advancedSearchDto.maxPrice);
         }
         bookPreviews = bookPreviews.SortBy(advancedSearchDto.sort);
-        var bookPreviewsPagination = bookPreviews.Select(b => b.SelectPreview()).ToPagination<BookPreviewDto>(page, limit);
+        var bookPreviewsPagination = bookPreviews.OrderByDescending(b => b.CreatedAt).Select(b => b.SelectPreview())
+
+        .ToPagination<BookPreviewDto>(page, limit);
         return Task.FromResult(bookPreviewsPagination);
     }
 
@@ -74,7 +76,8 @@ public class BookService : IBookService
 
     public Task<PaginationDto<BookPreviewDto>> GetBooksPreviewAsync(int page, int limit)
     {
-        var bookPreviews = _context.Books.SetupQuery().Include(b => b.Author).SortBy(BookSortType.Newest).Select(b => b.SelectPreview()).ToPaginationAsync<BookPreviewDto>(page, limit);
+        var bookPreviews = _context.Books.SetupQuery().Include(b => b.Author).SortBy(BookSortType.Newest).Select(b => b.SelectPreview())
+        .ToPaginationAsync<BookPreviewDto>(page, limit);
         return bookPreviews;
     }
 }

@@ -50,6 +50,7 @@ public class SeriesService : ISeriesService
         return series.SelectPreview()!;
     }
 
+
     public async Task DeleteSeriesAsync(int id)
     {
         _dbContext.Series.Remove(_dbContext.Series.Find(id));
@@ -57,13 +58,14 @@ public class SeriesService : ISeriesService
 
     }
 
-    public async Task<PaginationDto<SeriesDto>> GetAllSeriesPreviewAsync(int page, int limit)
+    public async Task<PaginationDto<SeriesDto>> GetAllSeriesPreviewAsync(int page, int limit, string? search = "", string? orderBy = null, bool isAscending = true)
     {
 
-        var series = await _dbContext.Series.
+        var series = _dbContext.Series.
         Include(s => s.Author).
         Include(s => s.Publisher)
         .Include(s => s.Books)
+        .Where(a => a.Name.ContainIgnoreAll(search ?? ""))
         .Select(s =>
          new SeriesDto
          {
@@ -76,8 +78,17 @@ public class SeriesService : ISeriesService
              Publisher = s.Publisher.SelectPreview(),
              LastedBook = s.Books.OrderByDescending(b => b.CreatedAt).Select(b => b.SelectPreview()).FirstOrDefault(),
          }
-        ).ToPaginationAsync(page, limit);
-        return series;
+        );
+        if (isAscending)
+        {
+            series = series.OrderBy(s => s.UpdatedAt);
+        }
+        else
+        {
+            series = series.OrderByDescending(s => s.UpdatedAt);
+        }
+        var result = series.ToPagination(page, limit);
+        return await Task.FromResult(result);
     }
 
     public async Task<PaginationDto<BookPreviewDto>> GetBooksBySeriesAsync(string slug, int page, int limit)
@@ -87,7 +98,7 @@ public class SeriesService : ISeriesService
         {
             throw new NotFoundException("Không tìm thấy bộ truyện");
         }
-        var books = await _dbContext.Books.Where(a => a.SeriesId == series.Id).Select(a => a.SelectPreview()!).ToPaginationAsync(page, limit);
+        var books = await _dbContext.Books.Where(a => a.SeriesId == series.Id).OrderBy(s => s.CreatedAt).Select(a => a.SelectPreview()!).ToPaginationAsync(page, limit);
         return books;
     }
 
@@ -149,10 +160,12 @@ public class SeriesService : ISeriesService
             Id = a.Id,
             Name = a.Name,
             Slug = a.Slug,
-            TotalBooks = a.Books.Count(),
+            TotalBooks = _dbContext.Books.Where(b => b.SeriesId == a.Id).Count(),
             UpdatedAt = a.UpdatedAt,
         }
-        ).ToPaginationAsync(page, limit);
+        )
+        .OrderByDescending(a => a.UpdatedAt)
+        .ToPaginationAsync(page, limit);
         return series;
     }
 

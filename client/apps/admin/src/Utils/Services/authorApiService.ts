@@ -1,10 +1,18 @@
 import { AuthorDto } from '@/types/authorDto';
 import api from '../api';
-
+import { camelCaseToPascalCase } from '@client/libs/shared/src/lib/Utils';
 class AuthorApiService {
-  async getAllAuthors(page: number, limit: number, search = '') {
+  async getAllAuthors(
+    page: number,
+    limit: number,
+    search = '',
+    orderBy = 'id',
+    isAscending = true
+  ) {
     const response = await api.get(
-      `Author?page=${page}&limit=${limit}&search=${search}`
+      `Author?page=${page}&limit=${limit}&search=${search}&orderBy=${camelCaseToPascalCase(
+        orderBy
+      )}&isAscending=${isAscending}`
     );
     return response.data;
   }

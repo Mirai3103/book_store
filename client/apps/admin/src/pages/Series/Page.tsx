@@ -1,41 +1,39 @@
 import React from 'react';
-import { ProviderDto } from '@/types/providerDto';
+import { SeriesDto } from '@/types/seriesDto';
 import { PaginationDto } from '@/types/paginationDto';
 import { BsThreeDots, BsThreeDotsVertical } from 'react-icons/bs';
 import { AiFillDelete, AiFillEdit, AiOutlinePlus } from 'react-icons/ai';
 import Pagination from '@/components/Pagination';
-import { useDialog } from '@shared/dialog';
-import providerApiService from '@/Utils/Services/providerApiService';
+import seriesApiService from '@/Utils/Services/seriesApiService';
 import { useQuery } from 'react-query';
-import { useToggle } from 'usehooks-ts';
-import CreateFormModal from './CreateFormModal';
 import { useNotification } from '@shared/toast';
-import EditFormModal from './EditFormModal';
 import { useDebounceState, usePagination } from '@shared/hooks';
 import { IOrderBy } from '@/types/orderByDto';
 import { THeadText } from './Data';
 import { BiCaretDown, BiCaretUp } from 'react-icons/bi';
-export default function ProviderManagementIndexPage() {
+import { getDiffTimeStr } from '@client/libs/shared/src/lib/Utils';
+import { useNavigate } from 'react-router-dom';
+import CreateFormModal from './CreateFormModal';
+import { useToggle } from 'usehooks-ts';
+export default function SeriesManagementIndexPage() {
   const { currentPage, onChangePage, setTotalPages, totalPages } =
     usePagination();
   const [keyword, setKeyword] = useDebounceState('', 2000);
-  const { createConfirmDialog } = useDialog();
-  const [isOpenCreateDialog, toggleOpenCreateDialog] = useToggle(false);
-  const [isOpenEditDialog, toggleOpenEditDialog] = useToggle(false);
-  const [order, setOrder] = React.useState<IOrderBy<ProviderDto>>({
+  const navigate = useNavigate();
+  const [order, setOrder] = React.useState<IOrderBy<SeriesDto>>({
     orderBy: 'id',
     isAscending: true,
   });
-  const { isLoading, data, refetch } = useQuery<PaginationDto<ProviderDto>>({
+  const { isLoading, data, refetch } = useQuery<PaginationDto<SeriesDto>>({
     queryKey: [
-      'provider',
+      'series',
       currentPage,
       keyword,
       order.orderBy,
       order.isAscending,
     ],
     queryFn: () =>
-      providerApiService.getAllProviders(
+      seriesApiService.getAllSeries(
         currentPage,
         16,
         keyword,
@@ -43,8 +41,6 @@ export default function ProviderManagementIndexPage() {
         order.isAscending
       ),
   });
-  const { show } = useNotification();
-  const [selectedData, setSelectedData] = React.useState<ProviderDto>();
 
   React.useEffect(() => {
     if (data) {
@@ -52,45 +48,23 @@ export default function ProviderManagementIndexPage() {
     }
   }, [data, setTotalPages]);
 
-  const onDelete = (id: string) => {
-    createConfirmDialog({
-      content: `Bạn có chắc chắn muốn xóa nhà cung cấp với id ${id} không?`,
-      title: 'Bạn có chắc chắn không?',
-      onCancel: () => {
-        show({ message: 'Đã huỷ', type: 'info' });
-      },
-      onConfirm: () => {
-        providerApiService.deleteProvider(Number(id)).then((res) => {
-          refetch();
-          show({ message: 'Đã xóa', type: 'success' });
-        });
-      },
-      cancelText: 'Hủy',
-      confirmText: 'Xác nhận xóa',
-    });
+  const handleEditClick = (data: SeriesDto) => {
+    navigate(`/Series/edit/${data.id}`);
   };
-  const handleEditClick = (data: ProviderDto) => {
-    setSelectedData(data);
-    toggleOpenEditDialog();
-  };
+  const [isOpenCreateDialog, toggleOpenCreateDialog] = useToggle(false);
   return (
     <div>
       <CreateFormModal
         isOpen={isOpenCreateDialog}
         toggle={toggleOpenCreateDialog}
       />
-      <EditFormModal
-        isOpen={isOpenEditDialog}
-        toggle={toggleOpenEditDialog}
-        oldData={selectedData}
-      />
       <div className="flex justify-between mb-8">
-        <h1 className="text-2xl font-bold">Quản lý nhà cung cấp </h1>
+        <h1 className="text-2xl font-bold">Quản lý bộ sách </h1>
         <button
           className="btn btn-primary font-bold text-lg"
           onClick={toggleOpenCreateDialog}
         >
-          <AiOutlinePlus className="font-bold text-2xl" /> Thêm nhà cung cấp mới
+          <AiOutlinePlus className="font-bold text-2xl" /> Thêm bộ sách mới
         </button>
       </div>
       <div className=" h-full shadow-xl mx-1 md:mx-4 rounded-lg">
@@ -145,51 +119,30 @@ export default function ProviderManagementIndexPage() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={5} className="">
+                  <td colSpan={THeadText.length + 1} className="">
                     <div className="text-center flex justify-center items-center py-6">
                       <span className="loading loading-spinner loading-lg"></span>
                     </div>
                   </td>
                 </tr>
               ) : (
-                data?.items.map((provider) => (
-                  <tr className="hover" key={provider.id}>
-                    <td>{provider.id}</td>
-                    <td className="font-semibold">{provider.name}</td>
-                    <td>{provider.description}</td>
-                    <td>{provider.totalBooks}</td>
+                data?.items.map((series) => (
+                  <tr className="hover" key={series.id}>
+                    <td>{series.id}</td>
+                    <td className="font-semibold">{series.name}</td>
+                    <td>{series.totalBooks}</td>
+                    <td>{series.lastedBook?.name || 'trống'}</td>
+                    <td>{getDiffTimeStr(series.updatedAt)}</td>
+                    <td>{series.author?.name}</td>
+                    <td>{series.publisher?.name}</td>
+
                     <td>
-                      <div className="dropdown dropdown-bottom dropdown-end">
-                        <label
-                          tabIndex={0}
-                          className="m-1 font-bold btn btn-sm"
-                        >
-                          <BsThreeDots />
-                        </label>
-                        <ul
-                          tabIndex={0}
-                          className="p-2 gap-y-1 shadow z-10 menu menu-md dropdown-content bg-base-100 rounded-box w-52"
-                        >
-                          <li>
-                            <button
-                              className="bg-warning text-warning-content"
-                              onClick={() => handleEditClick(provider)}
-                            >
-                              <AiFillEdit />
-                              Sửa thông tin
-                            </button>
-                          </li>
-                          <li>
-                            <button
-                              className="bg-error text-error-content"
-                              onClick={() => onDelete(provider.id + '')}
-                            >
-                              <AiFillDelete />
-                              Xoá nhà cung cấp
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
+                      <button
+                        className="bg-warning btn btn-sm text-warning-content"
+                        onClick={() => handleEditClick(series)}
+                      >
+                        <AiFillEdit size={'20px'} />
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -197,7 +150,7 @@ export default function ProviderManagementIndexPage() {
             </tbody>
             <tfoot>
               <tr>
-                <th colSpan={5} className="text-center">
+                <th colSpan={THeadText.length + 1} className="text-center">
                   <Pagination
                     currentPage={currentPage}
                     totalPage={totalPages}

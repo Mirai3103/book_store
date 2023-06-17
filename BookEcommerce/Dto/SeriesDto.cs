@@ -18,7 +18,8 @@ namespace BookStore.Dto
         public BookPreviewDto? LastedBook { get; set; }
         [SwaggerSchema(ReadOnly = true)]
         public DateTime UpdatedAt { get; set; }
-        public string Slug { get; set; } = null!;
+        [SwaggerSchema(ReadOnly = true)]
+        public string Slug { get; set; } = "";
         public int AuthorId { get; set; }
         [SwaggerSchema(ReadOnly = true)]
         public AuthorDto? Author { get; set; }

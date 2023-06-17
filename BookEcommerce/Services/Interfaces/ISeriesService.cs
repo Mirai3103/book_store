@@ -5,7 +5,7 @@ using BookStore.Models;
 
 public interface ISeriesService
 {
-    Task<PaginationDto<SeriesDto>> GetAllSeriesPreviewAsync(int page, int limit);
+    Task<PaginationDto<SeriesDto>> GetAllSeriesPreviewAsync(int page, int limit, string? search = "", string? orderBy = null, bool isAscending = true);
     Task<SeriesDto?> GetSeriesDetailAsync(string slug);
     Task<SeriesDto?> GetSeriesDetailAsync(int id);
     Task<SeriesDto> CreateSeriesAsync(SeriesDto seriesDto);

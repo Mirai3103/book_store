@@ -1,10 +1,19 @@
 import { CategoryDto } from '@/types/categoryDto';
 import api from '../api';
+import { camelCaseToPascalCase } from '@client/libs/shared/src/lib/Utils';
 
 class CategoryApiService {
-  async getAllCategories(page: number, limit: number, search = '') {
+  async getAllCategories(
+    page: number,
+    limit: number,
+    search = '',
+    orderBy = 'id',
+    isAscending = true
+  ) {
     const response = await api.get(
-      `Category?page=${page}&limit=${limit}&search=${search}`
+      `Category?page=${page}&limit=${limit}&search=${search}&orderBy=${camelCaseToPascalCase(
+        orderBy
+      )}&isAscending=${isAscending}`
     );
     return response.data;
   }

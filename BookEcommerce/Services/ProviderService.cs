@@ -8,6 +8,8 @@ namespace BookStore.Services.Interfaces;
 
 using BookStore.Exceptions;
 using BookStore.Extensions;
+using Microsoft.EntityFrameworkCore;
+
 public class ProviderService : IProviderService
 {
     private readonly BookStoreContext _dbContext;
@@ -47,7 +49,7 @@ public class ProviderService : IProviderService
         return Task.FromResult(provider);
     }
 
-    public Task<PaginationDto<ProviderDto>> GetProvidersPreviewAsync(int page, int limit, string? search)
+    public Task<PaginationDto<ProviderDto>> GetProvidersPreviewAsync(int page, int limit, string? search = null, string? orderBy = null, bool isAscending = true)
     {
         var providers = _dbContext.Providers
         .Where(a => a.Name.ContainIgnoreAll(search ?? ""))
@@ -56,8 +58,19 @@ public class ProviderService : IProviderService
             Id = a.Id,
             Name = a.Name,
             TotalBooks = _dbContext.Books.Count(b => b.ProviderId == a.Id),
-        }).ToPagination(page, limit);
-        return Task.FromResult(providers);
+        });
+
+        if (isAscending)
+        {
+            providers = providers.OrderBy(p => EF.Property<object>(p, orderBy ?? nameof(Provider.Name)));
+        }
+        else
+        {
+            providers = providers.OrderByDescending(p => EF.Property<object>(p, orderBy ?? nameof(Provider.Name)));
+        }
+
+        var rs = providers.ToPagination(page, limit);
+        return Task.FromResult(rs);
     }
 
     public async Task<ProviderDto> UpdateProviderAsync(int id, ProviderDto providerDto)

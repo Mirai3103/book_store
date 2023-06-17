@@ -14,11 +14,12 @@ namespace BookStore.Controllers
             this._providerService = providerService;
         }
         [HttpGet(Name = "GetProviders")]
-        public async Task<IActionResult> GetProviders([FromQuery] int page = 1, [FromQuery] int limit = 10, [FromQuery] string? search = null)
+        public async Task<IActionResult> GetProviders([FromQuery] int page = 1, [FromQuery] int limit = 10, [FromQuery] string? search = null, [FromQuery] string? orderBy = null, [FromQuery] bool isAscending = true)
         {
-            var providers = await _providerService.GetProvidersPreviewAsync(page, limit, search);
+            var providers = await _providerService.GetProvidersPreviewAsync(page, limit, search, orderBy, isAscending);
             return Ok(providers);
         }
+
         [HttpPost(Name = "CreateProvider")]
         public async Task<IActionResult> CreateProvider([FromBody] ProviderDto providerDto)
         {

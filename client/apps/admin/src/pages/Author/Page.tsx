@@ -1,5 +1,6 @@
 import React from 'react';
 import { AuthorDto } from '@/types/authorDto';
+import { IOrderBy } from '@/types/orderByDto';
 import { PaginationDto } from '@/types/paginationDto';
 import { BsThreeDots, BsThreeDotsVertical } from 'react-icons/bs';
 import { AiFillDelete, AiFillEdit, AiOutlinePlus } from 'react-icons/ai';
@@ -12,6 +13,8 @@ import CreateFormModal from './CreateFormModal';
 import { useNotification } from '@shared/toast';
 import EditFormModal from './EditFormModal';
 import { useDebounceState, usePagination } from '@shared/hooks';
+import { BiCaretDown, BiCaretUp } from 'react-icons/bi';
+import { THeadText } from './Data';
 export default function AuthorManagementIndexPage() {
   const { currentPage, onChangePage, setTotalPages, totalPages } =
     usePagination();
@@ -19,9 +22,26 @@ export default function AuthorManagementIndexPage() {
   const { createConfirmDialog } = useDialog();
   const [isOpenCreateDialog, toggleOpenCreateDialog] = useToggle(false);
   const [isOpenEditDialog, toggleOpenEditDialog] = useToggle(false);
+  const [order, setOrder] = React.useState<IOrderBy<AuthorDto>>({
+    orderBy: 'id',
+    isAscending: true,
+  });
   const { isLoading, data, refetch } = useQuery<PaginationDto<AuthorDto>>({
-    queryKey: ['author', currentPage, keyword],
-    queryFn: () => authorApiService.getAllAuthors(currentPage, 16, keyword),
+    queryKey: [
+      'author',
+      currentPage,
+      keyword,
+      order.orderBy,
+      order.isAscending,
+    ],
+    queryFn: () =>
+      authorApiService.getAllAuthors(
+        currentPage,
+        16,
+        keyword,
+        order.orderBy,
+        order.isAscending
+      ),
   });
   const { show } = useNotification();
   const [selectedData, setSelectedData] = React.useState<AuthorDto>();
@@ -95,10 +115,29 @@ export default function AuthorManagementIndexPage() {
           <table className="table table-md">
             <thead>
               <tr className="font-medium text-xl">
-                <th>Mã tác giả</th>
-                <th>Tên tác giả</th>
-                <th>Giới thiệu</th>
-                <th>Tổng số sách</th>
+                {THeadText.map((item) => (
+                  <th
+                    onClick={() => {
+                      item.withOrder &&
+                        setOrder({
+                          orderBy: item.key,
+                          isAscending: !order.isAscending,
+                        });
+                    }}
+                    className={item.withOrder ? 'cursor-pointer' : ''}
+                  >
+                    {item.label}
+                    {order.orderBy === item.key ? (
+                      order.isAscending ? (
+                        <BiCaretUp className="inline-block ml-2" />
+                      ) : (
+                        <BiCaretDown className="inline-block ml-2" />
+                      )
+                    ) : (
+                      ''
+                    )}
+                  </th>
+                ))}
                 <th>Thao tác</th>
               </tr>
             </thead>
@@ -116,7 +155,7 @@ export default function AuthorManagementIndexPage() {
                   <tr className="hover" key={author.id}>
                     <td>{author.id}</td>
                     <td className="font-semibold">{author.name}</td>
-                    <td className="truncate">{author.description}</td>
+                    <td>{author.description}</td>
                     <td>{author.totalBooks}</td>
                     <td>
                       <div className="dropdown dropdown-bottom dropdown-end">

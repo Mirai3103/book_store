@@ -1,13 +1,19 @@
-import daisyuiPlugin from 'daisyui';
-
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./apps/**/*.{html,ts,tsx,css}', './libs/**/*.{html,ts,tsx,css}'],
+  content: [
+    './apps/**/*.{html,ts,tsx,css,js,jsx}',
+    './libs/**/*.{html,ts,tsx,css,js,jsx}',
+  ],
   darkMode: 'class', // or 'media' or 'class'
   theme: {
     extend: {},
   },
-  plugins: [daisyuiPlugin],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@headlessui/tailwindcss')({ prefix: 'ui' }),
+
+    require('daisyui'),
+  ],
   daisyui: {
     // true: all themes | false: only light + dark | array: specific themes like this ["light", "dark", "cupcake"]
     darkTheme: 'dracula', // name of one of the included themes for dark mode

@@ -41,7 +41,7 @@ public class CategoryService : ICategoryService
         await _context.SaveChangesAsync();
     }
 
-    public Task<PaginationDto<CategoryDto>> GetCategoriesPreviewAsync(int page, int limit, string? search = null)
+    public Task<PaginationDto<CategoryDto>> GetCategoriesPreviewAsync(int page, int limit, string? search = null, string? orderBy = null, bool isAscending = true)
     {
         var categories = from c in _context.Categories
                          where search == null || c.Name.ContainIgnoreAll(search)
@@ -50,9 +50,18 @@ public class CategoryService : ICategoryService
                              Id = c.Id,
                              Name = c.Name,
                              Description = c.Description,
-                             TotalBooks = c.Books.Count(),
+                             TotalBooks = _context.Books.Count(b => b.CategoryId == c.Id)
                          };
-        var categoriesPagination = categories.ToPagination<CategoryDto>(page, limit);
+        if (isAscending)
+        {
+            categories = categories.OrderBy(a => EF.Property<object>(a, orderBy ?? nameof(CategoryDto.Id)));
+        }
+        else
+        {
+            categories = categories.OrderByDescending(a => EF.Property<object>(a, orderBy ?? nameof(CategoryDto.Id)));
+        }
+        var categoriesPagination = categories.
+        ToPagination<CategoryDto>(page, limit);
         return Task.FromResult(categoriesPagination);
     }
 

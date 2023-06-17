@@ -12,9 +12,9 @@ namespace BookStore.Models
         public int BookId { get; set; }
 
         [ForeignKey("BookId")]
-        public Book Book { get; set; }
+        public Book? Book { get; set; }
 
         [DataType(DataType.ImageUrl)]
-        public string Url { get; set; }
+        public string Url { get; set; } = null!;
     }
 }

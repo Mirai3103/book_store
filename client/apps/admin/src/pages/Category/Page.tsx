@@ -13,6 +13,9 @@ import CreateFormModal from './CreateFormModal';
 import { useNotification } from '@shared/toast';
 import EditFormModal from './EditFormModal';
 import { useDebounceState, usePagination } from '@shared/hooks';
+import { IOrderBy } from '@/types/orderByDto';
+import { THeadText } from './Data';
+import { BiCaretDown, BiCaretUp } from 'react-icons/bi';
 export default function CategoryManagementIndexPage() {
   const { currentPage, onChangePage, setTotalPages, totalPages } =
     usePagination();
@@ -20,10 +23,26 @@ export default function CategoryManagementIndexPage() {
   const { createConfirmDialog } = useDialog();
   const [isOpenCreateDialog, toggleOpenCreateDialog] = useToggle(false);
   const [isOpenEditDialog, toggleOpenEditDialog] = useToggle(false);
+  const [order, setOrder] = React.useState<IOrderBy<CategoryDto>>({
+    orderBy: 'id',
+    isAscending: true,
+  });
   const { isLoading, data, refetch } = useQuery<PaginationDto<CategoryDto>>({
-    queryKey: ['categories', currentPage, keyword],
+    queryKey: [
+      'categories',
+      currentPage,
+      keyword,
+      order.orderBy,
+      order.isAscending,
+    ],
     queryFn: () =>
-      categoryApiService.getAllCategories(currentPage, 16, keyword),
+      categoryApiService.getAllCategories(
+        currentPage,
+        16,
+        keyword,
+        order.orderBy,
+        order.isAscending
+      ),
   });
   const { show } = useNotification();
   const [selectedData, setSelectedData] = React.useState<CategoryDto>();
@@ -97,10 +116,30 @@ export default function CategoryManagementIndexPage() {
           <table className="table table-md">
             <thead>
               <tr className="font-medium text-xl">
-                <th>Mã danh mục</th>
-                <th>Tên danh mục</th>
-                <th>Giới thiệu</th>
-                <th>Tổng số sách</th>
+                {THeadText.map((item) => (
+                  <th
+                    key={item.key}
+                    onClick={() => {
+                      item.withOrder &&
+                        setOrder({
+                          orderBy: item.key,
+                          isAscending: !order.isAscending,
+                        });
+                    }}
+                    className={item.withOrder ? 'cursor-pointer' : ''}
+                  >
+                    {item.label}
+                    {order.orderBy === item.key ? (
+                      order.isAscending ? (
+                        <BiCaretUp className="inline-block ml-2" />
+                      ) : (
+                        <BiCaretDown className="inline-block ml-2" />
+                      )
+                    ) : (
+                      ''
+                    )}
+                  </th>
+                ))}
                 <th>Thao tác</th>
               </tr>
             </thead>
@@ -118,7 +157,7 @@ export default function CategoryManagementIndexPage() {
                   <tr className="hover" key={category.id}>
                     <td>{category.id}</td>
                     <td className="font-semibold">{category.name}</td>
-                    <td className="truncate">{category.description}</td>
+                    <td>{category.description}</td>
                     <td>{category.totalBooks}</td>
                     <td>
                       <div className="dropdown dropdown-bottom dropdown-end">

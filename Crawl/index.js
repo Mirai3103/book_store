@@ -53,16 +53,11 @@ async function main() {
     const query = `SELECT id FROM series`;
     const [rows] = await newDatabaseConnection.query(query);
     for (const row of rows) {
-        const getOldestBookQuery = `SELECT * FROM books WHERE seriesId = ? ORDER BY createdAt ASC LIMIT 1`;
-        const [oldestBookRows] = await newDatabaseConnection.query(getOldestBookQuery, [row.id]);
+        const getNewestBookQuery = `SELECT * FROM books WHERE seriesId = ? ORDER BY createdAt DESC LIMIT 1`;
+        const [oldestBookRows] = await newDatabaseConnection.query(getNewestBookQuery, [row.id]);
         const oldestBook = oldestBookRows[0];
-        const updateQuery = `UPDATE series SET createdAt = ?, AuthorId = ?, PublisherId = ? WHERE id = ?`;
-        await newDatabaseConnection.query(updateQuery, [
-            oldestBook.CreatedAt,
-            oldestBook.AuthorId,
-            oldestBook.PublisherId,
-            row.id,
-        ]);
+        const updateQuery = `UPDATE series SET UpdatedAt = ? WHERE id = ?`;
+        await newDatabaseConnection.query(updateQuery, [oldestBook.CreatedAt, row.id]);
     }
 }
 

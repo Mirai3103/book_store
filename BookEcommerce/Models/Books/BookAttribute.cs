@@ -7,7 +7,7 @@ namespace BookStore.Models
     public class BookAttribute
     {
         public int BookId { get; set; }
-        [ForeignKey("BookId")] public Book Book { get; set; } = null!;
+        [ForeignKey("BookId")] public Book? Book { get; set; }
         [Required]
         [MaxLength(50)]
 
