@@ -2,21 +2,13 @@ import seriesApiService from '@/Utils/Services/seriesApiService';
 import TextArea from '@/components/TextArea';
 import TextInput from '@/components/TextInput';
 import { useNotification } from '@shared/toast';
-import ComboBox from '@shared/combobox';
-import { CreateSeriesDto, SeriesDto } from '@/types/seriesDto';
-import React, { Fragment } from 'react';
+import { CreateSeriesDto } from '@/types/seriesDto';
+import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation, useQuery } from 'react-query';
-import { useDebounceState } from '@client/libs/shared/src/lib/hooks';
-import authorApiService from '@/Utils/Services/authorApiService';
-import publisherApiService from '@/Utils/Services/publisherApiService';
-import { AuthorDto } from '@/types/authorDto';
-import { PaginationDto } from '@/types/paginationDto';
-import { MdOutlineCheckCircleOutline } from 'react-icons/md';
-import { BiChevronDown } from 'react-icons/bi';
-import { PublisherDto } from '@/types/publisherDto';
-import AuthorComboBox from './AuthorComboBox';
-import PublisherCombobox from './PublisherCombobox';
+import { useMutation } from 'react-query';
+
+import AuthorComboBox from '@components/AuthorComboBox';
+import PublisherCombobox from '@components/PublisherCombobox';
 interface IProps {
   isOpen: boolean;
   toggle: () => void;
@@ -69,14 +61,18 @@ export default function CreateFormModal({ isOpen, toggle }: IProps) {
             />
             <AuthorComboBox
               onChange={(value) => {
-                setValue('authorId', Number(value));
+                setValue('authorId', Number(value), {
+                  shouldValidate: true,
+                });
               }}
               value={getValues('authorId')}
             ></AuthorComboBox>
 
             <PublisherCombobox
               onChange={(value) => {
-                setValue('publisherId', Number(value));
+                setValue('publisherId', Number(value), {
+                  shouldValidate: true,
+                });
               }}
               value={getValues('publisherId')}
             ></PublisherCombobox>

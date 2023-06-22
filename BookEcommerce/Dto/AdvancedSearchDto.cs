@@ -1,16 +1,6 @@
 namespace BookStore.Dto;
 using BookStore.Models;
 
-public enum BookSortType
-{
-    WeekBestSeller,
-    MonthBestSeller,
-    YearBestSeller,
-    Newest,
-    Oldest,
-    PriceAsc,
-    PriceDesc,
-}
 
 public class AdvancedSearchDto
 {
@@ -21,9 +11,11 @@ public class AdvancedSearchDto
     public int? minPrice { get; set; }
     public int? maxPrice { get; set; }
     public int? providerId { get; set; }
-    public BookSortType sort { get; set; } = BookSortType.Newest;
+    public string sortBy { get; set; } = "Id";
+    public bool isAsc { get; set; } = true;
+    public int? seriesId { get; set; }
 
-    public AdvancedSearchDto(string? keyword, int? categoryId, int? authorId, int? publisherId, int? minPrice, int? maxPrice, int? providerId, BookSortType sort)
+    public AdvancedSearchDto(string? keyword, int? categoryId, int? authorId, int? publisherId, int? minPrice, int? maxPrice, int? providerId, string sortBy, bool isAsc, int? seriesId)
     {
         this.keyword = keyword;
         this.categoryId = categoryId;
@@ -32,7 +24,9 @@ public class AdvancedSearchDto
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.providerId = providerId;
-        this.sort = sort;
+        this.sortBy = sortBy;
+        this.isAsc = isAsc;
+        this.seriesId = seriesId;
     }
 
     public AdvancedSearchDto()

@@ -12,7 +12,7 @@ import CreateFormModal from './CreateFormModal';
 import { useNotification } from '@shared/toast';
 import EditFormModal from './EditFormModal';
 import { useDebounceState, usePagination } from '@shared/hooks';
-import { IOrderBy } from '@/types/orderByDto';
+import { OrderByDto as IOrderBy } from '@/types/orderByDto';
 import { THeadText } from './Data';
 import { BiCaretDown, BiCaretUp } from 'react-icons/bi';
 export default function PublisherManagementIndexPage() {

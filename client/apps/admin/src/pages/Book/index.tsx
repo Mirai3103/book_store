@@ -1,24 +1,26 @@
-import React from 'react';
-import { Switch } from '@headlessui/react';
+import { RouteObject } from 'react-router-dom';
+import BookManagementIndexPage from './Page';
+import CreateNewBookPage from './CreateNewBook';
+import EditBookPage from './EditBook';
+import EditBookImage from './EditBookImage';
 
-export default function BookManagementIndexPage() {
-  const [enabled, setEnabled] = React.useState(false);
-  return (
-    <div>
-      <Switch
-        checked={enabled}
-        onChange={setEnabled}
-        className={`${
-          enabled ? 'bg-blue-600' : 'bg-gray-200'
-        } relative inline-flex h-6 w-11 items-center rounded-full`}
-      >
-        <span className="sr-only">Enable notifications</span>
-        <span
-          className={`${
-            enabled ? 'translate-x-6' : 'translate-x-1'
-          } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-        />
-      </Switch>
-    </div>
-  );
-}
+const routes: RouteObject[] = [
+  {
+    path: 'book',
+    element: <BookManagementIndexPage />,
+  },
+  {
+    path: 'book/create',
+    element: <CreateNewBookPage />,
+  },
+  {
+    path: 'book/edit/:id',
+    element: <EditBookPage />,
+  },
+  {
+    path: 'book/edit/:id/image',
+    element: <EditBookImage />,
+  },
+];
+
+export default routes;

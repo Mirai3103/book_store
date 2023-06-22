@@ -141,7 +141,7 @@ namespace BookStore.Migrations
 
                     b.HasKey("BookId", "AttributeName");
 
-                    b.ToTable("BookAttribute");
+                    b.ToTable("BookAttributes");
                 });
 
             modelBuilder.Entity("BookStore.Models.BookImage", b =>

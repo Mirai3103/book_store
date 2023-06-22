@@ -15,7 +15,6 @@ export interface SeriesDto {
   publisherId: number;
   publisher: PublisherDto | null;
 }
-
 export type CreateSeriesDto = Omit<
   SeriesDto,
   | 'id'

@@ -25,6 +25,7 @@ namespace BookStore.Data
         public DbSet<Series> Series { get; set; }
         public DbSet<Provider> Providers { get; set; }
         public DbSet<BookImage> BookImages { get; set; }
+        public DbSet<BookAttribute> BookAttributes { get; set; }
 
         public override DatabaseFacade Database => base.Database;
 

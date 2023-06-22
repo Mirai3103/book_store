@@ -32,6 +32,9 @@ namespace BookStore
             builder.Services.AddTransient<IPublisherService, PublisherService>();
             builder.Services.AddTransient<ISeriesService, SeriesService>();
             builder.Services.AddTransient<IProviderService, ProviderService>();
+            builder.Services.AddTransient<IFileService, FileService>();
+            builder.Services.AddTransient<IBookImageService, BookImageService>();
+            builder.Services.AddTransient<IBookAttributeService, BookAttributeService>();
 
             var app = builder.Build();
 

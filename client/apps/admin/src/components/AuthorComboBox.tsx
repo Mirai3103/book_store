@@ -10,14 +10,23 @@ export interface AuthorComboBoxProps {
   onChange: (value: number | string | undefined | null) => void;
   value: number | string | undefined | null;
   defaultSearchValue?: string;
+  label?: string;
+  required?: boolean;
+  placeholder?: string;
 }
 
 export default function AuthorComboBox({
   onChange,
   value,
   defaultSearchValue,
+  required,
+  label = 'Tác giả',
+  placeholder = 'Tìm kiếm tác giả',
 }: AuthorComboBoxProps) {
-  const [authorKeyword, setAuthorKeyword] = useDebounceState('', 500);
+  const [authorKeyword, setAuthorKeyword, keywordUnDebounce] = useDebounceState(
+    defaultSearchValue || '',
+    500
+  );
   const { data: authors, isLoading: fetchAuthorsLoading } = useQuery<
     AuthorDto,
     any,
@@ -38,14 +47,15 @@ export default function AuthorComboBox({
         authors?.items?.find((x) => x.id === id)?.name || ''
       }
       getValue={(item) => item.id}
-      inputValue={authorKeyword}
+      inputValue={keywordUnDebounce}
       onChange={onChange}
       value={value}
       onInputChange={(e) => {
         setAuthorKeyword(e.target.value);
       }}
-      placeholder="Tìm kiếm tác giả"
-      label="Tác giả"
+      required={required}
+      placeholder={placeholder}
+      label={label}
     ></ComboBox>
   );
 }

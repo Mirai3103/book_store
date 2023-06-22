@@ -57,5 +57,10 @@ namespace BookStore.Models
         public DateTime? DeletedAt { get; set; } = null;
         public virtual ICollection<BookAttribute> BookAttributes { get; set; } = null!;
         public virtual ICollection<BookImage> BookImages { get; set; } = null!;
+        public Book()
+        {
+            BookAttributes = new HashSet<BookAttribute>();
+            BookImages = new HashSet<BookImage>();
+        }
     }
 }

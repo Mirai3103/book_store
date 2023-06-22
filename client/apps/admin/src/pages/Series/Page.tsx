@@ -1,14 +1,13 @@
 import React from 'react';
 import { SeriesDto } from '@/types/seriesDto';
 import { PaginationDto } from '@/types/paginationDto';
-import { BsThreeDots, BsThreeDotsVertical } from 'react-icons/bs';
-import { AiFillDelete, AiFillEdit, AiOutlinePlus } from 'react-icons/ai';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { AiFillEdit, AiOutlinePlus } from 'react-icons/ai';
 import Pagination from '@/components/Pagination';
 import seriesApiService from '@/Utils/Services/seriesApiService';
 import { useQuery } from 'react-query';
-import { useNotification } from '@shared/toast';
 import { useDebounceState, usePagination } from '@shared/hooks';
-import { IOrderBy } from '@/types/orderByDto';
+import { OrderByDto } from '@/types/orderByDto';
 import { THeadText } from './Data';
 import { BiCaretDown, BiCaretUp } from 'react-icons/bi';
 import { getDiffTimeStr } from '@client/libs/shared/src/lib/Utils';
@@ -20,7 +19,7 @@ export default function SeriesManagementIndexPage() {
     usePagination();
   const [keyword, setKeyword] = useDebounceState('', 2000);
   const navigate = useNavigate();
-  const [order, setOrder] = React.useState<IOrderBy<SeriesDto>>({
+  const [order, setOrder] = React.useState<OrderByDto<SeriesDto>>({
     orderBy: 'id',
     isAscending: true,
   });

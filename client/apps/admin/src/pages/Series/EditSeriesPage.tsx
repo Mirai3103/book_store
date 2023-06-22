@@ -1,14 +1,13 @@
 import seriesApiService from '@/Utils/Services/seriesApiService';
 import TextInputWithRef from '@/components/TextInput';
-import { CreateSeriesDto, SeriesDto, UpdateSeriesDto } from '@/types/seriesDto';
+import { SeriesDto, UpdateSeriesDto } from '@/types/seriesDto';
 import { useNotification } from '@client/libs/shared/src/lib/toast';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
-import AuthorComboBox from './AuthorComboBox';
-import PublisherCombobox from './PublisherCombobox';
-import TextAreaWithRef from '@/components/TextArea';
+import AuthorComboBox from '../../components/AuthorComboBox';
+import PublisherCombobox from '@/components/PublisherCombobox';
 export default function EditSeriesPage() {
   // path: '/Series/edit/:id',
   const id = useParams().id;
@@ -22,11 +21,12 @@ export default function EditSeriesPage() {
     error,
     mutate,
   } = useMutation({
-    mutationFn: (createSeriesDto: CreateSeriesDto) => {
-      return {} as any;
+    mutationFn: (updateSeriesDto: UpdateSeriesDto) => {
+      return seriesApiService.updateSeries(Number(id), updateSeriesDto);
     },
     onSuccess: () => {
       show({ message: 'Đã sửa bộ sách', type: 'success' });
+      navigate(-1);
     },
   });
   const {
@@ -39,21 +39,23 @@ export default function EditSeriesPage() {
   } = useForm<UpdateSeriesDto, any, UpdateSeriesDto>({
     defaultValues: {
       name: '',
-      description: '',
     },
   });
   const navigate = useNavigate();
   const onSubmit = (data: UpdateSeriesDto) => {
-    console.log({ data });
-    // mutate(data);
+    mutate(data);
   };
 
   React.useEffect(() => {
     if (data) {
       setValue('name', data.name);
       setValue('description', data.description);
-      setValue('authorId', data.author!.id);
-      setValue('publisherId', data.publisher!.id);
+      setValue('authorId', data.author!.id, {
+        shouldValidate: true,
+      });
+      setValue('publisherId', data.publisher!.id, {
+        shouldValidate: true,
+      });
     }
   }, [data, setValue]);
 
@@ -80,12 +82,14 @@ export default function EditSeriesPage() {
             {...register('name', {
               required: true,
               minLength: 3,
-              maxLength: 50,
+              maxLength: 255,
             })}
           />
           <AuthorComboBox
             onChange={(value) => {
-              setValue('authorId', Number(value));
+              setValue('authorId', Number(value), {
+                shouldValidate: true,
+              });
             }}
             value={getValues('authorId')}
             defaultSearchValue={data?.author?.name}
@@ -93,18 +97,13 @@ export default function EditSeriesPage() {
 
           <PublisherCombobox
             onChange={(value) => {
-              setValue('publisherId', Number(value));
+              setValue('publisherId', Number(value), {
+                shouldValidate: true,
+              });
             }}
             value={getValues('publisherId')}
             defaultSearchValue={data?.publisher?.name}
           ></PublisherCombobox>
-
-          <TextAreaWithRef
-            label="Chú thích"
-            className="textarea textarea-bordered h-24"
-            placeholder="Chú thích"
-            {...register('description', { required: false })}
-          ></TextAreaWithRef>
         </div>
         <div className="flex justify-end gap-x-4">
           <button
@@ -116,7 +115,11 @@ export default function EditSeriesPage() {
           >
             Quay lại
           </button>
-          <button className="btn btn-primary" disabled={isLoadingEdit}>
+          <button
+            className="btn btn-primary"
+            disabled={isLoadingEdit}
+            type="submit"
+          >
             {isLoadingEdit ? 'Đang lưu' : 'Lưu thay đổi'}
           </button>
         </div>

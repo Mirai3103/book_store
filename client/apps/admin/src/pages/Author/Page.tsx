@@ -1,6 +1,6 @@
 import React from 'react';
 import { AuthorDto } from '@/types/authorDto';
-import { IOrderBy } from '@/types/orderByDto';
+import { OrderByDto as IOrderBy } from '@/types/orderByDto';
 import { PaginationDto } from '@/types/paginationDto';
 import { BsThreeDots, BsThreeDotsVertical } from 'react-icons/bs';
 import { AiFillDelete, AiFillEdit, AiOutlinePlus } from 'react-icons/ai';
@@ -117,6 +117,7 @@ export default function AuthorManagementIndexPage() {
               <tr className="font-medium text-xl">
                 {THeadText.map((item) => (
                   <th
+                    key={item.key}
                     onClick={() => {
                       item.withOrder &&
                         setOrder({

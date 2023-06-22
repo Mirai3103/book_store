@@ -1,6 +1,6 @@
 import { camelCaseToPascalCase } from '@client/libs/shared/src/lib/Utils';
 import api from '../api';
-import { CreateSeriesDto, SeriesDto } from '@/types/seriesDto';
+import { CreateSeriesDto, SeriesDto, UpdateSeriesDto } from '@/types/seriesDto';
 
 class SeriesApiService {
   async createSeries(createSeriesDto: CreateSeriesDto): Promise<SeriesDto> {
@@ -25,6 +25,14 @@ class SeriesApiService {
     const res = await api.get(`Series/${id}`);
     return res.data;
   }
+  public async updateSeries(
+    id: number,
+    updateSeriesDto: UpdateSeriesDto
+  ): Promise<SeriesDto> {
+    const res = await api.put(`Series/${id}`, updateSeriesDto);
+    return res.data;
+  }
+
   public async deleteSeries(id: number): Promise<void> {
     const res = await api.delete(`Series/${id}`);
     return res.data;

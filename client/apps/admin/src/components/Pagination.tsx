@@ -33,7 +33,6 @@ function PageItem({ index, current, onPageChange }: PageItemProps) {
 }
 
 function Pagination({ totalPage, currentPage, onPageChange }: PaginationProps) {
-  console.log('render pagination');
   if (totalPage <= 8) {
     return (
       <nav aria-label="Page navigation example">

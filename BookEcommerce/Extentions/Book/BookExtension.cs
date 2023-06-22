@@ -20,10 +20,7 @@ public static class BookExtensions
             book.CreatedAt
         );
     }
-    public static IQueryable<Book> SetupQuery(this IQueryable<Book> books)
-    {
-        return books.Where(b => b.DeletedAt == null);
-    }
+
     public static IQueryable<Book> IncludeDetailQuery(this IQueryable<Book> books)
     {
         return books
@@ -33,6 +30,7 @@ public static class BookExtensions
         .Include(b => b.BookAttributes)
         .Include(b => b.BookImages)
         .Include(b => b.Series)
+        .Include(b => b.Provider)
         .AsNoTracking();
     }
     public static BookDto SelectDetail(this Book book)
@@ -65,26 +63,16 @@ public static class BookExtensions
             PublisherId = book.PublisherId,
         };
     }
-    public static IQueryable<Book> SortBy(this IQueryable<Book> books, BookSortType sortType)
+    public static IQueryable<Book> SortBy(this IQueryable<Book> books, string sortBy = "Id", bool isAsc = true)
     {
-        switch (sortType)
+        if (isAsc)
         {
-            case BookSortType.Newest:
-                return books.OrderByDescending(b => b.CreatedAt);
-            case BookSortType.Oldest:
-                return books.OrderBy(b => b.CreatedAt);
-            case BookSortType.PriceAsc:
-                return books.OrderBy(b => b.Price);
-            case BookSortType.PriceDesc:
-                return books.OrderByDescending(b => b.Price);
-            case BookSortType.MonthBestSeller:
-                return books.OrderBy(b => b.Name);
-            case BookSortType.WeekBestSeller:
-                return books.OrderByDescending(b => b.Name);
-            case BookSortType.YearBestSeller:
-                return books.OrderByDescending(b => b.Name);
-            default:
-                return books.OrderByDescending(b => b.CreatedAt);
+            books.OrderBy(b => EF.Property<object>(b, sortBy) ?? b.Id);
         }
+        else
+        {
+            books.OrderByDescending(b => EF.Property<object>(b, sortBy) ?? b.Id);
+        }
+        return books;
     }
 }

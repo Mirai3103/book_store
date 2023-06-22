@@ -45,9 +45,15 @@ export default function EditFormModal({ isOpen, toggle, oldData }: IProps) {
   };
   React.useEffect(() => {
     if (oldData) {
-      setValue('id', oldData.id);
-      setValue('name', oldData.name);
-      setValue('description', oldData.description);
+      setValue('id', oldData.id, {
+        shouldValidate: true,
+      });
+      setValue('name', oldData.name, {
+        shouldValidate: true,
+      });
+      setValue('description', oldData.description, {
+        shouldValidate: true,
+      });
     }
   }, [oldData, setValue]);
   return (

@@ -1,4 +1,4 @@
-export interface IOrderBy<T> {
-  isAscending: boolean;
+export interface OrderByDto<T> {
   orderBy: keyof T;
+  isAscending: boolean;
 }

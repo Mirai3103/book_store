@@ -27,3 +27,36 @@ export function getDiffTimeStr(date: Date | string): string {
   }
   return `${diffYears} năm trước`;
 }
+
+export function toCurrencyFormat(price: number): string {
+  return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
+
+export function toFullTimeFormat(date: Date | string): string {
+  return new Date(date).toLocaleString('vi-VN');
+}
+
+export function imageURLToBlob(url: string): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onerror = reject;
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        resolve(xhr.response);
+      }
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+  });
+}
+
+export function getServerImageURL(fileName: string | undefined | null): string {
+  if (!fileName) {
+    return '';
+  }
+  if (fileName.startsWith('http') || fileName.startsWith('blob')) {
+    return fileName;
+  }
+  return `api/File/${fileName}`;
+}
