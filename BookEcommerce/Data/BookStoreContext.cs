@@ -26,14 +26,11 @@ namespace BookStore.Data
         public DbSet<Provider> Providers { get; set; }
         public DbSet<BookImage> BookImages { get; set; }
         public DbSet<BookAttribute> BookAttributes { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<User> Users { get; set; }
 
-        public override DatabaseFacade Database => base.Database;
 
-        public override ChangeTracker ChangeTracker => base.ChangeTracker;
-
-        public override IModel Model => base.Model;
-
-        public override DbContextId ContextId => base.ContextId;
 
         protected BookStoreContext() : base()
         {

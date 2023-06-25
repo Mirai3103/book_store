@@ -16,12 +16,13 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import {
   AiOutlineClear,
   AiOutlineClose,
+  AiOutlineDelete,
   AiOutlineEdit,
   AiOutlineFileImage,
   AiOutlineSave,
 } from 'react-icons/ai';
 import { useMutation, useQuery } from 'react-query';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 type CreateBookDTOFormFields = CreateBookDto & {
   attributeName: string;
@@ -78,6 +79,7 @@ export default function EditBookPage() {
     queryKey: ['book', id],
     queryFn: () => bookApiService.getBookDetail(id),
   });
+  const navigate = useNavigate();
   React.useEffect(() => {
     if (isFetched && book) {
       reset({
@@ -318,6 +320,24 @@ export default function EditBookPage() {
           </table>
         </fieldset>
         <div className="flex justify-end gap-4">
+          <button
+            type="button"
+            className="btn  btn-error mr-2"
+            onClick={() => {
+              bookApiService.deleteBook(book!.id + '').then(() => {
+                toast.show({
+                  message: 'Xóa sách thành công',
+                  type: 'success',
+                  duration: 3000,
+                });
+                navigate('/book');
+              });
+            }}
+          >
+            <AiOutlineDelete size={24} className="mr-2" />
+            Xóa sách
+          </button>
+
           <button
             type="reset"
             className="btn btn-outline mr-2"

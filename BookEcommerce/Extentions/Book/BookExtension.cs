@@ -67,12 +67,11 @@ public static class BookExtensions
     {
         if (isAsc)
         {
-            books.OrderBy(b => EF.Property<object>(b, sortBy) ?? b.Id);
+            return books.OrderBy(b => EF.Property<object>(b, sortBy) ?? b.Id);
         }
         else
         {
-            books.OrderByDescending(b => EF.Property<object>(b, sortBy) ?? b.Id);
+            return books.OrderByDescending(b => EF.Property<object>(b, sortBy) ?? b.Id);
         }
-        return books;
     }
 }

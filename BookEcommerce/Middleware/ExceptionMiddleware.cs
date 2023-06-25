@@ -43,7 +43,7 @@ public class ExceptionMiddleware
 }
 public static class ExceptionMiddlewareExtensions
 {
-    public static void UseExceptionMiddleware(this WebApplication app)
+    public static void UseExceptionMiddleware(this IApplicationBuilder app)
     {
         app.UseMiddleware<ExceptionMiddleware>();
     }

@@ -1,3 +1,4 @@
+using BookStore.Attributes;
 using BookStore.Dto;
 using BookStore.Exceptions;
 using BookStore.Services.Interfaces;
@@ -62,6 +63,15 @@ namespace BookStore.Controllers
         {
             await _bookImageService.UpdateBookImageAsync(id, images);
             return Ok();
+        }
+        [WithPermission("DeleteBook")]
+
+        [HttpDelete("{id}", Name = "DeleteBook")]
+        public async Task<IActionResult> DeleteBook(int id)
+        {
+            var header = Request.Headers["Authorization"];
+            // await _bookService.DeleteBookAsync(id);
+            return NoContent();
         }
     }
 }

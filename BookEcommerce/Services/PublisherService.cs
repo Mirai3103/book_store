@@ -4,7 +4,8 @@ using BookStore.Data;
 using BookStore.Dto;
 using BookStore.Models;
 
-namespace BookStore.Services.Interfaces;
+namespace BookStore.Services;
+using BookStore.Services.Interfaces;
 
 using BookStore.Exceptions;
 using BookStore.Extensions;

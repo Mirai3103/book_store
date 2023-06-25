@@ -31,7 +31,7 @@ class BookApiService {
       .addParam('minPrice', minPrice)
       .addParam('providerId', providerId)
       .addParam('publisherId', publisherId)
-      .addParam('sort', camelCaseToPascalCase(sortBy))
+      .addParam('sortBy', camelCaseToPascalCase(sortBy))
       .addParam('isAsc', isAsc + '')
       .addParam('page', page)
       .addParam('limit', limit)
@@ -76,6 +76,10 @@ class BookApiService {
         'Content-Type': 'multipart/form-data',
       },
     });
+    return response.data;
+  }
+  public async deleteBook(id: string) {
+    const response = await api.delete(`Book/${id}`);
     return response.data;
   }
 }

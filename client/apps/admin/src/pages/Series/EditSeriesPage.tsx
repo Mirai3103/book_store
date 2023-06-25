@@ -69,7 +69,17 @@ export default function EditSeriesPage() {
         <h1 className="font-semibold text-2xl">
           Sửa bộ truyện <span className="font-bold">{data?.name}</span>
         </h1>
-        <button className="btn btn-error">Xoá bộ truyện</button>
+        <button
+          className="btn btn-error"
+          onClick={() => {
+            seriesApiService.deleteSeries(Number(id)).then(() => {
+              show({ message: 'Đã xóa bộ truyện', type: 'success' });
+              navigate('/Series');
+            });
+          }}
+        >
+          Xoá bộ truyện
+        </button>
       </div>
       <form className="flex px-10 flex-col" onSubmit={handleSubmit(onSubmit)}>
         <div className="py-4">
@@ -109,9 +119,10 @@ export default function EditSeriesPage() {
           <button
             className="btn"
             onClick={() => {
-              navigate(-1);
+              navigate('/Series');
             }}
             disabled={isLoading}
+            type="button"
           >
             Quay lại
           </button>

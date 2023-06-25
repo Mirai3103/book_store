@@ -4,7 +4,8 @@ using BookStore.Data;
 using BookStore.Dto;
 using BookStore.Models;
 
-namespace BookStore.Services.Interfaces;
+namespace BookStore.Services;
+using BookStore.Services.Interfaces;
 using BookStore.Utils;
 using System.Threading.Tasks;
 using BookStore.Exceptions;
@@ -81,11 +82,11 @@ public class SeriesService : ISeriesService
         );
         if (isAscending)
         {
-            series = series.OrderBy(s => s.UpdatedAt);
+            series = series.OrderBy(s => EF.Property<object>(s, orderBy ?? "UpdatedAt"));
         }
         else
         {
-            series = series.OrderByDescending(s => s.UpdatedAt);
+            series = series.OrderByDescending(s => EF.Property<object>(s, orderBy ?? "UpdatedAt"));
         }
         var result = series.ToPagination(page, limit);
         return await Task.FromResult(result);

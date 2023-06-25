@@ -17,7 +17,6 @@ namespace BookStore.Controllers
         [HttpGet(Name = "GetAllSeries")]
         public async Task<IActionResult> GetAllSeries([FromQuery] int page = 1, [FromQuery] int limit = 10, [FromQuery] string? search = null, [FromQuery] string? orderBy = null, [FromQuery] bool isAscending = true)
         {
-
             var series = await _seriesService.GetAllSeriesPreviewAsync(page, limit, search, orderBy, isAscending);
             return Ok(series);
         }

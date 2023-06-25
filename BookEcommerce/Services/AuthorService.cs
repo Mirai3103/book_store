@@ -4,11 +4,12 @@ using BookStore.Data;
 using BookStore.Dto;
 using BookStore.Models;
 
-namespace BookStore.Services.Interfaces;
+namespace BookStore.Services;
 
 using BookStore.Exceptions;
 using BookStore.Extensions;
 using Microsoft.EntityFrameworkCore;
+using BookStore.Services.Interfaces;
 
 public class AuthorService : IAuthorService
 {

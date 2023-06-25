@@ -10,6 +10,7 @@ using BookStore.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using BookStore.Utils;
 using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 
 public class BookService : IBookService
 {
@@ -65,10 +66,9 @@ public class BookService : IBookService
         {
             bookPreviews = bookPreviews.Where(b => b.SeriesId == advancedSearchDto.seriesId);
         }
+        Console.WriteLine(JsonSerializer.Serialize(advancedSearchDto));
         bookPreviews = bookPreviews.SortBy(advancedSearchDto.sortBy, advancedSearchDto.isAsc);
-        var bookPreviewsPagination = bookPreviews.OrderByDescending(b => b.CreatedAt).Select(b => b.SelectPreview())
-
-        .ToPagination<BookPreviewDto>(page, limit);
+        var bookPreviewsPagination = bookPreviews.Select(b => b.SelectPreview()).ToPagination<BookPreviewDto>(page, limit);
         return Task.FromResult(bookPreviewsPagination);
     }
 
