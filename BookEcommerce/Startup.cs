@@ -63,6 +63,8 @@ public class Startup
         services.AddTransient<IBookAttributeService, BookAttributeService>();
         services.AddTransient<IAuthService, AuthService>();
         services.AddTransient<ITokenService, TokenService>();
+        services.AddTransient<IRoleService, RoleService>();
+        services.AddTransient<IPermissionService, PermissionService>();
 
     }
 

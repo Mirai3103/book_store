@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.Controllers;
 
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly ILogger<AuthController> _logger;
@@ -19,7 +19,10 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var result = await _authService.Login(request);
+        // get ip address of request
+
+
+        var result = await _authService.Login(request, this.HttpContext);
         if (result == null)
         {
             return BadRequest(new
@@ -34,7 +37,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        var result = await _authService.Register(request);
+        var result = await _authService.Register(request, this.HttpContext);
         if (result == null)
         {
             return Unauthorized(new
@@ -56,5 +59,24 @@ public class AuthController : ControllerBase
             });
         }
         return Ok(result);
+    }
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest refreshToken)
+    {
+        var result = await _authService.RefreshToken(refreshToken.RefreshToken, this.HttpContext);
+        if (result == null)
+        {
+            return BadRequest(new
+            {
+                message = "Refresh token is incorrect"
+            });
+        }
+        return Ok(result);
+    }
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout([FromBody] RefreshTokenRequest refreshToken)
+    {
+        await _authService.Logout(refreshToken.RefreshToken, this.HttpContext);
+        return Ok();
     }
 }

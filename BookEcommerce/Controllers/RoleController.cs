@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.Controllers
 {
-    [Route("controller]")]
+    [ApiController]
+    [Route("[controller]")]
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;

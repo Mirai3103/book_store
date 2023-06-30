@@ -4,9 +4,10 @@ namespace BookStore.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<LoginResponse?> Login(LoginRequest request);
-        Task<LoginResponse?> Register(RegisterRequest request);
+        Task<LoginResponse?> Login(LoginRequest request, HttpContext context);
+        Task<LoginResponse?> Register(RegisterRequest request, HttpContext context);
         Task<string?> ValidateEmail(string token);
-        Task<string> RefreshToken(string refreshToken);
+        Task<LoginResponse?> RefreshToken(string refreshToken, HttpContext context);
+        Task Logout(string refreshToken, HttpContext context);
     }
 }

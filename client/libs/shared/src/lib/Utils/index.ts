@@ -28,6 +28,24 @@ export function getDiffTimeStr(date: Date | string): string {
   return `${diffYears} năm trước`;
 }
 
+export class QueryParamsBuilder {
+  private params: string[] = [];
+
+  public addParam(
+    key: string,
+    value: string | null | number | undefined
+  ): QueryParamsBuilder {
+    if (value) {
+      this.params.push(`${key}=${value}`);
+    }
+    return this;
+  }
+
+  public build(): string {
+    return this.params.join('&');
+  }
+}
+
 export function toCurrencyFormat(price: number): string {
   return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
 }

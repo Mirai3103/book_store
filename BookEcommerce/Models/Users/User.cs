@@ -31,7 +31,8 @@ namespace BookStore.Models
         public bool IsValidatePhoneNumber { get; set; } = false;
         [DataType(DataType.DateTime)]
         public string DisplayName { get; set; } = null!;
-        public virtual ICollection<Role> Roles { get; set; } = null!;
-        public virtual ICollection<Permission> Permissions { get; set; } = null!;
+        public virtual ICollection<Role> Roles { get; set; } = new HashSet<Role>();
+        public virtual ICollection<Permission> Permissions { get; set; } = new HashSet<Permission>();
+        public virtual ICollection<Token> Tokens { get; set; } = new HashSet<Token>();
     }
 }

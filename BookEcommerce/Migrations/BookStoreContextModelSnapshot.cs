@@ -318,6 +318,38 @@ namespace BookStore.Migrations
                     b.ToTable("Series");
                 });
 
+            modelBuilder.Entity("BookStore.Models.Token", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DeviceInfo")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("TokenValue")
+                        .IsRequired()
+                        .HasMaxLength(1200)
+                        .HasColumnType("varchar(1200)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tokens");
+                });
+
             modelBuilder.Entity("BookStore.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -487,6 +519,17 @@ namespace BookStore.Migrations
                     b.Navigation("Publisher");
                 });
 
+            modelBuilder.Entity("BookStore.Models.Token", b =>
+                {
+                    b.HasOne("BookStore.Models.User", "User")
+                        .WithMany("Tokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("PermissionRole", b =>
                 {
                     b.HasOne("BookStore.Models.Permission", null)
@@ -562,6 +605,11 @@ namespace BookStore.Migrations
             modelBuilder.Entity("BookStore.Models.Series", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("BookStore.Models.User", b =>
+                {
+                    b.Navigation("Tokens");
                 });
 #pragma warning restore 612, 618
         }
