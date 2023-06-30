@@ -2,6 +2,7 @@ import React from 'react';
 import { BookPreviewDto } from '@shared/types/bookPreviewDto';
 import { toCurrencyFormat } from '@client/libs/shared/src/lib/Utils';
 import { BsCartPlus } from 'react-icons/bs';
+import { Link } from 'react-router-dom';
 interface IBookPreviewCardProps extends React.HTMLAttributes<HTMLDivElement> {
   book: BookPreviewDto;
 }
@@ -27,13 +28,14 @@ export default function BookPreviewCard({
         />
       </figure>
       <div className="card-body gap-0">
-        <h2
+        <Link
+          to={`/book/detail/${book.slug}`}
           className="card-title
         min-h-[50px]
         hover:cursor-pointer hover:text-primary-focus line-clamp-2 text-base"
         >
           {book.title}
-        </h2>
+        </Link>
         <span className="font-semibold text-red-700 text-lg">
           {toCurrencyFormat(book.price)}
         </span>
