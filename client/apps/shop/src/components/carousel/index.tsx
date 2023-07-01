@@ -14,14 +14,24 @@ function Carousel({
 }: ICarouselProps) {
   const id = React.useId();
   const [activeIndex, setActiveIndex] = React.useState(0);
-  React.useEffect(() => {
-    document.getElementById(id + activeIndex)?.scrollIntoView({
+
+  const scroll = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({
       behavior: 'smooth',
       block: 'nearest',
       inline: 'start',
     });
-  }, [activeIndex, id]);
-
+  };
+  const handleNext = () => {
+    if (activeIndex === props.children.length - 1) return;
+    setActiveIndex((prev) => prev + 1);
+    scroll(id + (activeIndex + 1));
+  };
+  const handlePrev = () => {
+    if (activeIndex === 0) return;
+    setActiveIndex((prev) => prev - 1);
+    scroll(id + (activeIndex - 1));
+  };
   return (
     <div className="relative">
       <div className={`carousel ${className}`}>
@@ -40,22 +50,10 @@ function Carousel({
       </div>
       {withIndicator && (
         <div className="absolute   flex justify-between transform -translate-y-1/2 left-0 right-0 z-20 top-1/2">
-          <button
-            className="btn btn-circle btn-ghost"
-            onClick={() => {
-              if (activeIndex === 0) return;
-              setActiveIndex((prev) => prev - 1);
-            }}
-          >
+          <button className="btn btn-circle btn-ghost" onClick={handlePrev}>
             ❮
           </button>
-          <button
-            className="btn btn-circle btn-ghost"
-            onClick={() => {
-              if (activeIndex === props.children.length - 1) return;
-              setActiveIndex((prev) => prev + 1);
-            }}
-          >
+          <button className="btn btn-circle btn-ghost" onClick={handleNext}>
             ❯
           </button>
         </div>

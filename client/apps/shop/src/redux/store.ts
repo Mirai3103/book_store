@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
-import utilitySplice from './utilitySplice';
-import authSplice from './authSplice';
+import utilityReducer from './utilitySplice';
+import authReducer from './authSplice';
+import cartReducer from './cartSplice';
 export const store = configureStore({
   reducer: combineReducers({
-    utility: utilitySplice,
-    auth: authSplice,
+    utility: utilityReducer,
+    auth: authReducer,
+    cart: cartReducer,
   }),
 });
 

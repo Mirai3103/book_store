@@ -17,7 +17,9 @@ class BookApiService {
       minPrice,
       providerId,
       publisherId,
-      sortBy = 'id',
+      seriesId,
+      sortBy = 'createdAt',
+
       isAsc = true,
     }: AdvancedSearchDto,
     page: number,
@@ -31,6 +33,7 @@ class BookApiService {
       .addParam('minPrice', minPrice)
       .addParam('providerId', providerId)
       .addParam('publisherId', publisherId)
+      .addParam('seriesId', seriesId)
       .addParam('sortBy', camelCaseToPascalCase(sortBy))
       .addParam('isAsc', isAsc + '')
       .addParam('page', page)

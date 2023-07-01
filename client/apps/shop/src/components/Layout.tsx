@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from './Header';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useAppSelector } from '@/redux/hook';
 import { Theme, selectTheme } from '@/redux/utilitySplice';
 
@@ -17,6 +17,10 @@ export default function Layout() {
       }
     }
   }, [theme]);
+  const { pathname } = useLocation();
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
     <div className="w-full h-full m-0 p-0">
