@@ -106,7 +106,11 @@ export default function RelatedBook({ book }: Props) {
           </span>
         )}
       </div>
-      <div className="flex flex-wrap gap-2 justify-around">
+      <div
+        className={`flex flex-wrap gap-3   ${
+          data && data.items.length > 4 ? 'justify-evenly' : ''
+        }`}
+      >
         {data ? (
           data.items.map((book: BookPreviewDto) => (
             <BookPreviewCard key={book.id} book={book} className="shadow" />
@@ -115,9 +119,11 @@ export default function RelatedBook({ book }: Props) {
           <span className="loading loading-dots loading-lg"></span>
         )}
       </div>
-      <div className="flex justify-center mt-9">
-        <button className="btn btn-primary">Xem thêm</button>
-      </div>
+      {data && data.totalItems > 4 && (
+        <div className="flex justify-center mt-9">
+          <button className="btn btn-primary">Xem thêm</button>
+        </div>
+      )}
     </section>
   );
 }

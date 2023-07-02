@@ -7,6 +7,7 @@ import {
   AiOutlinePlus,
 } from 'react-icons/ai';
 import { BsCartPlus } from 'react-icons/bs';
+import ImageViewer from './ImageViewer';
 
 interface Props {
   book: BookDto;
@@ -28,7 +29,7 @@ export default function PreviewSection({ book }: Props) {
       setAmount(value);
     }
   };
-
+  const [isShow, setIsShow] = React.useState(false);
   return (
     <section className="flex  gap-x-12 py-4 bg-base-100 p-8 shadow-md">
       <div className="w-4/12 ">
@@ -36,8 +37,15 @@ export default function PreviewSection({ book }: Props) {
           src={book?.thumbnailUrl}
           alt={book?.title}
           className="w-full h-auto object-cover"
+          onClick={() => setIsShow(true)}
         />
       </div>
+      {isShow && (
+        <ImageViewer
+          listSource={book.bookImages.map((bi) => bi.url)}
+          setIsShow={setIsShow}
+        />
+      )}
       <div className="grow flex items-start py-2 gap-5 flex-col">
         <h1 className="text-3xl font-bold">{book?.title}</h1>
         <div className="flex gap-x-14">

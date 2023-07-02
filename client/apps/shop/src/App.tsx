@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { NotificationProvider } from '@client/libs/shared/src';
 import { useAppDispatch } from './redux/hook';
 import authApiService from '@client/libs/shared/src/lib/Utils/Services/authApiService';
-import { login } from './redux/authSplice';
+import { login, logout } from './redux/authSplice';
 import { useLocalStorage } from 'usehooks-ts';
 const queryClient = new QueryClient();
 export default function App() {
@@ -26,9 +26,17 @@ export default function App() {
           localStorage.removeItem('refreshToken');
         });
       const interval = setInterval(() => {
-        authApiService.refreshToken(refreshToken).then((res) => {
-          appDispatch(login(res));
-        });
+        authApiService
+          .refreshToken(refreshToken)
+          .then((res) => {
+            appDispatch(login(res));
+          })
+          .catch((err) => {
+            console.log(err);
+            localStorage.removeItem('refreshToken');
+            appDispatch(logout());
+            clearInterval(interval);
+          });
       }, 5 * 60 * 1000);
       return () => clearInterval(interval);
     }
