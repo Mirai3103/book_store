@@ -32,11 +32,11 @@ export default function PreviewSection({ book }: Props) {
   const [isShow, setIsShow] = React.useState(false);
   return (
     <section className="flex  gap-x-12 py-4 bg-base-100 p-8 shadow-md">
-      <div className="w-4/12 ">
+      <div className="w-4/12 min-h-[400px] ">
         <img
           src={book?.thumbnailUrl}
           alt={book?.title}
-          className="w-full h-auto object-cover"
+          className="w-full h-auto object-cover cursor-pointer"
           onClick={() => setIsShow(true)}
         />
       </div>

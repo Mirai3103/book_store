@@ -15,10 +15,10 @@ export default function Header() {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <a>Shop</a>
+            <Link to={'/search'}>Shop</Link>
           </li>
           <li>
-            <a>Thịnh hành</a>
+            <Link to={'/search'}>Thịnh hành</Link>
           </li>
           <li tabIndex={0}>
             <details>

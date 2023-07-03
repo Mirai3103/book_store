@@ -29,7 +29,7 @@ export default function ImageViewer({ listSource, setIsShow }: Props) {
   }, [handleKeyDown]);
 
   const element = (
-    <div className="fixed w-screen h-screen z-40  bg-black bg-opacity-95 top-0 left-0 flex justify-center items-center">
+    <div className="fixed w-screen h-screen z-40  bg-black bg-opacity-90 top-0 left-0 flex justify-center items-center">
       <div className="absolute top-10 transform -translate-y-1/2 right-10 z-50">
         <button
           className="btn btn-circle btn-ghost text-5xl"
@@ -48,7 +48,7 @@ export default function ImageViewer({ listSource, setIsShow }: Props) {
           ❮
         </button>
       </div>
-      <div className="">
+      <div className="-mt-16">
         <img src={listSource[index]} alt="" className="max-h-[80vh]" />
       </div>
       <div className="absolute top-1/2 transform -translate-y-1/2 right-10 z-50 ">

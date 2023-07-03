@@ -26,13 +26,10 @@ const utilitySlice = createSlice({
     toggleTheme(state) {
       state.theme = state.theme === Theme.Light ? Theme.DARK : Theme.Light;
     },
-    setSearchKeyword(state, action) {
-      state.searchKeyword = action.payload;
-    },
   },
 });
 
-export const { setTheme, toggleTheme, setSearchKeyword } = utilitySlice.actions;
+export const { setTheme, toggleTheme } = utilitySlice.actions;
 
 export default utilitySlice.reducer;
 

@@ -4,6 +4,7 @@ import HomePage from './home';
 import LoginPage from './login';
 import RegisterPage from './register';
 import BookDetailPage from './bookdetail';
+import SearchPage from './search';
 const routes: RouteObject[] = [
   {
     path: '/',
@@ -21,6 +22,10 @@ const routes: RouteObject[] = [
       {
         path: 'book/detail/:slug',
         element: <BookDetailPage />,
+      },
+      {
+        path: 'search',
+        element: <SearchPage />,
       },
     ],
   },

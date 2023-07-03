@@ -3,11 +3,13 @@ import { combineReducers } from 'redux';
 import utilityReducer from './utilitySplice';
 import authReducer from './authSplice';
 import cartReducer from './cartSplice';
+import searchReducer from './searchSplice';
 export const store = configureStore({
   reducer: combineReducers({
     utility: utilityReducer,
     auth: authReducer,
     cart: cartReducer,
+    search: searchReducer,
   }),
 });
 
