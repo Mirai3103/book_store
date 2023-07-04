@@ -1,8 +1,8 @@
-import publisherApiService from '@/Utils/Services/publisherApiService';
-import { PaginationDto } from '@/types/paginationDto';
-import { PublisherDto } from '@/types/publisherDto';
-import ComboBox from '@client/libs/shared/src/lib/combobox';
-import { useDebounceState } from '@client/libs/shared/src/lib/hooks';
+import publisherApiService from './Utils/Services/publisherApiService';
+import { PaginationDto } from './types/paginationDto';
+import { PublisherDto } from './types/publisherDto';
+import ComboBox from './combobox';
+import { useDebounceState } from './hooks';
 import React from 'react';
 import { useQuery } from 'react-query';
 

@@ -1,4 +1,4 @@
-import categoryApiService from '@/Utils/Services/categoryApiService';
+import categoryApiService from '@shared/Utils/Services/categoryApiService';
 import TextArea from '@/components/TextArea';
 import TextInput from '@/components/TextInput';
 import { useNotification } from '@shared/toast';

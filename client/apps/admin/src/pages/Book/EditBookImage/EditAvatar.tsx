@@ -1,4 +1,4 @@
-import bookApiService from '@/Utils/Services/bookApiService';
+import bookApiService from '@shared/Utils/Services/bookApiService';
 import {
   getServerImageURL,
   imageURLToBlob,

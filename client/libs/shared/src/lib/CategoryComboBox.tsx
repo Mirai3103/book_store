@@ -1,8 +1,8 @@
-import categoryApiService from '@/Utils/Services/categoryApiService';
-import { CategoryDto } from '@/types/categoryDto';
-import { PaginationDto } from '@/types/paginationDto';
-import ComboBox from '@client/libs/shared/src/lib/combobox';
-import { useDebounceState } from '@shared/hooks';
+import categoryApiService from './Utils/Services/categoryApiService';
+import { CategoryDto } from './types/categoryDto';
+import { PaginationDto } from './types/paginationDto';
+import ComboBox from './combobox';
+import { useDebounceState } from './hooks';
 import React from 'react';
 import { useQuery } from 'react-query';
 

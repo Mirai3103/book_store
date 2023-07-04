@@ -37,21 +37,22 @@ public class BookService : IBookService
         {
             bookPreviews = bookPreviews.Where(b => b.Name.ContainIgnoreAll(advancedSearchDto.keyword));
         }
-        if (advancedSearchDto.authorId != null)
+        if (advancedSearchDto.authorIds != null)
         {
-            bookPreviews = bookPreviews.Where(b => b.AuthorId == advancedSearchDto.authorId);
+            bookPreviews = bookPreviews.Where(b => advancedSearchDto.authorIds.Contains(b.AuthorId));
         }
-        if (advancedSearchDto.categoryId != null)
+        if (advancedSearchDto.categoryIds != null)
         {
-            bookPreviews = bookPreviews.Where(b => b.CategoryId == advancedSearchDto.categoryId);
+            bookPreviews = bookPreviews.Where(b => advancedSearchDto.categoryIds.Contains(b.CategoryId));
         }
-        if (advancedSearchDto.providerId != null)
+        if (advancedSearchDto.providerIds != null)
         {
-            bookPreviews = bookPreviews.Where(b => b.ProviderId == advancedSearchDto.providerId);
+            bookPreviews = bookPreviews.Where(b => advancedSearchDto.providerIds.Contains(b.ProviderId));
         }
-        if (advancedSearchDto.publisherId != null)
+
+        if (advancedSearchDto.publisherIds != null)
         {
-            bookPreviews = bookPreviews.Where(b => b.PublisherId == advancedSearchDto.publisherId);
+            bookPreviews = bookPreviews.Where(b => advancedSearchDto.publisherIds.Contains(b.PublisherId));
 
         }
         if (advancedSearchDto.minPrice != null)
@@ -62,16 +63,59 @@ public class BookService : IBookService
         {
             bookPreviews = bookPreviews.Where(b => b.Price <= advancedSearchDto.maxPrice);
         }
-        if (advancedSearchDto.seriesId != null)
+        if (advancedSearchDto.seriesIds != null)
         {
-            bookPreviews = bookPreviews.Where(b => b.SeriesId == advancedSearchDto.seriesId);
+            bookPreviews = bookPreviews.Where(b => b.SeriesId != null && advancedSearchDto.seriesIds.Contains((int)b.SeriesId));
         }
         Console.WriteLine(JsonSerializer.Serialize(advancedSearchDto));
         bookPreviews = bookPreviews.SortBy(advancedSearchDto.sortBy, advancedSearchDto.isAsc);
         var bookPreviewsPagination = bookPreviews.Select(b => b.SelectPreview()).ToPagination<BookPreviewDto>(page, limit);
         return Task.FromResult(bookPreviewsPagination);
     }
+    public Task<PaginationDto<BookPreviewDto>> SearchBookAsync(BasicSearchDto basicSearchDto, int page, int limit)
+    {
 
+        var bookPreviews = _context.Books
+            .Include(b => b.Author)
+            .AsNoTracking();
+        if (basicSearchDto.keyword != null)
+        {
+            bookPreviews = bookPreviews.Where(b => b.Name.ContainIgnoreAll(basicSearchDto.keyword));
+        }
+        if (basicSearchDto.authorId != null)
+        {
+            bookPreviews = bookPreviews.Where(b => b.AuthorId == basicSearchDto.authorId);
+        }
+        if (basicSearchDto.categoryId != null)
+        {
+            bookPreviews = bookPreviews.Where(b => b.CategoryId == basicSearchDto.categoryId);
+        }
+        if (basicSearchDto.providerId != null)
+        {
+            bookPreviews = bookPreviews.Where(b => b.ProviderId == basicSearchDto.providerId);
+        }
+        if (basicSearchDto.publisherId != null)
+        {
+            bookPreviews = bookPreviews.Where(b => b.PublisherId == basicSearchDto.publisherId);
+
+        }
+        if (basicSearchDto.minPrice != null)
+        {
+            bookPreviews = bookPreviews.Where(b => b.Price >= basicSearchDto.minPrice);
+        }
+        if (basicSearchDto.maxPrice != null)
+        {
+            bookPreviews = bookPreviews.Where(b => b.Price <= basicSearchDto.maxPrice);
+        }
+        if (basicSearchDto.seriesId != null)
+        {
+            bookPreviews = bookPreviews.Where(b => b.SeriesId == basicSearchDto.seriesId);
+        }
+        Console.WriteLine(JsonSerializer.Serialize(basicSearchDto));
+        bookPreviews = bookPreviews.SortBy(basicSearchDto.sortBy, basicSearchDto.isAsc);
+        var bookPreviewsPagination = bookPreviews.Select(b => b.SelectPreview()).ToPagination<BookPreviewDto>(page, limit);
+        return Task.FromResult(bookPreviewsPagination);
+    }
     public async Task<BookPreviewDto> CreateBookAsync(CreateBookDto createBookDto)
     {
         var thumbnailUrlTask = _fileService.SaveFileAsync(createBookDto.Thumbnail);

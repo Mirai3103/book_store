@@ -1,4 +1,4 @@
-import publisherApiService from '@/Utils/Services/publisherApiService';
+import publisherApiService from '@shared/Utils/Services/publisherApiService';
 import TextArea from '@/components/TextArea';
 import TextInput from '@/components/TextInput';
 import { useNotification } from '@shared/toast';

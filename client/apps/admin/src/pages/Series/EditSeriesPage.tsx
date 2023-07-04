@@ -1,4 +1,4 @@
-import seriesApiService from '@/Utils/Services/seriesApiService';
+import seriesApiService from '@shared/Utils/Services/seriesApiService';
 import TextInputWithRef from '@/components/TextInput';
 import { SeriesDto, UpdateSeriesDto } from '@/types/seriesDto';
 import { useNotification } from '@client/libs/shared/src/lib/toast';
@@ -6,8 +6,8 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
-import AuthorComboBox from '../../components/AuthorComboBox';
-import PublisherCombobox from '@/components/PublisherCombobox';
+import AuthorComboBox from '@shared/AuthorComboBox';
+import PublisherCombobox from '@shared/PublisherCombobox';
 export default function EditSeriesPage() {
   // path: '/Series/edit/:id',
   const id = useParams().id;

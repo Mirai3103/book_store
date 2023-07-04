@@ -1,8 +1,8 @@
-import providerApiService from '@/Utils/Services/providerApiService';
-import { ProviderDto } from '@/types/providerDto';
-import { PaginationDto } from '@/types/paginationDto';
-import ComboBox from '@client/libs/shared/src/lib/combobox';
-import { useDebounceState } from '@shared/hooks';
+import providerApiService from './Utils/Services/providerApiService';
+import { ProviderDto } from './types/providerDto';
+import { PaginationDto } from './types/paginationDto';
+import ComboBox from './combobox';
+import { useDebounceState } from './hooks';
 import React from 'react';
 import { useQuery } from 'react-query';
 

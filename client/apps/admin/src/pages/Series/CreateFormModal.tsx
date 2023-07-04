@@ -1,4 +1,4 @@
-import seriesApiService from '@/Utils/Services/seriesApiService';
+import seriesApiService from '@shared/Utils/Services/seriesApiService';
 import TextArea from '@/components/TextArea';
 import TextInput from '@/components/TextInput';
 import { useNotification } from '@shared/toast';
@@ -7,8 +7,8 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
-import AuthorComboBox from '@components/AuthorComboBox';
-import PublisherCombobox from '@components/PublisherCombobox';
+import AuthorComboBox from '@shared/AuthorComboBox';
+import PublisherCombobox from '@shared/PublisherCombobox';
 interface IProps {
   isOpen: boolean;
   toggle: () => void;

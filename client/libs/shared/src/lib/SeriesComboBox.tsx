@@ -1,8 +1,8 @@
-import seriesApiService from '@/Utils/Services/seriesApiService';
-import { SeriesDto } from '@/types/seriesDto';
-import { PaginationDto } from '@/types/paginationDto';
-import ComboBox from '@client/libs/shared/src/lib/combobox';
-import { useDebounceState } from '@shared/hooks';
+import seriesApiService from './Utils/Services/seriesApiService';
+import { SeriesDto } from './types/seriesDto';
+import { PaginationDto } from './types/paginationDto';
+import ComboBox from './combobox';
+import { useDebounceState } from './hooks';
 import React from 'react';
 import { useQuery } from 'react-query';
 

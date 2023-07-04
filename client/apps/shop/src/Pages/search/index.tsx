@@ -1,13 +1,15 @@
 import Collapse from '@/components/Collapse';
 import React from 'react';
-
+import AuthorComboBox from '@shared/AuthorComboBox';
+import TextInputWithRef from '@client/libs/shared/src/lib/TextInput';
+import AuthorFilter from './AuthorFilter';
 export default function SearchPage() {
   return (
     <div className="min-h-screen">
       <div className="mt-10 max-w-xs  sm:max-w-xl md:max-w-3xl lg:max-w-4xl xl:max-w-6xl flex gap-10 mx-auto">
         <div className="w-1/4 flex flex-col gap-3 p-3">
           <h2 className="text-2xl font-bold">Tuỳ chọn tìm kiếm</h2>
-          <Collapse title="Tác giả">tác giả</Collapse>
+          <AuthorFilter />
           <Collapse title="Khoảng giá">tác giả</Collapse>
           <Collapse title="Thể loại">tác giả</Collapse>
           <Collapse title="Nhà xuất bản">tác giả</Collapse>
@@ -52,7 +54,7 @@ export default function SearchPage() {
               <div className="form-control">
                 <label className="label cursor-pointer">
                   <span className="label-text mr-2">Tăng dần</span>
-                  <input type="checkbox" className="toggle" checked />
+                  <input type="checkbox" className="toggle" defaultChecked />
                 </label>
               </div>
             </div>

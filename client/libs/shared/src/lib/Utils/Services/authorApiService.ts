@@ -1,6 +1,7 @@
 import { AuthorDto } from '@/lib/types/authorDto';
 import api from '../api';
 import { camelCaseToPascalCase } from '@/lib/Utils';
+import { PaginationDto } from '@/lib/types/paginationDto';
 class AuthorApiService {
   async getAllAuthors(
     page: number,
@@ -9,7 +10,7 @@ class AuthorApiService {
     orderBy = 'id',
     isAscending = true
   ) {
-    const response = await api.get(
+    const response = await api.get<PaginationDto<AuthorDto>>(
       `Author?page=${page}&limit=${limit}&search=${search}&orderBy=${camelCaseToPascalCase(
         orderBy
       )}&isAscending=${isAscending}`

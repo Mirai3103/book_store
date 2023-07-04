@@ -34,7 +34,14 @@ namespace BookStore.Controllers
             }
             return Ok(book);
         }
-        [HttpGet("search", Name = "AdvancedSearch")]
+
+        [HttpGet("search", Name = "Search")]
+        public async Task<IActionResult> Search([FromQuery] BasicSearchDto advancedSearchDto, [FromQuery] int page = 1, [FromQuery] int limit = 10)
+        {
+            var books = await _bookService.SearchBookAsync(advancedSearchDto, page, limit);
+            return Ok(books);
+        }
+        [HttpGet("advance-search", Name = "AdvancedSearch")]
         public async Task<IActionResult> AdvancedSearch([FromQuery] AdvancedSearchDto advancedSearchDto, [FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
             var books = await _bookService.AdvancedSearchAsync(advancedSearchDto, page, limit);

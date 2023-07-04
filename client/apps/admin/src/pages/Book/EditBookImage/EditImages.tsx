@@ -1,4 +1,4 @@
-import bookApiService from '@/Utils/Services/bookApiService';
+import bookApiService from '@shared/Utils/Services/bookApiService';
 import TextInputWithRef from '@/components/TextInput';
 import { BookAttribute } from '@/types/bookAttribute';
 import { BookImage } from '@/types/bookImage';
