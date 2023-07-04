@@ -1,30 +1,21 @@
-import Collapse from '@/components/Collapse';
 import React from 'react';
-import AuthorComboBox from '@shared/AuthorComboBox';
-import TextInputWithRef from '@client/libs/shared/src/lib/TextInput';
-import AuthorFilter from './AuthorFilter';
+import FilterSection from './FilterSection';
+import { resetSearch } from '@/redux/searchSplice';
+import { useAppDispatch } from '@/redux/hook';
+
 export default function SearchPage() {
+  const dispatch = useAppDispatch();
+  React.useEffect(() => {
+    console.log('first render search');
+    return () => {
+      console.log('reset search');
+      dispatch(resetSearch());
+    };
+  }, [dispatch]);
   return (
     <div className="min-h-screen">
       <div className="mt-10 max-w-xs  sm:max-w-xl md:max-w-3xl lg:max-w-4xl xl:max-w-6xl flex gap-10 mx-auto">
-        <div className="w-1/4 flex flex-col gap-3 p-3">
-          <h2 className="text-2xl font-bold">Tuỳ chọn tìm kiếm</h2>
-          <AuthorFilter />
-          <Collapse title="Khoảng giá">tác giả</Collapse>
-          <Collapse title="Thể loại">tác giả</Collapse>
-          <Collapse title="Nhà xuất bản">tác giả</Collapse>
-          <Collapse title="Nhà cung cấp">tác giả</Collapse>
-          <Collapse title="Bộ sách">tác giả</Collapse>
-          <Collapse
-            title="
-            Khoảng thời gian
-          "
-          >
-            tác giả
-          </Collapse>
-          <button className="btn btn-primary">Áp dụng lọc</button>
-          <button className="btn btn-primary btn-outline">Xóa lọc</button>
-        </div>
+        <FilterSection />
         <div className="grow bg-base-100 shadow-md p-4">
           <div className="flex justify-between">
             <h2 className="text-2xl font-bold">Kết quả tìm kiếm </h2>
@@ -59,6 +50,7 @@ export default function SearchPage() {
               </div>
             </div>
           </div>
+          F
         </div>
       </div>
     </div>

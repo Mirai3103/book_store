@@ -1,10 +1,21 @@
 import { selectUser } from '@/redux/authSplice';
-import { useAppSelector } from '@/redux/hook';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Avatar from '@shared/Avatar';
+import { setSearchAttribute } from '@/redux/searchSplice';
 export default function Header() {
   const user = useAppSelector(selectUser);
+  const keyword = useAppSelector((state) => state.search.keyword);
+  const dispatch = useAppDispatch();
+  const onKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    if (value) {
+      dispatch(setSearchAttribute({ key: 'keyword', value }));
+    } else {
+      dispatch(setSearchAttribute({ key: 'keyword', value: null }));
+    }
+  };
   return (
     <header className="navbar shadow-lg flex justify-between bg-base-100 ">
       <div>
@@ -45,6 +56,8 @@ export default function Header() {
             type="text"
             placeholder="Tìm kiếm "
             className="input input-bordered w-96"
+            value={keyword || ''}
+            onChange={onKeywordChange}
           />
           <button className="btn btn-square">
             <svg

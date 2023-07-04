@@ -17,10 +17,11 @@ const searchSlice = createSlice({
       }>
     ) {
       const { key, value } = action.payload;
-      state[key] = value;
+      (state[key] as any) = value;
     },
-    resetSearch(state) {
-      state = initialState;
+    resetSearch(state: AdvancedSearchDto) {
+      window.dispatchEvent(new Event('clear-search'));
+      return initialState;
     },
   },
 });
