@@ -1,7 +1,16 @@
 import React from 'react';
 import FilterSection from './FilterSection';
-import { resetSearch } from '@/redux/searchSplice';
-import { useAppDispatch } from '@/redux/hook';
+import { resetSearch, selectFilters } from '@/redux/searchSplice';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
+import { useMutation, useQuery } from 'react-query';
+import { AdvancedSearchDto } from '@client/libs/shared/src/lib/types/advancedSearchDto';
+import { PaginationDto } from '@client/libs/shared/src/lib/types/paginationDto';
+import BookPreviewCard from '@/components/BookPreviewCard';
+import { BookPreviewDto } from '@client/libs/shared/src/lib/types/bookPreviewDto';
+import bookApiService from '@client/libs/shared/src/lib/Utils/Services/bookApiService';
+import { usePagination } from '@client/libs/shared/src/lib/hooks';
+import Pagination from '@shared/Pagination';
+import { useIsMounted } from 'usehooks-ts';
 
 export default function SearchPage() {
   const dispatch = useAppDispatch();
@@ -12,12 +21,34 @@ export default function SearchPage() {
       dispatch(resetSearch());
     };
   }, [dispatch]);
+  const filters = useAppSelector(selectFilters);
+  const { currentPage, onChangePage, setTotalPages, totalPages } =
+    usePagination();
+  const { data, mutate, isLoading } = useMutation<
+    PaginationDto<BookPreviewDto>,
+    Error,
+    AdvancedSearchDto
+  >({
+    mutationFn: (data) => bookApiService.advancedSearch(data, currentPage, 24),
+    mutationKey: ['search', currentPage],
+    onSuccess: (data) => {
+      setTotalPages(data.totalPages);
+    },
+  });
+  const onApplyFilter = () => {
+    mutate(filters);
+  };
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+    mutate(filters);
+  }, [mutate, currentPage]);
+
   return (
     <div className="min-h-screen">
       <div className="mt-10 max-w-xs  sm:max-w-xl md:max-w-3xl lg:max-w-4xl xl:max-w-6xl flex gap-10 mx-auto">
-        <FilterSection />
-        <div className="grow bg-base-100 shadow-md p-4">
-          <div className="flex justify-between">
+        <FilterSection onApplyFilter={onApplyFilter} />
+        <div className="grow bg-base-100 p-4">
+          <div className="flex justify-between ">
             <h2 className="text-2xl font-bold">Kết quả tìm kiếm </h2>
             <div className="flex gap-x-2 items-center">
               <div className="dropdown dropdown-end">
@@ -50,7 +81,29 @@ export default function SearchPage() {
               </div>
             </div>
           </div>
-          F
+          {isLoading && (
+            <div className="flex justify-center mt-5">
+              <span className="loading loading-spinner loading-lg"></span>
+            </div>
+          )}
+          <div className="flex flex-wrap justify-evenly gap-y-4">
+            {data?.items.map((book) => (
+              <BookPreviewCard key={book.id} book={book} className="shadow" />
+            ))}
+          </div>
+          {data?.items.length === 0 ? (
+            <div className="flex justify-center mt-5">
+              <span className="text-xl">Không có kết quả nào</span>
+            </div>
+          ) : (
+            <div className="flex justify-center mt-4">
+              <Pagination
+                currentPage={currentPage}
+                onPageChange={onChangePage}
+                totalPage={totalPages}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

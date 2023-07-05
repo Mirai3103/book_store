@@ -1,4 +1,4 @@
-import { useAppDispatch } from '@/redux/hook';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import React from 'react';
 import authorApiService from '@client/libs/shared/src/lib/Utils/Services/authorApiService';
 import categoryApiService from '@client/libs/shared/src/lib/Utils/Services/categoryApiService';
@@ -6,15 +6,19 @@ import publisherApiService from '@client/libs/shared/src/lib/Utils/Services/publ
 import providerApiService from '@client/libs/shared/src/lib/Utils/Services/providerApiService';
 import { Filter } from './Filter';
 import Collapse from '@/components/Collapse';
-import { resetSearch } from '@/redux/searchSplice';
+import { resetSearch, selectFilters } from '@/redux/searchSplice';
 import TextInputWithRef from '@client/libs/shared/src/lib/TextInput';
 import MoneyRange from './MoneyRange';
 import KeywordFilter from './KeywordFilter';
-
-export default function FilterSection() {
+import { AdvancedSearchDto } from '@client/libs/shared/src/lib/types/advancedSearchDto';
+interface Props {
+  onApplyFilter: () => void;
+}
+export default function FilterSection(props: Props) {
   const dispatch = useAppDispatch();
+
   return (
-    <div className="w-1/4 flex flex-col gap-3 p-3">
+    <div className="w-1/4 flex flex-col gap-3 p-3 shrink-0">
       <h2 className="text-2xl font-bold">Tuỳ chọn tìm kiếm</h2>
       <KeywordFilter />
       <MoneyRange />
@@ -44,11 +48,16 @@ export default function FilterSection() {
         queryFn={providerApiService.getAllProviders}
       />
 
-      <button className="btn btn-primary">Áp dụng lọc</button>
+      <button className="btn btn-primary" onClick={props.onApplyFilter}>
+        Áp dụng lọc
+      </button>
       <button
         className="btn btn-primary btn-outline"
         onClick={() => {
           dispatch(resetSearch());
+          setTimeout(() => {
+            props.onApplyFilter();
+          }, 100);
         }}
       >
         Xóa lọc

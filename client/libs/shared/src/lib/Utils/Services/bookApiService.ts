@@ -3,6 +3,7 @@ import api from '../api';
 import { QueryParamsBuilder } from '..';
 import { camelCaseToPascalCase } from '@/lib/Utils';
 import { UpdateBookDto } from '@/lib/types/updateBookDto';
+import { BasicSearchDto } from '@/lib/types/basicSearchDto';
 
 class BookApiService {
   async updateBook(id: string, data: UpdateBookDto) {
@@ -21,7 +22,7 @@ class BookApiService {
       sortBy = 'createdAt',
 
       isAsc = true,
-    }: AdvancedSearchDto,
+    }: BasicSearchDto,
     page: number,
     limit: number
   ) {
@@ -42,7 +43,40 @@ class BookApiService {
     const response = await api.get(`Book/search?${queryParams}`);
     return response.data;
   }
+  public async advancedSearch(
+    {
+      authorIds,
+      categoryIds,
+      keyword,
+      maxPrice,
+      minPrice,
+      providerIds,
+      publisherIds,
+      seriesIds,
+      sortBy = 'createdAt',
 
+      isAsc = true,
+    }: AdvancedSearchDto,
+    page: number,
+    limit: number
+  ) {
+    const queryParams = new QueryParamsBuilder()
+      .addParams('authorId', authorIds)
+      .addParams('categoryId', categoryIds)
+      .addParam('keyword', keyword)
+      .addParam('maxPrice', maxPrice)
+      .addParam('minPrice', minPrice)
+      .addParams('providerId', providerIds)
+      .addParams('publisherId', publisherIds)
+      .addParams('seriesId', seriesIds)
+      .addParam('sortBy', camelCaseToPascalCase(sortBy))
+      .addParam('isAsc', isAsc + '')
+      .addParam('page', page)
+      .addParam('limit', limit)
+      .build();
+    const response = await api.get(`Book/search?${queryParams}`);
+    return response.data;
+  }
   async createBook(data: FormData) {
     const response = await api.post('Book', data, {
       headers: {

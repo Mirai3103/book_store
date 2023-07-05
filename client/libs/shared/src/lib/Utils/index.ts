@@ -40,7 +40,17 @@ export class QueryParamsBuilder {
     }
     return this;
   }
-
+  public addParams(
+    key: string,
+    value: string[] | null | number[] | undefined
+  ): QueryParamsBuilder {
+    if (value) {
+      value.forEach((v) => {
+        this.params.push(`${key}=${v}`);
+      });
+    }
+    return this;
+  }
   public build(): string {
     return this.params.join('&');
   }

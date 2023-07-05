@@ -5,7 +5,7 @@ import TextInputWithRef from '@client/libs/shared/src/lib/TextInput';
 import React from 'react';
 
 export default function () {
-  const keyword = useAppSelector((state) => state.search.keyword);
+  const keyword = useAppSelector((state) => state.search.filters.keyword);
   const dispatch = useAppDispatch();
   return (
     <Collapse title="Từ khoá">

@@ -1,15 +1,12 @@
 import Collapse from '@/components/Collapse';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import {
-  selectSearchAttribute,
-  setSearchAttribute,
-} from '@/redux/searchSplice';
+import { setSearchAttribute } from '@/redux/searchSplice';
 import TextInputWithRef from '@client/libs/shared/src/lib/TextInput';
 import React from 'react';
 
 export default function MoneyRange() {
-  const minPrice = useAppSelector((state) => state.search.minPrice);
-  const maxPrice = useAppSelector((state) => state.search.maxPrice);
+  const minPrice = useAppSelector((state) => state.search.filters.minPrice);
+  const maxPrice = useAppSelector((state) => state.search.filters.maxPrice);
   const dispatch = useAppDispatch();
   const onMaxPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -35,7 +32,12 @@ export default function MoneyRange() {
         value={minPrice || ''}
         onChange={onMinPriceChange}
       />
-      <TextInputWithRef label="Đến" />
+      <TextInputWithRef
+        label="Đến"
+        type="number"
+        onChange={onMaxPriceChange}
+        value={maxPrice || ''}
+      />
     </Collapse>
   );
 }
