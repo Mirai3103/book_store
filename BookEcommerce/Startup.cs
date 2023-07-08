@@ -65,6 +65,7 @@ public class Startup
         services.AddTransient<ITokenService, TokenService>();
         services.AddTransient<IRoleService, RoleService>();
         services.AddTransient<IPermissionService, PermissionService>();
+        services.AddTransient<ICartItemService, CartItemService>();
 
     }
 

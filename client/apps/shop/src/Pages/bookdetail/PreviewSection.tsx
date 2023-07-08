@@ -8,6 +8,9 @@ import {
 } from 'react-icons/ai';
 import { BsCartPlus } from 'react-icons/bs';
 import ImageViewer from './ImageViewer';
+import { useAppDispatch } from '@/redux/hook';
+import { addToCartAsync } from '@/redux/cartSplice';
+import { useNotification } from '@client/libs/shared/src';
 
 interface Props {
   book: BookDto;
@@ -29,14 +32,32 @@ export default function PreviewSection({ book }: Props) {
       setAmount(value);
     }
   };
+  const dispatch = useAppDispatch();
+  const toast = useNotification();
+  const addToCart = () => {
+    if (amount <= 0) {
+      toast.show({
+        type: 'error',
+        message: 'Số lượng không hợp lệ',
+        duration: 3000,
+      });
+      return;
+    }
+    dispatch(
+      addToCartAsync({
+        book: book,
+        quantity: amount,
+      })
+    );
+  };
   const [isShow, setIsShow] = React.useState(false);
   return (
     <section className="flex  gap-x-12 py-4 bg-base-100 p-8 shadow-md">
-      <div className="w-4/12 min-h-[400px] ">
+      <div className="w-4/12 h-[400px] ">
         <img
           src={book?.thumbnailUrl}
           alt={book?.title}
-          className="w-full h-auto object-cover cursor-pointer"
+          className="w-full h-auto max-h-full object-contain cursor-pointer"
           onClick={() => setIsShow(true)}
         />
       </div>
@@ -93,7 +114,10 @@ export default function PreviewSection({ book }: Props) {
                 </span>
               </label>
             </div>
-            <button className="btn btn-primary btn-outline  ml-4">
+            <button
+              className="btn btn-primary btn-outline  ml-4"
+              onClick={addToCart}
+            >
               <BsCartPlus className="mr-2" size={20} />
               Thêm vào giỏ hàng
             </button>

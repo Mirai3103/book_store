@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-
+using BookStore.Models;
 namespace BookStore.Dto
 {
     public class AuthorDto
@@ -16,4 +16,21 @@ namespace BookStore.Dto
         public int TotalBooks { get; set; }
 
     }
+    public static class AuthorExtension
+    {
+        public static AuthorDto? SelectPreview(this Author? author)
+        {
+            if (author == null)
+            {
+                return null;
+            }
+            return new AuthorDto
+            {
+                Id = author.Id,
+                Name = author.Name,
+                TotalBooks = author.Books.Count,
+            };
+        }
+    }
 }
+

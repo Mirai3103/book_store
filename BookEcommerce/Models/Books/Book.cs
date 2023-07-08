@@ -5,7 +5,7 @@ using BookStore.Attribute;
 namespace BookStore.Models
 {
     [TimeStamp(deletedAtColumnName: nameof(DeletedAt), createdAtColumnName: nameof(CreatedAt))]
-    public class Book
+    public partial class Book
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

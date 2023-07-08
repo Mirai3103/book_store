@@ -24,9 +24,9 @@ export default function BookDetailPage() {
   }
   return (
     <div className="mt-6 max-w-xs  sm:max-w-xl md:max-w-3xl lg:max-w-4xl xl:max-w-6xl flex flex-col gap-10 mx-auto ">
-      <PreviewSection book={book!} />
-      <DetailSection book={book!} />
-      <RelatedBook book={book!} />
+      <PreviewSection book={book} />
+      <DetailSection book={book} />
+      <RelatedBook book={book} />
       <div className="h-96"></div>
     </div>
   );

@@ -9,7 +9,7 @@ namespace BookStore.Models
         FEMALE,
         UNKNOWN,
     }
-    public class User
+    public partial class User
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -9,10 +9,10 @@ import { NotificationProvider } from '@client/libs/shared/src';
 import { useAppDispatch } from './redux/hook';
 import authApiService from '@client/libs/shared/src/lib/Utils/Services/authApiService';
 import { login, logout } from './redux/authSplice';
-import { useLocalStorage } from 'usehooks-ts';
 const queryClient = new QueryClient();
 export default function App() {
   const appDispatch = useAppDispatch();
+
   React.useEffect(() => {
     const refreshToken = localStorage.getItem('refreshToken');
     if (refreshToken) {
@@ -37,7 +37,7 @@ export default function App() {
             appDispatch(logout());
             clearInterval(interval);
           });
-      }, 5 * 60 * 1000);
+      }, 4 * 60 * 1000);
       return () => clearInterval(interval);
     }
   }, [appDispatch]);

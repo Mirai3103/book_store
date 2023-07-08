@@ -10,7 +10,6 @@ import { BookPreviewDto } from '@client/libs/shared/src/lib/types/bookPreviewDto
 import bookApiService from '@client/libs/shared/src/lib/Utils/Services/bookApiService';
 import { usePagination } from '@client/libs/shared/src/lib/hooks';
 import Pagination from '@shared/Pagination';
-import { useIsMounted } from 'usehooks-ts';
 
 export default function SearchPage() {
   const dispatch = useAppDispatch();
@@ -20,7 +19,7 @@ export default function SearchPage() {
       console.log('reset search');
       dispatch(resetSearch());
     };
-  }, [dispatch]);
+  }, []);
   const filters = useAppSelector(selectFilters);
   const { currentPage, onChangePage, setTotalPages, totalPages } =
     usePagination();

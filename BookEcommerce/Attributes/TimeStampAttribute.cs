@@ -34,4 +34,22 @@ public static class TimeStampExtension
         }
         return null;
     }
+    public static string? GetCreatedAtColumnName(this EntityEntry entityEntry)
+    {
+        TimeStampAttribute? timeStampAttribute = entityEntry.Entity.GetType().GetCustomAttribute<TimeStampAttribute>();
+        if (timeStampAttribute != null)
+        {
+            return timeStampAttribute.CreatedAtColumnName;
+        }
+        return null;
+    }
+    public static string? GetUpdatedAtColumnName(this EntityEntry entityEntry)
+    {
+        TimeStampAttribute? timeStampAttribute = entityEntry.Entity.GetType().GetCustomAttribute<TimeStampAttribute>();
+        if (timeStampAttribute != null)
+        {
+            return timeStampAttribute.UpdatedAtColumnName;
+        }
+        return null;
+    }
 }

@@ -18,6 +18,18 @@ export default function DetailSection({ book }: Props) {
             <td className="font-bold">Tên sách</td>
             <td>{book?.name}</td>
           </tr>
+          {book.series && (
+            <tr>
+              <td className="font-bold">Bộ sách</td>
+              <td>{book?.series.name}</td>
+            </tr>
+          )}
+          {book.episode && (
+            <tr>
+              <td className="font-bold">Tập</td>
+              <td>{book?.episode}</td>
+            </tr>
+          )}
           <tr>
             <td className="font-bold">Tác giả</td>
             <td>{book?.author?.name}</td>

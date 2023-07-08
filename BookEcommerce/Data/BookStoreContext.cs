@@ -30,6 +30,7 @@ namespace BookStore.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Token> Tokens { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
 
 
@@ -45,6 +46,8 @@ namespace BookStore.Data
         {
             modelBuilder.Entity<BookAttribute>()
                 .HasKey(c => new { c.BookId, c.AttributeName });
+            modelBuilder.Entity<CartItem>()
+  .HasKey(c => new { c.BookId, c.UserId });
             modelBuilder.HasDbFunction(typeof(LikeOperator).GetMethod(nameof(LikeOperator.ContainIgnoreAll)))
                    .HasName("ContainIgnoreAll")
                    .HasTranslation(args =>
@@ -87,8 +90,35 @@ namespace BookStore.Data
         public override int SaveChanges()
         {
             HandleDelete();
-
+            HandleCreate();
+            HandleUpdate();
             return base.SaveChanges();
+        }
+        private void HandleCreate()
+        {
+            var createdEntities = ChangeTracker.Entries()
+                          .Where(e => e.State == EntityState.Added);
+            foreach (var entity in createdEntities)
+            {
+                var createdAtColumnName = entity.GetCreatedAtColumnName();
+                if (createdAtColumnName != null)
+                {
+                    entity.Property(createdAtColumnName).CurrentValue = DateTime.Now;
+                }
+            }
+        }
+        private void HandleUpdate()
+        {
+            var updatedEntities = ChangeTracker.Entries()
+                          .Where(e => e.State == EntityState.Modified);
+            foreach (var entity in updatedEntities)
+            {
+                var updatedAtColumnName = entity.GetUpdatedAtColumnName();
+                if (updatedAtColumnName != null)
+                {
+                    entity.Property(updatedAtColumnName).CurrentValue = DateTime.Now;
+                }
+            }
         }
         private void HandleDelete()
         {
