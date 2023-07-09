@@ -2,96 +2,189 @@ import { BookPreviewDto } from '@client/libs/shared/src/lib/types/bookPreviewDto
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import cartApiService from '@shared/Utils/Services/cartApiService';
-interface ICartItem {
-  id: number;
+export interface ICartItem {
+  bookId: number;
   quantity: number;
   book: BookPreviewDto;
+  isCheck?: boolean;
+  error?: string;
 }
 interface ICartState {
   cart: ICartItem[];
   isLoading?: boolean;
-  lastedError?: string;
 }
 
 const initialState: ICartState = {
   cart: [],
   isLoading: false,
-  lastedError: undefined,
 };
 
 export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addToCart: (
-      state,
-      action: PayloadAction<{ book: BookPreviewDto; quantity: number }>
-    ) => {
-      const { book, quantity } = action.payload;
-      const item = state.cart.find((item) => item.id === book.id);
+    addToBill(
+      state: ICartState,
+      action: PayloadAction<{
+        id: number;
+      }>
+    ) {
+      const item = state.cart.find((item) => item.bookId === action.payload.id);
       if (item) {
-        item.quantity += quantity;
-      } else {
-        state.cart.push({ id: book.id, quantity, book });
+        item.isCheck = true;
       }
     },
-    removeFromCart: (state, action: PayloadAction<{ id: number }>) => {
-      const { id } = action.payload;
-      const item = state.cart.find((item) => item.id === id);
+    toggleItem(
+      state: ICartState,
+      action: PayloadAction<{
+        id: number;
+      }>
+    ) {
+      const item = state.cart.find((item) => item.bookId === action.payload.id);
       if (item) {
-        state.cart = state.cart.filter((item) => item.id !== id);
+        item.isCheck = !item.isCheck;
       }
     },
-    updateQuantity: (
-      state,
-      action: PayloadAction<{ id: number; quantity: number }>
-    ) => {
-      const { id, quantity } = action.payload;
-      const item = state.cart.find((item) => item.id === id);
-      if (item) {
-        item.quantity = quantity;
-      }
+    addAllToBill(state: ICartState) {
+      state.cart.forEach((item) => {
+        item.isCheck = true;
+      });
+    },
+    clearBill(state: ICartState) {
+      state.cart.forEach((item) => {
+        item.isCheck = false;
+      });
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(addToCartAsync.fulfilled, (state, action) => {
         const { book, quantity } = action.payload;
-        const item = state.cart.find((item) => item.id === book.id);
+        const item = state.cart.find((item) => item.bookId === book.id);
         if (item) {
           item.quantity += quantity;
+          item.error = undefined;
         } else {
-          state.cart.push({ id: book.id, quantity, book });
+          state.cart.push({ bookId: book.id, quantity, book });
         }
         state.isLoading = false;
-        state.lastedError = undefined;
       })
       .addCase(addToCartAsync.pending, (state, action) => {
         state.isLoading = true;
-        state.lastedError = undefined;
       })
       .addCase(addToCartAsync.rejected, (state, action) => {
         state.isLoading = false;
-        state.lastedError = action.error.message;
+        const item = state.cart.find(
+          (item) => item.bookId === action.meta.arg.book.id
+        );
+        if (item) {
+          item.error = action.error.message;
+        }
+      })
+      .addCase(fetchCartAsync.fulfilled, (state, action) => {
+        state.cart = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(deleteCartItemAsync.fulfilled, (state, action) => {
+        const id = action.payload;
+        state.cart = state.cart.filter((item) => item.bookId !== id);
+        state.isLoading = false;
+      })
+      .addCase(updateCartItemAsync.fulfilled, (state, action) => {
+        const { id, quantity } = action.payload;
+        if (quantity <= 0) {
+          return;
+        }
+        const item = state.cart.find((item) => item.bookId === id);
+        if (item) {
+          item.quantity = quantity;
+        }
+        state.isLoading = false;
+      })
+      .addCase(clearCartAsync.fulfilled, (state, action) => {
+        state.cart = [];
+        state.isLoading = false;
+      })
+      .addCase(updateCartItemAsync.rejected, (state, action) => {
+        const { id, quantity } = action.meta.arg;
+        const item = state.cart.find((item) => item.bookId === id);
+        if (item) {
+          item.error = action.error.message;
+        }
+        state.isLoading = false;
       });
   },
 });
 
-export const { addToCart, removeFromCart, updateQuantity } = cartSlice.actions;
-
 export default cartSlice.reducer;
+export const { addToBill, addAllToBill, clearBill, toggleItem } =
+  cartSlice.actions;
 export const selectCart = (state: RootState) => state.cart.cart;
 export const selectCartTotalItem = (state: RootState) => state.cart.cart.length;
+export const selectCartTotalItemInBill = (state: RootState) =>
+  state.cart.cart.reduce((total, item) => {
+    if (item.isCheck) {
+      return total + item.quantity;
+    }
+    return total;
+  }, 0);
 export const selectIsLoadingCart = (state: RootState) => state.cart.isLoading;
-export const selectLastedErrorCart = (state: RootState) =>
-  state.cart.lastedError;
 
+export const selectIsAllChecked = (state: RootState) =>
+  state.cart.cart.every((item) => item.isCheck);
+export const selectTotalPrice = (state: RootState) =>
+  state.cart.cart.reduce((total, item) => {
+    if (item.isCheck) {
+      return total + item.quantity * item.book.price;
+    }
+    return total;
+  }, 0);
 export const addToCartAsync = createAsyncThunk(
   'cart/addToCartAsync',
   async (payload: { book: BookPreviewDto; quantity: number }, thunkAPI) => {
     const { book, quantity } = payload;
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
     await cartApiService.addToCart({ bookId: book.id, quantity });
     return { book, quantity };
+  }
+);
+
+export const fetchCartAsync = createAsyncThunk(
+  'cart/fetchCartAsync',
+  async (payload: undefined, thunkAPI) => {
+    const cart = await cartApiService.getCartItems();
+    return cart;
+  }
+);
+
+export const deleteCartItemAsync = createAsyncThunk(
+  'cart/deleteCartItemAsync',
+  async (payload: { id: number }, thunkAPI) => {
+    const { id } = payload;
+    await cartApiService.deleteCartItem(id);
+    return id;
+  }
+);
+
+export const updateCartItemAsync = createAsyncThunk(
+  'cart/updateCartItemAsync',
+  async (payload: { id: number; quantity: number }, thunkAPI) => {
+    const { id, quantity } = payload;
+    if (quantity <= 0) {
+      thunkAPI.dispatch(deleteCartItemAsync({ id }));
+      return { id, quantity };
+    }
+    await cartApiService.setCartItemQuantity({
+      bookId: id,
+      quantity,
+    });
+    return { id, quantity };
+  }
+);
+
+export const clearCartAsync = createAsyncThunk(
+  'cart/clearCartAsync',
+  async (payload: undefined, thunkAPI) => {
+    await cartApiService.clearCart();
+    return undefined;
   }
 );

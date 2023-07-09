@@ -5,6 +5,7 @@ import LoginPage from './login';
 import RegisterPage from './register';
 import BookDetailPage from './bookdetail';
 import SearchPage from './search';
+import CartPage from './user/cart';
 const routes: RouteObject[] = [
   {
     path: '/',
@@ -26,6 +27,10 @@ const routes: RouteObject[] = [
       {
         path: 'search',
         element: <SearchPage />,
+      },
+      {
+        path: 'user/cart',
+        element: <CartPage />,
       },
     ],
   },

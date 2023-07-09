@@ -1,6 +1,7 @@
 import { selectCart } from '@/redux/cartSplice';
 import { useAppSelector } from '@/redux/hook';
 import { toCurrencyFormat } from '@client/libs/shared/src/lib/Utils';
+import { Link } from 'react-router-dom';
 
 export default function CartMenu() {
   const cart = useAppSelector(selectCart);
@@ -66,9 +67,12 @@ export default function CartMenu() {
             ))}
           </div>
           <div className="card-actions">
-            <button className="btn btn-primary btn-block font-bold ">
+            <Link
+              to={'/user/cart'}
+              className="btn btn-primary btn-block font-bold "
+            >
               View cart
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -11,27 +11,14 @@ import ImageViewer from './ImageViewer';
 import { useAppDispatch } from '@/redux/hook';
 import { addToCartAsync } from '@/redux/cartSplice';
 import { useNotification } from '@client/libs/shared/src';
+import NumberInput from '@/components/NumberInput';
 
 interface Props {
   book: BookDto;
 }
 export default function PreviewSection({ book }: Props) {
   const [amount, setAmount] = React.useState(0);
-  const minus = () => {
-    if (amount > 0) {
-      setAmount(amount - 1);
-    }
-  };
-  const plus = () => {
-    setAmount(amount + 1);
-  };
 
-  const handleChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (value >= 0) {
-      setAmount(value);
-    }
-  };
   const dispatch = useAppDispatch();
   const toast = useNotification();
   const addToCart = () => {
@@ -99,20 +86,7 @@ export default function PreviewSection({ book }: Props) {
               <label className="label">
                 <span className="label-text text-lg">Số lượng</span>
               </label>
-              <label className="input-group">
-                <span onClick={minus}>
-                  <AiOutlineMinus size={20} />
-                </span>
-                <input
-                  placeholder="10"
-                  className="input w-24  input-bordered"
-                  value={amount}
-                  onChange={handleChanged}
-                />
-                <span onClick={plus}>
-                  <AiOutlinePlus size={20} />
-                </span>
-              </label>
+              <NumberInput value={amount} onChange={setAmount} />
             </div>
             <button
               className="btn btn-primary btn-outline  ml-4"
