@@ -6,7 +6,7 @@ import { BsThreeDots, BsThreeDotsVertical } from 'react-icons/bs';
 import { AiFillDelete, AiFillEdit, AiOutlinePlus } from 'react-icons/ai';
 import Pagination from '@/components/Pagination';
 import { useDialog } from '@shared/dialog';
-import authorApiService from '@/Utils/Services/authorApiService';
+import authorApiService from '@shared/Utils/Services/authorApiService';
 import { useQuery } from 'react-query';
 import { useToggle } from 'usehooks-ts';
 import CreateFormModal from './CreateFormModal';

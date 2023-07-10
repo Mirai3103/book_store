@@ -4,7 +4,7 @@ import { PaginationDto } from '@/types/paginationDto';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { AiFillEdit, AiOutlinePlus } from 'react-icons/ai';
 import Pagination from '@/components/Pagination';
-import seriesApiService from '@/Utils/Services/seriesApiService';
+import seriesApiService from '@shared/Utils/Services/seriesApiService';
 import { useQuery } from 'react-query';
 import { useDebounceState, usePagination } from '@shared/hooks';
 import { OrderByDto } from '@/types/orderByDto';

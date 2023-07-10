@@ -1,4 +1,5 @@
 import React from 'react';
+import { Toast } from './toast';
 
 interface NotificationContextProps {
   add: (node: React.ReactNode, key: string) => void;
@@ -7,7 +8,10 @@ interface NotificationContextProps {
 }
 
 const NotificationContext = React.createContext({} as NotificationContextProps);
-
+interface ToastProps {
+  type: 'success' | 'warning' | 'error' | 'info';
+  message: string;
+}
 const NotificationProvider = ({ children }: { children: React.ReactNode }) => {
   const [list, setList] = React.useState<
     { key: string; node: React.ReactNode }[]
@@ -22,6 +26,18 @@ const NotificationProvider = ({ children }: { children: React.ReactNode }) => {
     setList([]);
   }, []);
   const rootRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    const handleEvent = (e: CustomEvent<ToastProps>) => {
+      add(<Toast {...e.detail} />, e.detail.message);
+      setTimeout(() => {
+        remove(e.detail.message);
+      }, 5000);
+    };
+    window.addEventListener('noitfication' as any, handleEvent);
+    return () => {
+      window.removeEventListener('noitfication' as any, handleEvent);
+    };
+  }, []);
   return (
     <NotificationContext.Provider
       value={{ add: add, remove: remove, removeAll }}

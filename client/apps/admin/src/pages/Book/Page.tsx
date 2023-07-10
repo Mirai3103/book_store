@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch } from '@headlessui/react';
 import { useQuery } from 'react-query';
 import { usePagination } from '@client/libs/shared/src/lib/hooks';
-import bookApiService from '@/Utils/Services/bookApiService';
+import bookApiService from '@shared/Utils/Services/bookApiService';
 import { useForm } from 'react-hook-form';
 import { AdvancedSearchDto } from '@/types/advancedSearchDto';
 import { PaginationDto } from '@/types/paginationDto';
@@ -21,10 +21,10 @@ import {
   toFullTimeFormat,
 } from '@client/libs/shared/src/lib/Utils';
 import TextInputWithRef from '@/components/TextInput';
-import AuthorComboBox from '@/components/AuthorComboBox';
-import PublisherCombobox from '@/components/PublisherCombobox';
-import CategoryComboBox from '@/components/CategoryComboBox';
-import SeriesComboBox from '@/components/SeriesComboBox';
+import AuthorComboBox from '@shared/AuthorComboBox';
+import PublisherCombobox from '@shared/PublisherCombobox';
+import CategoryComboBox from '@shared/CategoryComboBox';
+import SeriesComboBox from '@shared/CategoryComboBox';
 import { useNavigate } from 'react-router-dom';
 
 export default function BookManagementIndexPage() {

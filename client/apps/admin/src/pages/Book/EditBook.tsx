@@ -1,10 +1,10 @@
-import bookApiService from '@/Utils/Services/bookApiService';
-import AuthorComboBox from '@/components/AuthorComboBox';
-import CategoryComboBox from '@/components/CategoryComboBox';
+import bookApiService from '@shared/Utils/Services/bookApiService';
+import AuthorComboBox from '@shared/AuthorComboBox';
+import CategoryComboBox from '@shared/CategoryComboBox';
 import LoadingScreen from '@/components/LoadingScreen';
-import ProviderComboBox from '@/components/ProviderComboBox';
-import PublisherCombobox from '@/components/PublisherCombobox';
-import SeriesComboBox from '@/components/SeriesComboBox';
+import ProviderComboBox from '@shared/ProviderComboBox';
+import PublisherCombobox from '@shared/PublisherCombobox';
+import SeriesComboBox from '@shared/CategoryComboBox';
 import TextAreaWithRef from '@/components/TextArea';
 import TextInputWithRef from '@/components/TextInput';
 import { BookDto } from '@/types/bookDto';

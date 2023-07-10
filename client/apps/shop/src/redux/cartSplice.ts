@@ -59,6 +59,14 @@ export const cartSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addToCartAsync.fulfilled, (state, action) => {
+        window.dispatchEvent(
+          new CustomEvent('noitfication', {
+            detail: {
+              message: 'Thêm vào giỏ hàng thành công',
+              type: 'success',
+            },
+          })
+        );
         const { book, quantity } = action.payload;
         const item = state.cart.find((item) => item.bookId === book.id);
         if (item) {
@@ -80,6 +88,14 @@ export const cartSlice = createSlice({
         if (item) {
           item.error = action.error.message;
         }
+        window.dispatchEvent(
+          new CustomEvent('noitfication', {
+            detail: {
+              message: action.error.message,
+              type: 'error',
+            },
+          })
+        );
       })
       .addCase(fetchCartAsync.fulfilled, (state, action) => {
         state.cart = action.payload;
@@ -89,6 +105,14 @@ export const cartSlice = createSlice({
         const id = action.payload;
         state.cart = state.cart.filter((item) => item.bookId !== id);
         state.isLoading = false;
+        window.dispatchEvent(
+          new CustomEvent('noitfication', {
+            detail: {
+              message: 'Xóa khỏi giỏ hàng thành công',
+              type: 'success',
+            },
+          })
+        );
       })
       .addCase(updateCartItemAsync.fulfilled, (state, action) => {
         const { id, quantity } = action.payload;
