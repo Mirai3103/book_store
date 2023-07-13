@@ -1,4 +1,8 @@
-import { LoginRequest, LoginResponse } from '@/lib/types/authDto';
+import {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+} from '@/lib/types/authDto';
 import api from '../api';
 
 class AuthApiService {
@@ -7,10 +11,12 @@ class AuthApiService {
     return response.data;
   }
 
-  public async register(loginRequest: LoginRequest): Promise<LoginResponse> {
+  public async register(
+    registerRequest: RegisterRequest
+  ): Promise<LoginResponse> {
     const response = await api.post<LoginResponse>(
       '/Auth/register',
-      loginRequest
+      registerRequest
     );
     return response.data;
   }

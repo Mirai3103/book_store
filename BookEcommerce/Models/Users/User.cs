@@ -9,6 +9,19 @@ namespace BookStore.Models
         FEMALE,
         UNKNOWN,
     }
+    public static class GenderExtension
+    {
+        public static string ToString(this Gender gender)
+        {
+            return gender switch
+            {
+                Gender.MALE => "Nam",
+                Gender.FEMALE => "Nữ",
+                Gender.UNKNOWN => "Không xác định",
+                _ => "Không xác định",
+            };
+        }
+    }
     public partial class User
     {
         [Key]
