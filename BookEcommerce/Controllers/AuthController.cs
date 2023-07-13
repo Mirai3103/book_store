@@ -79,4 +79,11 @@ public class AuthController : ControllerBase
         await _authService.Logout(refreshToken.RefreshToken, this.HttpContext);
         return Ok();
     }
+    [HttpGet("send-verify-email")]
+    public async Task<IActionResult> SendVerifyEmail([FromQuery] Guid userId)
+    {
+        var currentDomain = $"{this.Request.Scheme}://{this.Request.Host}";
+        var result = await _authService.SendVerificationEmail(userId, currentDomain);
+        return Ok(result);
+    }
 }

@@ -7,7 +7,7 @@ namespace BookStore.Services.Interfaces
     {
         string GenerateToken(IEnumerable<Claim> claims, int expireMinutes = 60);
         ClaimsPrincipal DecodeToken(string token);
-
+        string TryDecodeToken(string token, out ClaimsPrincipal? claimsPrincipal);
 
     }
 }

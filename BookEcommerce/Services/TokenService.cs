@@ -41,8 +41,28 @@ public class TokenService : ITokenService
             ValidateAudience = true,
             ValidAudience = _configuration["Jwt:Audience"],
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.Zero,
         };
         return handler.ValidateToken(token, tokenValidationParameters, out _);
+    }
+
+    public string TryDecodeToken(string token, out ClaimsPrincipal? claimsPrincipal)
+    {
+        try
+        {
+            claimsPrincipal = DecodeToken(token);
+            return "";
+        }
+        catch (SecurityTokenExpiredException)
+        {
+            claimsPrincipal = null;
+            return "Token đã hết hạn";
+        }
+        catch (Exception)
+        {
+            claimsPrincipal = null;
+            return "Token không hợp lệ";
+        }
+
     }
 }

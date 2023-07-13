@@ -1,13 +1,16 @@
 namespace BookStore;
 
 using BookStore.Data;
+using BookStore.Dto;
 using BookStore.Middleware;
 using BookStore.Services;
 using BookStore.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 public class Startup
@@ -52,6 +55,8 @@ public class Startup
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"] ?? "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"))
                 };
             });
+        services.Configure<MailSetting>(Configuration.GetSection("MailSettings"));
+
         services.AddTransient<IBookService, BookService>();
         services.AddTransient<ICategoryService, CategoryService>();
         services.AddTransient<IAuthorService, AuthorService>();
@@ -66,6 +71,7 @@ public class Startup
         services.AddTransient<IRoleService, RoleService>();
         services.AddTransient<IPermissionService, PermissionService>();
         services.AddTransient<ICartItemService, CartItemService>();
+        services.AddTransient<IMailService, MailService>();
 
     }
 

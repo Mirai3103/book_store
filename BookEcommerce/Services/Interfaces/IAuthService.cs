@@ -6,8 +6,9 @@ namespace BookStore.Services.Interfaces
     {
         Task<LoginResponse?> Login(LoginRequest request, HttpContext context);
         Task<LoginResponse?> Register(RegisterRequest request, HttpContext context);
-        Task<string?> ValidateEmail(string token);
+        Task<bool> ValidateEmail(string token);
         Task<LoginResponse?> RefreshToken(string refreshToken, HttpContext context);
         Task Logout(string refreshToken, HttpContext context);
+        Task<bool> SendVerificationEmail(Guid userId, string currentDomain);
     }
 }
