@@ -1,6 +1,10 @@
 import React from 'react';
 import FilterSection from './FilterSection';
-import { resetSearch, selectFilters } from '@/redux/searchSplice';
+import {
+  resetSearch,
+  selectFilters,
+  selectResultOf,
+} from '@/redux/searchSplice';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { useMutation, useQuery } from 'react-query';
 import { AdvancedSearchDto } from '@client/libs/shared/src/lib/types/advancedSearchDto';
@@ -14,13 +18,12 @@ import Pagination from '@shared/Pagination';
 export default function SearchPage() {
   const dispatch = useAppDispatch();
   React.useEffect(() => {
-    console.log('first render search');
     return () => {
-      console.log('reset search');
       dispatch(resetSearch());
     };
   }, []);
   const filters = useAppSelector(selectFilters);
+  const resultOf = useAppSelector(selectResultOf);
   const { currentPage, onChangePage, setTotalPages, totalPages } =
     usePagination();
   const { data, mutate, isLoading } = useMutation<
@@ -48,7 +51,12 @@ export default function SearchPage() {
         <FilterSection onApplyFilter={onApplyFilter} />
         <div className="grow bg-base-100 p-4">
           <div className="flex justify-between ">
-            <h2 className="text-2xl font-bold">Kết quả tìm kiếm </h2>
+            <h2 className="text-2xl font-bold">
+              Kết quả tìm kiếm
+              <span className="text-xl font-normal ml-2 text-base-content">
+                {resultOf}
+              </span>
+            </h2>
             <div className="flex gap-x-2 items-center">
               <div className="dropdown dropdown-end">
                 <label

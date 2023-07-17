@@ -10,8 +10,8 @@ export default function InvoiceSection() {
   const total = useAppSelector(selectTotalPrice);
   const totalItem = useAppSelector(selectCartTotalItemInBill);
   return (
-    <div className=" mb-20 w-full  ">
-      <div className="bg-base-100 shadow-lg p-1">
+    <div className=" w-full  mt-8 ">
+      <div className="bg-base-100  p-1">
         <h2 className="p-4 border-b">
           <span className="text-2xl font-bold">Thông tin đơn hàng</span>
         </h2>

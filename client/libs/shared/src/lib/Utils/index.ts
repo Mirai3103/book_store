@@ -88,3 +88,19 @@ export function getServerImageURL(fileName: string | undefined | null): string {
   }
   return `api/File/${fileName}`;
 }
+
+export function getDiffField<T extends object>({
+  oldValue,
+  newValue,
+}: {
+  oldValue: T;
+  newValue: T;
+}): Partial<T> {
+  const diff: Partial<T> = {};
+  for (const key in newValue) {
+    if (oldValue[key] !== newValue[key]) {
+      diff[key] = newValue[key];
+    }
+  }
+  return diff;
+}

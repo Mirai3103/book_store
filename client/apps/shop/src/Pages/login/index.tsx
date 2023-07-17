@@ -16,6 +16,7 @@ export default function LoginPage() {
     defaultValues: {
       username: '',
       password: '',
+      isRemember: false,
     },
   });
   const dispatch = useAppDispatch();
@@ -94,6 +95,7 @@ export default function LoginPage() {
               <input
                 type="checkbox"
                 className="checkbox-primary checkbox checkbox-xs"
+                {...register('isRemember')}
               />
               <span>Ghi nhớ đăng nhập</span>
             </div>

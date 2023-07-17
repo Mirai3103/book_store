@@ -50,8 +50,8 @@ namespace BookStore.Services
                 new("email", user.Email),
 
             };
-
-            var refreshToken = _tokenService.GenerateToken(claims, 60 * 24 * 7);
+            int expireInMinutes = 60 * 24 * (request.IsRemember ? 15 : 1);
+            var refreshToken = _tokenService.GenerateToken(claims, expireInMinutes);
             _context.Tokens.Add(new Token
             {
                 TokenValue = refreshToken,

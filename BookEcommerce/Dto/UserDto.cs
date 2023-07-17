@@ -11,7 +11,7 @@ public class UserDto
     public string DisplayName { get; set; } = null!;
     public string? AvatarUrl { get; set; }
     public string? PhoneNumber { get; set; }
-    public string? Gender { get; set; }
+    public Gender? Gender { get; set; }
     public DateOnly? Birthday { get; set; }
     public bool IsValidateEmail { get; set; } = false;
 }
@@ -43,7 +43,7 @@ public static class UserExtension
             Id = user.Id,
             IsValidateEmail = user.IsValidateEmail,
             PhoneNumber = user.PhoneNumber,
-            Gender = user.Gender.ToString(),
+            Gender = user.Gender,
         };
     }
 }

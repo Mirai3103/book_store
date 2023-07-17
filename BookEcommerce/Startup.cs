@@ -72,6 +72,7 @@ public class Startup
         services.AddTransient<IPermissionService, PermissionService>();
         services.AddTransient<ICartItemService, CartItemService>();
         services.AddTransient<IMailService, MailService>();
+        services.AddTransient<IUserService, UserService>();
 
     }
 

@@ -6,6 +6,8 @@ import RegisterPage from './register';
 import BookDetailPage from './bookdetail';
 import SearchPage from './search';
 import CartPage from './user/cart';
+import Profile from './user/profile';
+import UserLayout from './user/Layout';
 const routes: RouteObject[] = [
   {
     path: '/',
@@ -29,8 +31,18 @@ const routes: RouteObject[] = [
         element: <SearchPage />,
       },
       {
-        path: 'user/cart',
-        element: <CartPage />,
+        path: 'user',
+        element: <UserLayout />,
+        children: [
+          {
+            path: 'cart',
+            element: <CartPage />,
+          },
+          {
+            path: 'profile',
+            element: <Profile />,
+          },
+        ],
       },
     ],
   },

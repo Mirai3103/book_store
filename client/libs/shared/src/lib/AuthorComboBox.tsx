@@ -27,11 +27,7 @@ export default function AuthorComboBox({
     defaultSearchValue || '',
     500
   );
-  const { data: authors, isLoading: fetchAuthorsLoading } = useQuery<
-    AuthorDto,
-    any,
-    PaginationDto<AuthorDto>
-  >({
+  const { data: authors, isLoading: fetchAuthorsLoading } = useQuery({
     queryKey: ['authors', authorKeyword],
     queryFn: () => authorApiService.getAllAuthors(1, 10, authorKeyword),
   });

@@ -17,9 +17,6 @@ export default function CartSection() {
   const isAllChecked = cartItems.every((item) => item.isCheck);
   return (
     <div className="bg-base-100 w-fulls">
-      <h2 className="p-4 border-b">
-        <span className="text-2xl font-bold">Giỏ hàng</span>
-      </h2>
       <table className="table ">
         <thead>
           <tr className="text-base">

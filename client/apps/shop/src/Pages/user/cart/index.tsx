@@ -12,9 +12,9 @@ export default function CartPage() {
     };
   }, []);
   return (
-    <div className="mt-6 max-w-xs min-h-screen  sm:max-w-xl md:max-w-3xl lg:max-w-4xl xl:max-w-6xl 2xl:max-w-7xl flex flex-col --xl:flex-row gap-5 mx-auto ">
+    <>
       <CartSection />
       <InvoiceSection />
-    </div>
+    </>
   );
 }

@@ -1,5 +1,8 @@
+import { useAppDispatch } from '@/redux/hook';
+import { setSearchAttribute } from '@/redux/searchSplice';
 import { BookDto } from '@client/libs/shared/src/lib/types/bookDto';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 interface Props {
   book: BookDto;
 }

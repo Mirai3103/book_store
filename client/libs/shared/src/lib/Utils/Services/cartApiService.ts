@@ -1,6 +1,7 @@
 import { AddToCartDto, CartItemDto } from '@/lib/types/cartItemDto';
 import api from '../api';
 class CartApiService {
+  
   getToken() {
     return localStorage.getItem('token');
   }

@@ -12,6 +12,8 @@ import { useAppDispatch } from '@/redux/hook';
 import { addToCartAsync } from '@/redux/cartSplice';
 import { useNotification } from '@client/libs/shared/src';
 import NumberInput from '@/components/NumberInput';
+import { useNavigate } from 'react-router-dom';
+import { setSearchAttribute } from '@/redux/searchSplice';
 
 interface Props {
   book: BookDto;
@@ -38,6 +40,27 @@ export default function PreviewSection({ book }: Props) {
     );
   };
   const [isShow, setIsShow] = React.useState(false);
+  const navigate = useNavigate();
+  const onNavigateToAuthor = () => {
+    dispatch(
+      setSearchAttribute({
+        key: 'authorIds',
+        value: [book.author!.id],
+      })
+    );
+    navigate('/search');
+  };
+  const onNavigateToPublisher = () => {
+    dispatch(
+      setSearchAttribute({
+        key: 'publisherIds',
+        value: [book.publisher!.id],
+      })
+    );
+
+    navigate('/search');
+  };
+
   return (
     <section className="flex  gap-x-12 py-4 bg-base-100 p-8 shadow-md">
       <div className="w-4/12 h-[400px] ">
@@ -59,13 +82,19 @@ export default function PreviewSection({ book }: Props) {
         <div className="flex gap-x-14">
           <div className="text-lg">
             <div>Tác giả:</div>
-            <div className="text-primary-focus font-bold cursor-pointer">
+            <div
+              className="text-primary-focus font-bold cursor-pointer"
+              onClick={onNavigateToAuthor}
+            >
               {book?.author?.name}
             </div>
           </div>
           <div className="text-lg">
             <div>Nhà xuất bản:</div>
-            <div className="text-primary-focus font-bold cursor-pointer">
+            <div
+              className="text-primary-focus font-bold cursor-pointer"
+              onClick={onNavigateToPublisher}
+            >
               {book?.publisher?.name}
             </div>
           </div>

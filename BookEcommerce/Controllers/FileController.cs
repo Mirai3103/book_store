@@ -19,4 +19,10 @@ public class FileController : ControllerBase
 
         return new FileStreamResult(fileStream, "application/octet-stream");
     }
+    [HttpPost("upload", Name = "UploadFile")]
+    public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
+    {
+        var fileName = await _fileService.SaveFileAsync(file);
+        return Ok(fileName);
+    }
 }

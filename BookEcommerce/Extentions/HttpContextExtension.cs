@@ -26,4 +26,9 @@ public static class HttpContextExtension
         var roles = httpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
         return roles;
     }
+    public static bool IsHasPermission(this HttpContext httpContext, string permission)
+    {
+        var permissions = httpContext.GetPermissions();
+        return permissions.Contains(permission);
+    }
 }
