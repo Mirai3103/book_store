@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using BookStore.Utils;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
+using System.Collections.Generic;
 
 public class BookService : IBookService
 {
@@ -243,5 +244,10 @@ public class BookService : IBookService
     {
         _context.Books.Remove(_context.Books.Find(id));
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<ICollection<string>> GetAllValidBookSlugsAsync()
+    {
+        return await _context.Books.Select(b => b.Slug).ToListAsync();
     }
 }

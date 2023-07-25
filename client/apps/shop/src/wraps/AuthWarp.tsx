@@ -1,4 +1,4 @@
-import { login, logout } from '@/redux/authSplice';
+import { fetchUserProfileAsync, login, logout } from '@/redux/authSplice';
 import { useAppDispatch } from '@/redux/hook';
 import authApiService from '@client/libs/shared/src/lib/Utils/Services/authApiService';
 import React from 'react';
@@ -13,6 +13,7 @@ export default function AuthWarp({ children }: { children: React.ReactNode }) {
         .refreshToken(refreshToken)
         .then((res) => {
           appDispatch(login(res));
+          appDispatch(fetchUserProfileAsync());
         })
         .catch((err) => {
           console.log(err);

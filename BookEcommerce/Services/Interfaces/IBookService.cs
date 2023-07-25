@@ -14,7 +14,7 @@ namespace BookStore.Services.Interfaces
         Task<BookPreviewDto> UpdateBookAsync(int id, UpdateBookDto updateBookDto);
         Task DeleteBookAsync(int id);
         Task<string> UpdateBookCoverAsync(int id, IFormFile cover);
-
+        Task<ICollection<string>> GetAllValidBookSlugsAsync();
 
     }
 

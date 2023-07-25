@@ -53,11 +53,29 @@ export default function Profile() {
 
   const handleUpdate = async (updateDto: UpdateUserDto) => {
     updateDto.gender = Number(updateDto.gender);
-    const diff = getDiffField({
+    const diff = getDiffField<UpdateUserDto>({
       newValue: updateDto,
       oldValue: data,
     });
-    console.log(diff);
+    diff.id = data.id;
+    userApiService
+      .updateUserProfile(diff)
+      .then((res) => {
+        if (res) {
+          toast.show({
+            type: 'success',
+            message: 'Thông tin của bạn đã được cập nhật',
+            duration: 3000,
+          });
+        }
+      })
+      .catch((e) => {
+        toast.show({
+          type: 'error',
+          message: 'Cập nhật thông tin thất bại',
+          duration: 3000,
+        });
+      });
   };
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -84,10 +102,10 @@ export default function Profile() {
           >
             <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
               <img
-                src={
-                  getServerImageURL(getValues('avatarUrl')) ||
-                  'https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'
-                }
+                src={getServerImageURL(
+                  data?.avatarUrl ||
+                    'https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'
+                )}
                 alt="x"
               />
             </div>

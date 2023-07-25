@@ -1,12 +1,13 @@
 import { LoginResponse } from '@client/libs/shared/src/lib/types/authDto';
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import jwt_decode from 'jwt-decode';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from './store';
+import userApiService from '@client/libs/shared/src/lib/Utils/Services/userApiService';
 
 interface User {
   userId: string;
   email: string;
   displayName: string;
+  avatarUrl?: string;
 }
 interface AuthState {
   token: string | null;
@@ -28,7 +29,6 @@ const authSlice = createSlice({
       state.token = action.payload.accessToken;
       localStorage.setItem('token', action.payload.accessToken);
       state.isAuthenticated = true;
-      state.user = jwt_decode(action.payload.accessToken);
     },
     logout(state) {
       state.token = null;
@@ -38,7 +38,7 @@ const authSlice = createSlice({
     setToken(state, action: PayloadAction<string>) {
       state.token = action.payload;
       state.isAuthenticated = true;
-      state.user = jwt_decode(action.payload);
+      localStorage.setItem('token', action.payload);
     },
     removeToken(state) {
       state.token = null;
@@ -46,7 +46,20 @@ const authSlice = createSlice({
       state.user = null;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchUserProfileAsync.fulfilled, (state, action) => {
+      state.user = action.payload;
+    });
+  },
 });
+
+export const fetchUserProfileAsync = createAsyncThunk(
+  'auth/fetchUserProfile',
+  async () => {
+    const response = await userApiService.getUserProfile();
+    return response;
+  }
+);
 
 export const { login, logout } = authSlice.actions;
 

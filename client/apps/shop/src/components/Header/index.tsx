@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Avatar from '@shared/Avatar';
 import { setSearchAttribute } from '@/redux/searchSplice';
 import CartMenu from './CartMenu';
+import { getServerImageURL } from '@client/libs/shared/src/lib/Utils';
 export default function Header() {
   const user = useAppSelector(selectUser);
   const keyword = useAppSelector((state) => state.search.filters.keyword);
@@ -94,7 +95,11 @@ export default function Header() {
                 {user.displayName}
               </span>
 
-              <Avatar className="w-10" alt={user.displayName} />
+              <Avatar
+                className="w-10"
+                alt={user.displayName}
+                src={getServerImageURL(user.avatarUrl)}
+              />
             </label>
             <ul
               tabIndex={0}

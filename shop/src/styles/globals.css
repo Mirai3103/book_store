@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer {
+    .container {
+        @apply px-2 mx-auto sm:px-6 lg:px-8 xl:px-12 2xl:px-16;
+    }
+}

@@ -64,12 +64,20 @@ namespace BookStore.Services
             claims.AddRange(user.Roles.Select(r => new Claim(ClaimTypes.Role, r.Value)));
             claims.AddRange(user.Permissions.Select(p => new Claim("Permission", p.Value)));
             claims.AddRange(user.Roles.SelectMany(r => r.Permissions).Select(p => new Claim("Permission", p.Value)));
-            var token = _tokenService.GenerateToken(claims, 5);
+            var token = _tokenService.GenerateToken(claims, 30);
 
             return new LoginResponse
             {
                 AccessToken = token,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                AccessTokenExpiry = DateTime.Now.AddMinutes(30),
+                User = new UserProfile
+                {
+                    AvatarUrl = user.AvatarUrl,
+                    DisplayName = user.DisplayName,
+                    Email = user.Email,
+                    Id = user.Id.ToString()
+                }
             };
         }
 
@@ -141,10 +149,18 @@ namespace BookStore.Services
 
             claims.AddRange(user.Roles.SelectMany(r => r.Permissions).Select(p => new Claim("Permission", p.Value)));
             var newToken = _tokenService.GenerateToken(claims, 5);
-            return Task.FromResult(new LoginResponse()
+            return Task.FromResult(new LoginResponse
             {
                 AccessToken = newToken,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                AccessTokenExpiry = DateTime.Now.AddMinutes(30),
+                User = new UserProfile
+                {
+                    AvatarUrl = user.AvatarUrl,
+                    DisplayName = user.DisplayName,
+                    Email = user.Email,
+                    Id = user.Id.ToString()
+                }
             });
         }
         public Task Logout(string refreshToken, HttpContext context)

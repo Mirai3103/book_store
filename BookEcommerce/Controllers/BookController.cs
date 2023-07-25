@@ -80,5 +80,11 @@ namespace BookStore.Controllers
             // await _bookService.DeleteBookAsync(id);
             return NoContent();
         }
+        [HttpGet("slugs", Name = "GetAllValidBookSlugs")]
+        public async Task<IActionResult> GetAllValidBookSlugs()
+        {
+            var slugs = await _bookService.GetAllValidBookSlugsAsync();
+            return Ok(slugs);
+        }
     }
 }
