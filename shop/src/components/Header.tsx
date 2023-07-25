@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import type { AppSession } from "@/core/types/next-auth.type";
 import axios from "axios";
+import Link from "next/link";
 export default function Header() {
     const [inputValue, setInputValue] = useState("");
     const { data: session } = useSession();
@@ -57,8 +58,8 @@ export default function Header() {
     return (
         <header className="flex justify-center w-full py-2 px-4 lg:py-5 lg:px-6 text-white border-0 bg-primary-700">
             <div className="flex flex-wrap lg:flex-nowrap items-center flex-row justify-start h-full max-w-[1536px] w-full">
-                <a
-                    href="#"
+                <Link
+                    href="/"
                     aria-label="SF Homepage"
                     className="inline-block mr-4 focus-visible:outline focus-visible:outline-offset focus-visible:rounded-sm shrink-0"
                 >
@@ -73,7 +74,7 @@ export default function Header() {
                             className="w-8 h-8 md:h-6 md:w-[176px] lg:w-[12.5rem] lg:h-[1.75rem]"
                         />
                     </picture>
-                </a>
+                </Link>
                 <SfButton
                     aria-label="Open categories"
                     className="lg:hidden order-first lg:order-1 mr-4 text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"

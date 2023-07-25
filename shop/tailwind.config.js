@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 import { tailwindConfig } from "@storefront-ui/react/tailwind-config";
+import sfTypography from "@storefront-ui/typography";
+
 module.exports = {
     presets: [tailwindConfig],
     content: [
@@ -40,5 +42,5 @@ module.exports = {
             },
         },
     },
-    plugins: [],
+    plugins: [sfTypography],
 };
