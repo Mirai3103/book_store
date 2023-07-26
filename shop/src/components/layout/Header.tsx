@@ -35,7 +35,6 @@ export default function Header() {
     React.useEffect(() => {
         if (session) {
             const accessToken = (session as AppSession).accessToken;
-            console.log(session);
             axios
                 .get("/asp-net/api/CartItem", {
                     headers: {

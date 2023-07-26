@@ -13,8 +13,8 @@ const nextConfig = {
     rewrites: async () => {
         return [
             {
-                source: "/asp-net/api/:path*",
-                destination: process.env.ASP_NET_SERVER_URL + "/:path*",
+                source: process.env.NEXT_PUBLIC_ASP_NET_PROXY_URL + "/:path*",
+                destination: process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL + "/:path*",
             },
         ];
     },

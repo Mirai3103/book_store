@@ -40,7 +40,11 @@ module.exports = {
                     900: "#194185",
                 },
             },
+            fontFamily: {
+                sans: ["Inter", "system-ui"],
+                heading: ["Arial", "Georgia"],
+            },
         },
     },
-    plugins: [sfTypography],
+    plugins: [require("@tailwindcss/typography"), sfTypography],
 };

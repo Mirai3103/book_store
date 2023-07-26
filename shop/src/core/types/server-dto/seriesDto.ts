@@ -1,6 +1,6 @@
-import { BookPreviewDto } from './bookPreviewDto';
-import { AuthorDto } from './authorDto';
-import { PublisherDto } from './publisherDto';
+import { BookPreviewDto } from "./bookPreviewDto";
+import { AuthorDto } from "./authorDto";
+import { PublisherDto } from "./publisherDto";
 
 export interface SeriesDto {
     id: number;
@@ -15,3 +15,11 @@ export interface SeriesDto {
     publisherId: number;
     publisher: PublisherDto | null;
 }
+export type CreateSeriesDto = Omit<
+    SeriesDto,
+    "id" | "totalBooks" | "lastedBook" | "updatedAt" | "slug" | "author" | "publisher"
+>;
+export type UpdateSeriesDto = Omit<
+    SeriesDto,
+    "totalBooks" | "lastedBook" | "updatedAt" | "slug" | "author" | "publisher"
+>;

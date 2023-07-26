@@ -1,5 +1,6 @@
 import { BookPreviewDto } from "@/core/types/server-dto/bookPreviewDto";
 import { toVietnameseCurrency } from "@/utils";
+import { clamp } from "@storefront-ui/shared";
 import {
     SfButton,
     SfRating,
@@ -8,9 +9,15 @@ import {
     SfIconShoppingCart,
     SfIconFavorite,
     SfTooltip,
+    SfIconSell,
+    SfIconRemove,
+    SfIconAdd,
+    SfIconDelete,
 } from "@storefront-ui/react";
 import Image from "next/image";
 import Link from "next/link";
+import { ChangeEvent, useId } from "react";
+import { useCounter } from "usehooks-ts";
 
 interface IProductCartProps {
     product: BookPreviewDto;
@@ -100,12 +107,49 @@ export function ProductCardSimple({ product }: IProductCartProps) {
                         as={Link}
                         href={`/products/${product.slug}`}
                         variant="secondary"
-                        className="no-underline line-clamp-2 min-h-[calc(1.5rem*2)]"
+                        className="no-underline line-clamp-2 min-h-[calc(1.25rem*2)]"
                     >
                         {product.name}
                     </SfLink>
                 </SfTooltip>
                 <span className="block mt-2 font-bold">{toVietnameseCurrency(product.price)}</span>
+            </div>
+        </div>
+    );
+}
+
+export function ProductCardHorizontal({ product }: IProductCartProps) {
+    return (
+        <div className="relative flex border-b-[1px] border-neutral-200 hover:shadow-lg min-w-[320px] max-w-[640px] p-4">
+            <div className="relative overflow-hidden rounded-md w-[100px]">
+                <SfLink href="#">
+                    <Image
+                        className="w-full h-auto border rounded-md border-neutral-200"
+                        src={product.thumbnailUrl}
+                        alt="alt"
+                        width="200"
+                        height="300"
+                    />
+                </SfLink>
+                {/* <div className="absolute top-0 left-0 text-white bg-secondary-600 py-1 pl-1.5 pr-2 text-xs font-medium">
+                    <SfIconSell size="xs" className="mr-1" />
+                    Sale
+                </div> */}
+            </div>
+            <div className="flex flex-col pl-4 min-w-[180px] flex-1">
+                <SfLink
+                    href="#"
+                    variant="secondary"
+                    className="no-underline typography-text-sm sm:typography-text-base font-medium line-clamp-4"
+                >
+                    {product.name}
+                </SfLink>
+
+                <div className="items-center sm:mt-auto sm:flex">
+                    <span className="font-bold sm:ml-auto sm:order-1 typography-text-sm sm:typography-text-lg">
+                        {toVietnameseCurrency(product.price)}
+                    </span>
+                </div>
             </div>
         </div>
     );

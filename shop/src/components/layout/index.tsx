@@ -2,7 +2,10 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Head from "next/head";
-
+import { useSsr } from "usehooks-ts";
+import axios from "axios";
+const NEXT_PUBLIC_ASP_NET_PROXY_URL = process.env.NEXT_PUBLIC_ASP_NET_PROXY_URL;
+axios.defaults.baseURL = NEXT_PUBLIC_ASP_NET_PROXY_URL;
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <>

@@ -23,7 +23,7 @@ export const AUTH_OPTIONS: AuthOptions = {
                 isRemember: { label: "Remember Me", type: "checkbox" },
             },
             authorize: async (credentials: ICredentials) => {
-                const apiUrl = process.env.ASP_NET_SERVER_URL || "http://localhost:5250";
+                const apiUrl = process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL || "http://localhost:5250";
                 if (!credentials) return null;
                 const { username, password, isRemember } = credentials;
 
@@ -82,7 +82,7 @@ export default NextAuth(AUTH_OPTIONS);
 
 async function refreshToken(token: JWT) {
     try {
-        const res = await axios.post(`${process.env.ASP_NET_SERVER_URL}/Auth/refresh-token`, {
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL}/Auth/refresh-token`, {
             refreshToken: token.refreshToken,
         });
         return {

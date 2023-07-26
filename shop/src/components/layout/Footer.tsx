@@ -165,7 +165,7 @@ const bottomLinks = [
 ];
 export default function Footer() {
     return (
-        <footer className="pt-10 bg-neutral-100">
+        <footer className="pt-10 mt-20 bg-neutral-100">
             <div className="grid justify-center grid-cols-[1fr_1fr] md:grid-cols-[repeat(4,1fr)] px-4 md:px-6 pb-10 max-w-[1536px] mx-auto">
                 {categories.map(({ label, subcategories }) => (
                     <div className="grid grid-cols xs:pb-4" key={label}>

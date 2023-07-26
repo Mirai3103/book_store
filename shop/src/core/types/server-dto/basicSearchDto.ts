@@ -1,12 +1,12 @@
 export interface BasicSearchDto {
-    keyword: string | null;
-    categoryId: number | null;
-    authorId: number | null;
-    publisherId: number | null;
-    minPrice: number | null;
-    maxPrice: number | null;
-    providerId: number | null;
+    keyword?: string | undefined;
+    categoryId?: number | undefined;
+    authorId?: number | undefined;
+    publisherId?: number | undefined;
+    minPrice?: number | undefined;
+    maxPrice?: number | undefined;
+    providerId?: number | undefined;
     sortBy: string;
     isAsc: boolean;
-    seriesId: number | null;
+    seriesId?: number | undefined;
 }

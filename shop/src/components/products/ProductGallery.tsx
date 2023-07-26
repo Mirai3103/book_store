@@ -13,9 +13,14 @@ import classNames from "classnames";
 import Image from "next/image";
 import { mergeClassNames } from "@/utils";
 import { useMediaQuery } from "usehooks-ts";
-export default function ProductGallery({ images }: IProductGalleryProps) {
-    const isDesktop = useMediaQuery("(min-width: 1024px)");
-    return isDesktop ? <DesktopGallery images={images} /> : <MobileGallery images={images} />;
+export default function ProductGallery({ images, className = "", ...props }: IProductGalleryProps) {
+    // const isDesktop = useMediaQuery("(min-width: 1024px)");
+    return (
+        <>
+            <DesktopGallery images={images} className={mergeClassNames("lg:flex hidden", className)} {...props} />
+            <MobileGallery images={images} className={mergeClassNames("lg:hidden", className)} {...props} />
+        </>
+    );
 }
 
 interface IProductGalleryProps extends React.HTMLAttributes<HTMLElement> {
@@ -49,7 +54,7 @@ export function DesktopGallery({ images, className = "" }: IProductGalleryProps)
     };
 
     return (
-        <div className={mergeClassNames("relative flex w-full max-h-[600px] aspect-[4/3]", className)}>
+        <div className={mergeClassNames("relative flex w-full max-h-[600px] grow-0 max-w-[40%]", className)}>
             <SfScrollable
                 ref={thumbsRef}
                 className="items-center w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
@@ -108,7 +113,7 @@ export function DesktopGallery({ images, className = "" }: IProductGalleryProps)
                 ))}
             </SfScrollable>
             <SfScrollable
-                className="w-full h-full snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                className="w-full h-full  snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                 activeIndex={activeIndex}
                 direction="vertical"
                 wrapperClassName="h-full m-auto"
@@ -120,15 +125,15 @@ export function DesktopGallery({ images, className = "" }: IProductGalleryProps)
                 {images.map(({ bookId, id, url }, index) => (
                     <div
                         key={`${bookId}-${id}-${index}`}
-                        className="flex justify-center h-full basis-full shrink-0 grow snap-center"
+                        className="flex  justify-center h-full basis-full shrink-0 grow snap-center"
                     >
                         <Image
                             aria-hidden={activeIndex !== index}
-                            className="object-contain w-auto h-full"
+                            className="object-contain w-auto h-full aspect-[2/3]"
                             alt={id.toString()}
                             src={url}
-                            width={600}
-                            height={600}
+                            width={300}
+                            height={300}
                         />
                     </div>
                 ))}
@@ -136,11 +141,16 @@ export function DesktopGallery({ images, className = "" }: IProductGalleryProps)
         </div>
     );
 }
-export function MobileGallery({ images }: IProductGalleryProps) {
+export function MobileGallery({ images, className = "" }: IProductGalleryProps) {
     const [activeIndex, setActiveIndex] = useState(0);
 
     return (
-        <div className="relative max-h-[600px] mb-8 flex flex-col w-full aspect-[4/3] gap-1">
+        <div
+            className={mergeClassNames(
+                "relative max-h-[600px] mb-8 flex flex-col w-full aspect-[4/3] gap-1",
+                className
+            )}
+        >
             <SfScrollable
                 className="w-full h-full snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                 wrapperClassName="group/scrollable h-full"

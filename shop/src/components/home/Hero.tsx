@@ -1,6 +1,7 @@
 import { SfButton, SfScrollable } from "@storefront-ui/react";
 import React from "react";
 import Image from "next/image";
+import { ButtonNext, ButtonPrev } from "../ProductSlider/SliderButton";
 export interface IBannerItem {
     href: string;
     image: string;
@@ -17,8 +18,8 @@ export default function Hero({ adBanners }: Props) {
                 <SfScrollable
                     buttonsPlacement="floating"
                     className="items-center w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-                    buttonNextAriaLabel={undefined}
-                    buttonPrevAriaLabel={undefined}
+                    slotPreviousButton={<ButtonPrev />}
+                    slotNextButton={<ButtonNext />}
                 >
                     {adBanners.map((banner, index) => (
                         <Image

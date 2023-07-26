@@ -3,7 +3,7 @@ import { signIn, useSession } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { GetServerSidePropsContext } from "next";
 import { AUTH_OPTIONS } from "./api/auth/[...nextauth]";
-import Hero, { IBannerItem } from "@/components/Hero";
+import Hero, { IBannerItem } from "@/components/home/Hero";
 import ProductSlider from "@/components/ProductSlider";
 import axios from "axios";
 import { PaginationDto } from "@/core/types/server-dto/paginationDto";
@@ -15,6 +15,7 @@ interface Props {
 }
 
 export default function Home({ adBanners, relatedProducts }: Props) {
+    console.log(axios.defaults.baseURL);
     return (
         <>
             <Head>
@@ -55,8 +56,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             image: "https://theme.hstatic.net/200000343865/1001052087/14/ms_banner_img4.jpg?v=207",
         },
     ];
+    //await BookApiService.getAllBooks({
+    //     sortBy: "CreatedAt",
+    //     isAsc: false,
+
+    // },1,10)
     const relatedProducts = await axios.get(
-        `${process.env.ASP_NET_SERVER_URL}/Book/search?sortBy=CreatedAt&isAsc=false&page=1&limit=10`
+        `${process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL}/Book/search?sortBy=CreatedAt&isAsc=false&page=1&limit=10`
     );
 
     return {
