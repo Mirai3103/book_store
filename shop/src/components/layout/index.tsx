@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import Head from "next/head";
 import { useSsr } from "usehooks-ts";
 import axios from "axios";
+import { Toaster } from "@/components/ui/toaster";
 const NEXT_PUBLIC_ASP_NET_PROXY_URL = process.env.NEXT_PUBLIC_ASP_NET_PROXY_URL;
 axios.defaults.baseURL = NEXT_PUBLIC_ASP_NET_PROXY_URL;
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -18,6 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Head>
             <Header />
             <main className="w-full container min-h-screen">{children}</main>
+            <Toaster />
             <Footer />
         </>
     );

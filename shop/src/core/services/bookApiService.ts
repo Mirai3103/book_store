@@ -7,7 +7,7 @@ import { BasicSearchDto } from "../types/server-dto/basicSearchDto";
 import { PaginationDto } from "../types/server-dto/paginationDto";
 import { BookPreviewDto } from "../types/server-dto/bookPreviewDto";
 import { BookDto } from "../types/server-dto/bookDto";
-
+import { AxiosRequestConfig } from "axios";
 export default class BookApiService {
     static async updateBook(id: string, data: UpdateBookDto) {
         return await axios.put(`Book/${id}`, data);
@@ -27,7 +27,8 @@ export default class BookApiService {
             isAsc = true,
         }: BasicSearchDto,
         page: number = 1,
-        limit: number = 10
+        limit: number = 10,
+        axiosConfig?: AxiosRequestConfig
     ) {
         const queryParams = new QueryParamsBuilder()
             .addParam("authorId", authorId)
@@ -43,7 +44,7 @@ export default class BookApiService {
             .addParam("page", page)
             .addParam("limit", limit)
             .build();
-        const response = await axios.get<PaginationDto<BookPreviewDto>>(`Book/search?${queryParams}`);
+        const response = await axios.get<PaginationDto<BookPreviewDto>>(`Book/search?${queryParams}`, axiosConfig);
         return response.data;
     }
     static async advancedSearch(
@@ -61,23 +62,25 @@ export default class BookApiService {
             isAsc = true,
         }: AdvancedSearchDto,
         page: number,
-        limit: number
+        limit: number,
+        axiosConfig?: AxiosRequestConfig
     ) {
         const queryParams = new QueryParamsBuilder()
-            .addParams("authorId", authorIds)
-            .addParams("categoryId", categoryIds)
+            .addParams("authorIds", authorIds)
+            .addParams("categoryIds", categoryIds)
             .addParam("keyword", keyword)
             .addParam("maxPrice", maxPrice)
             .addParam("minPrice", minPrice)
-            .addParams("providerId", providerIds)
-            .addParams("publisherId", publisherIds)
-            .addParams("seriesId", seriesIds)
+            .addParams("providerIds", providerIds)
+            .addParams("publisherIds", publisherIds)
+            .addParams("seriesIds", seriesIds)
             .addParam("sortBy", camelCaseToPascalCase(sortBy))
             .addParam("isAsc", isAsc + "")
             .addParam("page", page)
             .addParam("limit", limit)
             .build();
-        const response = await axios.get(`Book/search?${queryParams}`);
+        console.log(`Book/search?${queryParams}`);
+        const response = await axios.get<PaginationDto<BookPreviewDto>>(`Book/search?${queryParams}`, axiosConfig);
         return response.data;
     }
     static async createBook(data: FormData) {

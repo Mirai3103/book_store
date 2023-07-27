@@ -1,10 +1,11 @@
 import { CategoryDto } from "@appTypes/server-dto/categoryDto";
 import axios from "axios";
 import { camelCaseToPascalCase } from "@/utils";
+import { PaginationDto } from "../types/server-dto/paginationDto";
 
 class CategoryApiService {
     static async getAllCategories(page: number, limit: number, search = "", orderBy = "id", isAscending = true) {
-        const response = await axios.get(
+        const response = await axios.get<PaginationDto<CategoryDto>>(
             `Category?page=${page}&limit=${limit}&search=${search}&orderBy=${camelCaseToPascalCase(
                 orderBy
             )}&isAscending=${isAscending}`

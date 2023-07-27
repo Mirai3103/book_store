@@ -1,9 +1,10 @@
 import { PublisherDto } from "@appTypes/server-dto/publisherDto";
 import axios from "axios";
 import { camelCaseToPascalCase } from "@/utils";
+import { PaginationDto } from "../types/server-dto/paginationDto";
 class PublisherApiService {
     static async getAllPublishers(page: number, limit: number, search = "", orderBy = "id", isAscending = true) {
-        const response = await axios.get(
+        const response = await axios.get<PaginationDto<PublisherDto>>(
             `Publisher?page=${page}&limit=${limit}&search=${search}&orderBy=${camelCaseToPascalCase(
                 orderBy
             )}&isAscending=${isAscending}`

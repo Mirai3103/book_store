@@ -1,5 +1,5 @@
 import { BookPreviewDto } from "@/core/types/server-dto/bookPreviewDto";
-import { toVietnameseCurrency } from "@/utils";
+import { mergeClassNames, toVietnameseCurrency } from "@/utils";
 import { clamp } from "@storefront-ui/shared";
 import {
     SfButton,
@@ -16,18 +16,16 @@ import {
 } from "@storefront-ui/react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChangeEvent, useId } from "react";
-import { useCounter } from "usehooks-ts";
 
-interface IProductCartProps {
+interface IProductCartProps extends React.HTMLAttributes<HTMLElement> {
     product: BookPreviewDto;
 }
 
-export default function ProductCard({ product }: IProductCartProps) {
+export default function ProductCard({ product, className = "" }: IProductCartProps) {
     return (
-        <div className="border border-neutral-200 rounded-md hover:shadow-lg max-w-[300px]">
+        <div className={mergeClassNames("border border-neutral-200 rounded-md hover:shadow-lg ", className)}>
             <div className="relative">
-                <SfLink href="#" className="block">
+                <SfLink as={Link} href={`/products/${product.slug}`} className="block">
                     <Image
                         src={product.thumbnailUrl}
                         alt="Great product"
@@ -36,27 +34,21 @@ export default function ProductCard({ product }: IProductCartProps) {
                         height="300"
                     />
                 </SfLink>
-                <SfButton
-                    type="button"
-                    variant="tertiary"
-                    size="sm"
-                    square
-                    className="absolute bottom-0 right-0 mr-2 mb-2 bg-white ring-1 ring-inset ring-neutral-200 !rounded-full"
-                    aria-label="Add to wishlist"
-                >
-                    <SfIconFavorite size="sm" />
-                </SfButton>
             </div>
             <div className="p-4 border-t border-neutral-200">
                 <SfTooltip label={product.name} placement="bottom">
-                    <SfLink href="#" variant="secondary" className="no-underline line-clamp-2">
+                    <SfLink
+                        href={`/products/${product.slug}`}
+                        variant="secondary"
+                        className="no-underline line-clamp-2"
+                    >
                         {product.name}
                     </SfLink>
                 </SfTooltip>
-                <p className="block py-2 font-normal typography-text-sm text-neutral-700">
-                    {product.episode || product.author?.name}
+                <p className=" hidden md:block py-2 font-normal typography-text-sm text-neutral-700">
+                    {product.author?.name}
                 </p>
-                <div className="flex items-center pt-1">
+                <div className=" items-center hidden md:flex pt-1">
                     <SfRating size="xs" value={4.5} max={5} />
                     <SfLink
                         href={`/products/${product.slug}`}

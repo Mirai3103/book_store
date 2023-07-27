@@ -46,5 +46,5 @@ module.exports = {
             },
         },
     },
-    plugins: [require("@tailwindcss/typography"), sfTypography],
+    plugins: [require("@tailwindcss/typography"), require("tailwindcss-animate"), sfTypography],
 };

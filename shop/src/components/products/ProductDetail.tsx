@@ -1,6 +1,7 @@
 import { BookDto } from "@/core/types/server-dto/bookDto";
 import { mergeClassNames } from "@/utils";
 import React from "react";
+import DescriptionSpoiler from "../DescriptionSpoiler";
 interface IProps extends React.HTMLAttributes<HTMLDivElement> {
     book: BookDto;
 }
@@ -106,16 +107,14 @@ export default function ProductDetail({ book, className = "", ...props }: IProps
                     </table>
 
                     <h3 className="typography-headline-5 my-5 font-medium  px-4">Mô tả</h3>
-                    <article
-                        dangerouslySetInnerHTML={{
-                            __html:
-                                book?.description
-                                    ?.split("\n")
-                                    .map((paragraph) => `<p>${paragraph}</p>`)
-                                    .join("") || "",
-                        }}
-                        className="w-full px-8 mb-6 prose-sm"
-                    ></article>
+                    <DescriptionSpoiler
+                        rawHtml={
+                            book?.description
+                                ?.split("\n")
+                                .map((paragraph) => `<p>${paragraph}</p>`)
+                                .join("") || ""
+                        }
+                    />
                 </div>
             </div>
         </div>

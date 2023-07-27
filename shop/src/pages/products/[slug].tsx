@@ -12,6 +12,7 @@ import { PaginationDto } from "@/core/types/server-dto/paginationDto";
 import Separator from "@/components/Separator";
 import BookApiService from "@/core/services/bookApiService";
 import ProductSlider from "@/components/ProductSlider";
+import { useToast } from "@/components/ui/use-toast";
 interface Props {
     book: BookDto;
 }
@@ -47,7 +48,7 @@ export default function ProductPage({ book }: Props) {
         });
         return data.items;
     }, [book.series?.id]);
-
+    const { toast } = useToast();
     return (
         <div className="w-full h-full">
             <Head>
@@ -77,6 +78,17 @@ export default function ProductPage({ book }: Props) {
             <section className="mt-16">
                 <Separator text="Sách cùng thể loại"></Separator>
                 <ProductSlider moreHref="/category/[slug]" fetchFn={fetchSameCategoryFn} lazy />
+                <button
+                    onClick={() => {
+                        toast({
+                            title: "Scheduled: Catch up",
+                            description: "Friday, February 10, 2023 at 5:57 PM",
+                            variant: "success",
+                        });
+                    }}
+                >
+                    clickme{" "}
+                </button>
             </section>
         </div>
     );
