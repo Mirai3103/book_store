@@ -32,6 +32,7 @@ export default function ProductCard({ product, className = "" }: IProductCartPro
                         className="object-cover h-auto rounded-md aspect-square"
                         width="300"
                         height="300"
+                        priority
                     />
                 </SfLink>
             </div>
