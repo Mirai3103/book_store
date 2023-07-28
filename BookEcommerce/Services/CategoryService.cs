@@ -1,5 +1,6 @@
 namespace BookStore.Services;
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookStore.Data;
 using BookStore.Dto;
@@ -63,6 +64,13 @@ public class CategoryService : ICategoryService
         var categoriesPagination = categories.
         ToPagination<CategoryDto>(page, limit);
         return Task.FromResult(categoriesPagination);
+    }
+
+    public async Task<ICollection<CategoryDto>> GetCategoriesPreviewAsync(int[] ids)
+    {
+        return await _context.Categories.Where(c => ids.Contains(c.Id)).Include(c => c.Books)
+                                        .Select(c => c.SelectPreview()!)
+                                        .ToListAsync();
     }
 
     public async Task<CategoryDto?> GetCategoryDetailAsync(int id)

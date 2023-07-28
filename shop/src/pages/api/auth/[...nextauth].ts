@@ -2,9 +2,11 @@ import axios from "axios";
 import NextAuth, { AuthOptions, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
+import jwt_decode from "jwt-decode";
 // post localhost:5250/Auth/login {"username": "string","password": "string","isRemember": true}
 // post localhost:5250/Auth/refresh-token  {"refreshToken": "string" }
 type ICredentials = Record<"username" | "password" | "isRemember", string> | undefined;
+
 interface IAppUser extends User {
     token: {
         accessToken: string;
@@ -26,13 +28,20 @@ export const AUTH_OPTIONS: AuthOptions = {
                 const apiUrl = process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL || "http://localhost:5250";
                 if (!credentials) return null;
                 const { username, password, isRemember } = credentials;
-
+                console.log({
+                    username,
+                    password,
+                    isRemember: isRemember == "on",
+                });
                 const res = await axios.post(`${apiUrl}/Auth/login`, {
                     username,
                     password,
                     isRemember: isRemember == "on",
                 });
                 const data = res.data;
+
+                const decoded: any = jwt_decode(data.accessToken);
+                console.log(decoded.exp);
                 if (data) {
                     const user: IAppUser = {
                         id: data.user.id,
@@ -42,7 +51,7 @@ export const AUTH_OPTIONS: AuthOptions = {
                         token: {
                             accessToken: data.accessToken,
                             refreshToken: data.refreshToken,
-                            accessTokenExpiry: new Date(data.accessTokenExpiry),
+                            accessTokenExpiry: new Date(Number(decoded.exp) * 1000),
                         },
                     } as any;
                     return user;

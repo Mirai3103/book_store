@@ -9,6 +9,7 @@ import axios from "axios";
 import { PaginationDto } from "@/core/types/server-dto/paginationDto";
 import { BookPreviewDto } from "@/core/types/server-dto/bookPreviewDto";
 import Head from "next/head";
+import { SortBy } from "@/components/search/FilterSidePanel";
 interface Props {
     adBanners: IBannerItem[];
     relatedProducts: PaginationDto<BookPreviewDto>;
@@ -32,7 +33,10 @@ export default function Home({ adBanners, relatedProducts }: Props) {
             <div className="flex flex-col gap-y-12">
                 <Hero adBanners={adBanners} />
                 <span className="text-4xl text-secondary-400 font-bold text-center">SÁCH MỚI</span>
-                <ProductSlider moreHref="s" products={relatedProducts.items} />
+                <ProductSlider
+                    moreHref={`/search?sortBy=${SortBy.CREATED_AT}&isAsc=false`}
+                    products={relatedProducts.items}
+                />
                 <span className="text-4xl text-secondary-400 font-bold text-center">SÁCH BÁN CHẠY</span>
                 <ProductSlider moreHref="f" products={relatedProducts.items} />
                 <div className="mt-28"></div>

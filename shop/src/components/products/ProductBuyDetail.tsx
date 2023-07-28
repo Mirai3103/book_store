@@ -20,6 +20,11 @@ import { useCounter } from "react-use";
 import { useId, ChangeEvent } from "react";
 import { clamp } from "@storefront-ui/shared";
 import { mergeClassNames, toVietnameseCurrency } from "@/utils";
+
+import useCartStore from "@/store/cartStore";
+import useStore from "@/libs/hooks/useStore";
+import useSessionStore from "@/store/sessionStore";
+import { useToast } from "../ui/use-toast";
 interface Props extends React.HTMLAttributes<HTMLElement> {
     book: BookDto;
 }
@@ -27,13 +32,40 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
 export default function ProductBuyDetail({ book, className = "" }: Props) {
     const inputId = useId();
     const min = 1;
-    const max = 999;
+    const max = book.stock;
     const [value, { inc, dec, set }] = useCounter(min);
     function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
         const { value: currentValue } = event.target;
         const nextValue = parseFloat(currentValue);
         set(Number(clamp(nextValue, min, max)));
     }
+    const { session } = useStore(useSessionStore, (state) => state);
+    const { addAsync } = useStore(useCartStore, (state) => state);
+    const { toast } = useToast();
+    const handleAddToCart = async () => {
+        if (!session) {
+            return toast({
+                variant: "error",
+                description: "Bạn cần đăng nhập để thực hiện chức năng này",
+            });
+        }
+        addAsync?.(
+            {
+                bookId: book.id,
+                quantity: value,
+                book: book,
+                createdAt: new Date().toUTCString(),
+                updatedAt: new Date().toUTCString(),
+                userId: session.user!.id,
+            },
+            session.accessToken
+        ).then(() => {
+            toast({
+                variant: "success",
+                description: "Thêm vào giỏ hàng thành công",
+            });
+        });
+    };
     return (
         <section className={mergeClassNames("grow", className)}>
             {/* <div className="inline-flex items-center justify-center text-sm font-medium text-white bg-secondary-600 py-1.5 px-3 mb-4">
@@ -122,6 +154,7 @@ export default function ProductBuyDetail({ book, className = "" }: Props) {
                         size="lg"
                         className="w-full xs:ml-4"
                         slotPrefix={<SfIconShoppingCart size="sm" />}
+                        onClick={handleAddToCart}
                     >
                         Thêm vào giỏ hàng
                     </SfButton>

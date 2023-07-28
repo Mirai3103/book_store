@@ -10,6 +10,7 @@ using BookStore.Services.Interfaces;
 using BookStore.Exceptions;
 using BookStore.Extensions;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 public class ProviderService : IProviderService
 {
@@ -74,13 +75,14 @@ public class ProviderService : IProviderService
         return Task.FromResult(rs);
     }
 
+    public async Task<ICollection<ProviderDto>> GetProvidersPreviewAsync(int[] ids)
+    {
+        return await _dbContext.Providers.Where(p => ids.Contains(p.Id)).Include(c => c.Books).Select(p => p.SelectPreview()!).ToListAsync();
+    }
+
     public async Task<ProviderDto> UpdateProviderAsync(int id, ProviderDto providerDto)
     {
-        var provider = await _dbContext.Providers.FindAsync(id);
-        if (provider is null)
-        {
-            throw new NotFoundException("Không tìm thấy nhà cung cấp");
-        }
+        var provider = await _dbContext.Providers.FindAsync(id) ?? throw new NotFoundException("Không tìm thấy nhà cung cấp");
         provider.Name = providerDto.Name;
         provider.Description = providerDto.Description;
         _dbContext.Providers.Update(provider);

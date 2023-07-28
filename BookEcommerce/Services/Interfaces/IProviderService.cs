@@ -7,5 +7,7 @@ public interface IProviderService
     Task<ProviderDto> CreateProviderAsync(ProviderDto providerDto);
     Task DeleteProviderAsync(int id);
     Task<ProviderDto> UpdateProviderAsync(int id, ProviderDto providerDto);
+    Task<ICollection<ProviderDto>> GetProvidersPreviewAsync(int[] ids);
+
 }
 

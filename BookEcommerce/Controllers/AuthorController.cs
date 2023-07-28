@@ -47,5 +47,12 @@ namespace BookStore.Controllers
             }
             return Ok(author);
         }
+        [HttpGet("list", Name = "GetAuthorsList")]
+        public async Task<IActionResult> GetAuthorsList([FromQuery] int[] ids)
+        {
+            var authors = await _authorService.GetAuthorsPreviewAsync(ids);
+            return Ok(authors);
+        }
+
     }
 }

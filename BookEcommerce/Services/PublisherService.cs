@@ -10,6 +10,7 @@ using BookStore.Services.Interfaces;
 using BookStore.Exceptions;
 using BookStore.Extensions;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 public class PublisherService : IPublisherService
 {
@@ -71,6 +72,11 @@ public class PublisherService : IPublisherService
         }
         var result = publishers.ToPagination(page, limit);
         return Task.FromResult(result);
+    }
+
+    public async Task<ICollection<PublisherDto>> GetPublishersPreviewAsync(int[] ids)
+    {
+        return await _dbContext.Publishers.Where(a => ids.Contains(a.Id)).Include(c => c.Books).Select(a => a.SelectPreview()!).ToListAsync();
     }
 
     public async Task<PublisherDto> UpdatePublisherAsync(int id, PublisherDto publisherDto)

@@ -30,13 +30,22 @@ import { useRouter } from "next/router";
 import { AuthorDto } from "@/core/types/server-dto/authorDto";
 import { useToggle } from "usehooks-ts";
 
+export enum SortBy {
+    PRICE = "price",
+    CREATED_AT = "createdAt",
+    BESTSELLING = "BestSelling",
+    HOT = "Hot",
+    RATING = "Rating",
+}
+
 const sortOptions = [
-    { id: "sort1", label: "Relevance", value: "relevance" },
-    { id: "sort2", label: "Price: Low to High", value: "price low to high" },
-    { id: "sort3", label: "Price: High to Low", value: "price high to low" },
-    { id: "sort4", label: "New Arrivals", value: "new arrivals" },
-    { id: "sort5", label: "Customer Rating", value: "customer rating" },
-    { id: "sort6", label: "Bestsellers", value: "bestsellers" },
+    { by: SortBy.PRICE, asc: true, label: "Giá: Thấp đến Cao" },
+    { by: SortBy.PRICE, asc: false, label: "Giá: Cao đến Thấp" },
+    { by: SortBy.CREATED_AT, asc: false, label: "Mới nhất" },
+    { by: SortBy.BESTSELLING, asc: true, label: "Bán chạy nhất" },
+    { by: SortBy.CREATED_AT, asc: true, label: "Cũ nhất" },
+    { by: SortBy.HOT, asc: true, label: "Nổi bật" },
+    { by: SortBy.RATING, asc: true, label: "Đánh giá cao nhất" },
 ];
 export interface OnApplyParams {
     categoryIds?: string[];
@@ -65,7 +74,7 @@ interface Props {
     defaultProviders?: PublisherDto[];
     defaultMinPrice?: number;
     defaultMaxPrice?: number;
-    defaultSortBy?: string;
+    defaultSortBy?: SortBy;
     defaultIsAsc?: boolean;
     defaultKeyword?: string;
     onApply?: (params: OnApplyParams) => void;
@@ -78,14 +87,27 @@ export default function FiltersSidePanel({
     defaultProviders = [],
     defaultMinPrice = 0,
     defaultMaxPrice = 10000000,
-    defaultSortBy = "relevance",
-    defaultIsAsc = true,
+    defaultSortBy = SortBy.CREATED_AT,
+    defaultIsAsc = false,
     defaultKeyword = "",
     onApply,
 }: Props) {
     const [activeId, setActiveId] = useState<AccordionKey | null>(null);
     const handleToggle = (id: AccordionKey) => () => {
         setActiveId((prev) => (prev === id ? null : id));
+    };
+    const [sortBy, setSortBy] = useState<{
+        by: SortBy;
+        asc: boolean;
+    }>({
+        by: defaultSortBy,
+        asc: defaultIsAsc,
+    });
+    const handleSortByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const rawJson = e.target.value;
+        const { by, asc } = JSON.parse(rawJson);
+        console.log({ by, asc });
+        setSortBy({ by, asc });
     };
     const keyWordInputRef = useRef<HTMLInputElement>(null);
     const {
@@ -158,6 +180,8 @@ export default function FiltersSidePanel({
             minPrice: minValue,
             maxPrice: maxValue,
             keyword: keyWordInputRef.current?.value,
+            sortBy: sortBy.by,
+            isAsc: sortBy.asc,
         };
         onApply?.(query);
     };
@@ -233,9 +257,15 @@ export default function FiltersSidePanel({
                     Sắp xếp
                 </h5>
                 <div className="px-2">
-                    <SfSelect aria-label="Sorting">
-                        {sortOptions.map((option) => (
-                            <option value={option.value} key={option.value}>
+                    <SfSelect aria-label="Sorting" value={JSON.stringify(sortBy)} onChange={handleSortByChange}>
+                        {sortOptions.map((option, index) => (
+                            <option
+                                key={index}
+                                value={`${JSON.stringify({
+                                    by: option.by,
+                                    asc: option.asc,
+                                })}`}
+                            >
                                 {option.label}
                             </option>
                         ))}

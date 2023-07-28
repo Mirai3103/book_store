@@ -10,6 +10,8 @@ namespace BookStore.Services.Interfaces
         Task<CategoryDto> CreateCategoryAsync(CategoryDto categoryDto);
         Task DeleteCategoryAsync(int id);
         Task<CategoryDto> UpdateCategoryAsync(int id, CategoryDto categoryDto);
+        Task<ICollection<CategoryDto>> GetCategoriesPreviewAsync(int[] ids);
+
     }
 
 }

@@ -10,6 +10,7 @@ import {
     SfIconMenu,
     SfIconArrowBack,
     SfBadge,
+    useDisclosure,
 } from "@storefront-ui/react";
 import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
@@ -18,41 +19,34 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { CartItemDto } from "@/core/types/server-dto/cartItemDto";
+import CartApiService from "@/core/services/cartApiService";
+import CartDropDown from "../cart/CartDropDown";
+import useStore from "@/libs/hooks/useStore";
+import useCartStore from "@/store/cartStore";
+import useSessionStore from "@/store/sessionStore";
 export default function Header() {
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const { data: session } = useSession();
-    const actionItems = [
-        {
-            icon: <SfIconShoppingCart />,
-            label: "",
-            ariaLabel: "Cart",
-            role: "button",
-        },
-        {
-            icon: <SfIconFavorite />,
-            label: "",
-            ariaLabel: "Wishlist",
-            role: "button",
-        },
-    ];
-    const [cartItems, setCartItems] = useState<CartItemDto[]>([]);
+    const { data: session, status } = useSession();
+    const { fetch, cartItems } = useStore(useCartStore, (state) => state);
+    const { clearSession, setSession, setStatus } = useStore(useSessionStore, (state) => state);
     React.useEffect(() => {
         if (session) {
             const accessToken = (session as AppSession).accessToken;
-            axios
-                .get("/asp-net/api/CartItem", {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                })
-                .then((res) => {
-                    setCartItems(res.data);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            fetch?.(accessToken);
         }
-    }, [session]);
+    }, [fetch, session]);
+
+    React.useEffect(() => {
+        setStatus?.(status);
+        if (status === "unauthenticated") {
+            clearSession?.();
+        }
+    }, [status, clearSession, setStatus]);
+
+    React.useEffect(() => {
+        setSession?.(session as AppSession);
+    }, [session, setSession]);
+
     const { push, events } = useRouter();
     const search = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -73,7 +67,7 @@ export default function Header() {
             events.off("routeChangeComplete", handleChanges);
         };
     }, [events]);
-
+    const { isOpen, toggle, close } = useDisclosure();
     return (
         <header className="flex justify-center w-full py-2 px-4 lg:py-5 lg:px-6 text-white border-0 bg-primary-700">
             <div className="flex flex-wrap lg:flex-nowrap items-center flex-row justify-start h-full max-w-[1536px] w-full">
@@ -139,15 +133,23 @@ export default function Header() {
                 </form>
                 <nav className="flex-1 flex justify-end lg:order-last lg:ml-4">
                     <div className="flex flex-row flex-nowrap">
-                        <SfButton
-                            className="mr-2 relative -ml-0.5 rounded-md text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"
-                            aria-label={"card"}
-                            variant="tertiary"
-                            square
-                        >
-                            <SfIconShoppingCart />
-                            <SfBadge content={cartItems.length} />
-                        </SfButton>
+                        <CartDropDown
+                            cartItems={cartItems || []}
+                            open={isOpen}
+                            onClose={close}
+                            trigger={
+                                <SfButton
+                                    className="mr-2 relative -ml-0.5 rounded-md text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"
+                                    aria-label={"card"}
+                                    variant="tertiary"
+                                    square
+                                    onClick={toggle}
+                                >
+                                    <SfIconShoppingCart />
+                                    <SfBadge content={cartItems?.length || 0} />
+                                </SfButton>
+                            }
+                        />
                         <SfButton
                             className="mr-2 -ml-0.5 rounded-md text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"
                             aria-label={"auth"}

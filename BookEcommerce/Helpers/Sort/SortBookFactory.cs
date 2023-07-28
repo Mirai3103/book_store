@@ -23,25 +23,13 @@ public class SortBookFactory
             _sortStrategies.Add(sortBy, sortByColumnStrategy);
             return sortByColumnStrategy;
         }
-        ISortBookStrategy sortByStrategy;
-        switch (sortBy)
+
+        ISortBookStrategy sortByStrategy = sortBy switch
         {
-            case "BestSelling":
-                // var sortByBestSellingStrategy = new SortBookByBestSelling();
-                // _sortStrategies.Add(sortBy, sortByBestSellingStrategy);
-                // return sortByBestSellingStrategy;
-                sortByStrategy = new SortBookByColumn();
-                break;
-            case "Hot":
-                // var sortByHotStrategy = new SortBookByHot();
-                // _sortStrategies.Add(sortBy, sortByHotStrategy);
-                // return sortByHotStrategy;
-                sortByStrategy = new SortBookByColumn();
-                break;
-            default:
-                sortByStrategy = new SortBookByColumn();
-                break;
-        }
+            "BestSelling" => new SortBookByColumn(),
+            "Hot" => new SortBookByColumn(),
+            _ => new SortBookByColumn(),
+        };
         _sortStrategies.Add(sortBy, sortByStrategy);
         return sortByStrategy;
     }

@@ -2,7 +2,7 @@ import { AddToCartDto, CartItemDto } from "@appTypes/server-dto/cartItemDto";
 import axios from "axios";
 class CartApiService {
     static async getCartItems({ accessToken }: Record<"accessToken", string>): Promise<CartItemDto[]> {
-        const response = await axios.get("CartItem", {
+        const response = await axios.get<CartItemDto[]>("CartItem", {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
         return response.data;

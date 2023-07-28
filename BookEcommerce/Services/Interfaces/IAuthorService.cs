@@ -8,4 +8,5 @@ public interface IAuthorService
     Task<AuthorDto> CreateAuthorAsync(AuthorDto authorDto);
     Task DeleteAuthorAsync(int id);
     Task<AuthorDto> UpdateAuthorAsync(int id, AuthorDto authorDto);
+    Task<ICollection<AuthorDto>> GetAuthorsPreviewAsync(int[] ids);
 }

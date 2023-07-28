@@ -5,9 +5,27 @@ import Head from "next/head";
 import { useSsr } from "usehooks-ts";
 import axios from "axios";
 import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "../ui/use-toast";
 const NEXT_PUBLIC_ASP_NET_PROXY_URL = process.env.NEXT_PUBLIC_ASP_NET_PROXY_URL;
 axios.defaults.baseURL = NEXT_PUBLIC_ASP_NET_PROXY_URL;
 export default function Layout({ children }: { children: React.ReactNode }) {
+    const { toast } = useToast();
+    React.useEffect(() => {
+        if (typeof window !== "undefined") {
+            const handleNotify = (event: MessageEvent) => {
+                const { type, title, description } = event.data;
+                toast({
+                    variant: type,
+                    title: title,
+                    description: description,
+                });
+            };
+            window.addEventListener("notify" as any, handleNotify);
+            return () => {
+                window.removeEventListener("notify" as any, handleNotify);
+            };
+        }
+    }, [toast]);
     return (
         <>
             <Head>

@@ -123,6 +123,7 @@ export function useLazySelectState<T extends { id: string | number }>({
     const handleRemove = React.useCallback((item: T) => {
         setSelectedItems((prev) => prev.filter((prevItem) => prevItem.id !== item.id));
     }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const fetchFnStatic = React.useMemo(() => fetchFn, []);
     const handleClear = React.useCallback(() => {
         setSelectedItems([]);

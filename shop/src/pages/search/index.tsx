@@ -113,7 +113,7 @@ export default function SearchPage({
                 defaultKeyword={query.keyword as string}
                 defaultMaxPrice={query.maxPrice && (Number(query.maxPrice) as any)}
                 defaultMinPrice={query.minPrice && (Number(query.minPrice) as any)}
-                defaultSortBy={query.sortBy as string}
+                defaultSortBy={query.sortBy as any}
             />
             <div className="grow">
                 <h2 className="typography-headline-3 mb-5 font-semibold text-neutral-900">Kết quả tìm kiếm</h2>

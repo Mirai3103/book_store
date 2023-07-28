@@ -7,5 +7,7 @@ public interface IPublisherService
     Task<PublisherDto> CreatePublisherAsync(PublisherDto publisherDto);
     Task DeletePublisherAsync(int id);
     Task<PublisherDto> UpdatePublisherAsync(int id, PublisherDto publisherDto);
+    Task<ICollection<PublisherDto>> GetPublishersPreviewAsync(int[] ids);
+
 }
 

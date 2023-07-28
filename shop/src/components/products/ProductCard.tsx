@@ -37,11 +37,11 @@ export default function ProductCard({ product, className = "" }: IProductCartPro
                 </SfLink>
             </div>
             <div className="p-4 border-t border-neutral-200">
-                <SfTooltip label={product.name} placement="bottom">
+                <SfTooltip label={product.name} placement="bottom" className="">
                     <SfLink
                         href={`/products/${product.slug}`}
                         variant="secondary"
-                        className="no-underline line-clamp-2"
+                        className="no-underline line-clamp-2 min-h-[calc(2*1.5rem)] text-base"
                     >
                         {product.name}
                     </SfLink>

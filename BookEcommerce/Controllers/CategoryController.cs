@@ -47,5 +47,11 @@ namespace BookStore.Controllers
             }
             return Ok(category);
         }
+        [HttpGet("list", Name = "GetCategoriesList")]
+        public async Task<IActionResult> GetCategoriesList([FromQuery] int[] ids)
+        {
+            var categories = await _categoryService.GetCategoriesPreviewAsync(ids);
+            return Ok(categories);
+        }
     }
 }

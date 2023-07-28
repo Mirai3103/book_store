@@ -75,6 +75,11 @@ public class AuthorService : IAuthorService
         return Task.FromResult(result);
     }
 
+    public async Task<ICollection<AuthorDto>> GetAuthorsPreviewAsync(int[] ids)
+    {
+        return await _dbContext.Authors.Where(a => ids.Contains(a.Id)).Include(c => c.Books).Select(a => a.SelectPreview()!).ToListAsync();
+    }
+
     public async Task<AuthorDto> UpdateAuthorAsync(int id, AuthorDto authorDto)
     {
         var author = await _dbContext.Authors.FindAsync(id);
