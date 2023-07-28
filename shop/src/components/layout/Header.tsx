@@ -9,14 +9,17 @@ import {
     SfIconSearch,
     SfIconMenu,
     SfIconArrowBack,
+    SfBadge,
 } from "@storefront-ui/react";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import type { AppSession } from "@/core/types/next-auth.type";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { CartItemDto } from "@/core/types/server-dto/cartItemDto";
 export default function Header() {
-    const [inputValue, setInputValue] = useState("");
+    const inputRef = React.useRef<HTMLInputElement>(null);
     const { data: session } = useSession();
     const actionItems = [
         {
@@ -32,6 +35,7 @@ export default function Header() {
             role: "button",
         },
     ];
+    const [cartItems, setCartItems] = useState<CartItemDto[]>([]);
     React.useEffect(() => {
         if (session) {
             const accessToken = (session as AppSession).accessToken;
@@ -42,17 +46,33 @@ export default function Header() {
                     },
                 })
                 .then((res) => {
-                    console.log(res.data);
+                    setCartItems(res.data);
                 })
                 .catch((err) => {
                     console.log(err);
                 });
         }
     }, [session]);
+    const { push, events } = useRouter();
     const search = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        alert(`Successfully found 10 results for ${inputValue}`);
+        inputRef.current?.blur();
+        push({
+            pathname: "/search",
+            query: {
+                keyword: inputRef.current?.value,
+            },
+        });
     };
+    React.useEffect(() => {
+        const handleChanges = () => {
+            inputRef.current!.value = "";
+        };
+        events.on("routeChangeComplete", handleChanges);
+        return () => {
+            events.off("routeChangeComplete", handleChanges);
+        };
+    }, [events]);
 
     return (
         <header className="flex justify-center w-full py-2 px-4 lg:py-5 lg:px-6 text-white border-0 bg-primary-700">
@@ -96,7 +116,7 @@ export default function Header() {
                     onSubmit={search}
                 >
                     <SfInput
-                        value={inputValue}
+                        ref={inputRef}
                         type="search"
                         className="[&::-webkit-search-cancel-button]:appearance-none"
                         placeholder="Search"
@@ -115,27 +135,31 @@ export default function Header() {
                                 </SfButton>
                             </span>
                         }
-                        onChange={(event) => setInputValue(event.target.value)}
                     />
                 </form>
                 <nav className="flex-1 flex justify-end lg:order-last lg:ml-4">
                     <div className="flex flex-row flex-nowrap">
-                        {actionItems.map((actionItem) => (
-                            <SfButton
-                                key={actionItem.ariaLabel}
-                                className="mr-2 -ml-0.5 rounded-md text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"
-                                aria-label={actionItem.ariaLabel}
-                                variant="tertiary"
-                                square
-                                slotPrefix={actionItem.icon}
-                            ></SfButton>
-                        ))}
+                        <SfButton
+                            className="mr-2 relative -ml-0.5 rounded-md text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"
+                            aria-label={"card"}
+                            variant="tertiary"
+                            square
+                        >
+                            <SfIconShoppingCart />
+                            <SfBadge content={cartItems.length} />
+                        </SfButton>
                         <SfButton
                             className="mr-2 -ml-0.5 rounded-md text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"
                             aria-label={"auth"}
                             variant="tertiary"
                             square
                             slotPrefix={<SfIconPerson />}
+                            onClick={() => {
+                                if (session) {
+                                } else {
+                                    signIn();
+                                }
+                            }}
                         >
                             <p className="hidden xl:inline-flex whitespace-nowrap">
                                 {session ? session.user!.name : "Đăng nhập"}

@@ -28,6 +28,7 @@ import ProviderApiService from "@/core/services/providerApiService";
 import { PublisherDto } from "@/core/types/server-dto/publisherDto";
 import { useRouter } from "next/router";
 import { AuthorDto } from "@/core/types/server-dto/authorDto";
+import { useToggle } from "usehooks-ts";
 
 const sortOptions = [
     { id: "sort1", label: "Relevance", value: "relevance" },
@@ -205,109 +206,118 @@ export default function FiltersSidePanel({
             handleRemove: handleRemoveProvider,
         },
     ];
-
+    const [isShowFilter, toggleShowFilter] = useToggle(true);
     return (
         <aside className="  lg:max-w-[376px] mb-12 min-w-[270px] ">
             <div className="flex items-center justify-between mb-4">
                 <h4 className="px-2 font-bold typography-headline-3">Tìm kiếm nâng cao</h4>
-                <button type="button" className="sm:hidden text-neutral-500" aria-label="Close filters panel">
-                    <SfIconClose />
+                <button
+                    type="button"
+                    className="lg:hidden text-neutral-500"
+                    aria-label="Close filters panel"
+                    onClick={toggleShowFilter}
+                >
+                    {isShowFilter ? <SfIconClose /> : <>Hiện bộ lọc</>}
                 </button>
             </div>
-            <h5 className="py-2 px-4 mb-6 bg-neutral-100 typography-headline-6 font-bold text-neutral-900 uppercase tracking-widest md:rounded-md">
-                Từ khóa
-            </h5>
-            <div className="px-2">
-                <label>
-                    <SfInput slotPrefix={<SfIconSearch />} ref={keyWordInputRef} defaultValue={defaultKeyword} />
-                </label>
-            </div>
-            <h5 className="py-2 px-4 mb-6  mt-6 bg-neutral-100 typography-headline-6 font-bold text-neutral-900 uppercase tracking-widest md:rounded-md">
-                Sắp xếp
-            </h5>
-            <div className="px-2">
-                <SfSelect aria-label="Sorting">
-                    {sortOptions.map((option) => (
-                        <option value={option.value} key={option.value}>
-                            {option.label}
-                        </option>
-                    ))}
-                </SfSelect>
-            </div>
-            <h5 className="py-2 px-4 mt-6 mb-4 bg-neutral-100 typography-headline-6 font-bold text-neutral-900 uppercase tracking-widest md:rounded-md">
-                Lọc
-            </h5>
-            <div className="flex flex-col gap-y-2">
-                <SfAccordionItem
-                    summary={
-                        <div className="flex justify-between p-2 mb-2">
-                            <p className="mb-2 font-semibold typography-headline-5">Khoảng giá</p>
-                            <SfIconChevronLeft
-                                className={classNames(
-                                    "text-neutral-500",
-                                    `${activeId === AccordionKey.PRICE ? "rotate-90" : "-rotate-90"}`
-                                )}
-                            />
-                        </div>
-                    }
-                    open={activeId === AccordionKey.PRICE}
-                    onToggle={handleToggle(AccordionKey.PRICE)}
-                >
-                    <div className="flex items-center gap-x-2">
-                        <SfInput
-                            type="number"
-                            placeholder="Từ"
-                            value={minValue}
-                            onChange={(e) => setMinValue(+e.target.value)}
-                            slotSuffix={<span className="text-neutral-500">đ</span>}
-                        />
-                        <span>Đến</span>
-                        <SfInput
-                            type="number"
-                            placeholder="Đến"
-                            value={maxValue}
-                            onChange={(e) => setMaxValue(+e.target.value)}
-                            slotSuffix={<span className="text-neutral-500">đ</span>}
-                        />
-                    </div>
-                </SfAccordionItem>
-
-                {listAccordions.map((item) => (
+            <div className={classNames("transition-all duration-300 ease-in-out", { hidden: !isShowFilter })}>
+                <h5 className="py-2 px-4 mb-6 bg-neutral-100 typography-headline-6 font-bold text-neutral-900 uppercase tracking-widest md:rounded-md">
+                    Từ khóa
+                </h5>
+                <div className="px-2">
+                    <label>
+                        <SfInput slotPrefix={<SfIconSearch />} ref={keyWordInputRef} defaultValue={defaultKeyword} />
+                    </label>
+                </div>
+                <h5 className="py-2 px-4 mb-6  mt-6 bg-neutral-100 typography-headline-6 font-bold text-neutral-900 uppercase tracking-widest md:rounded-md">
+                    Sắp xếp
+                </h5>
+                <div className="px-2">
+                    <SfSelect aria-label="Sorting">
+                        {sortOptions.map((option) => (
+                            <option value={option.value} key={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </SfSelect>
+                </div>
+                <h5 className="py-2 px-4 mt-6 mb-4 bg-neutral-100 typography-headline-6 font-bold text-neutral-900 uppercase tracking-widest md:rounded-md">
+                    Lọc
+                </h5>
+                <div className="flex flex-col gap-y-2">
                     <SfAccordionItem
-                        key={item.key}
                         summary={
                             <div className="flex justify-between p-2 mb-2">
-                                <p className="mb-2 font-semibold typography-headline-5">{item.name}</p>
+                                <p className="mb-2 font-semibold typography-headline-5">Khoảng giá</p>
                                 <SfIconChevronLeft
                                     className={classNames(
                                         "text-neutral-500",
-                                        `${activeId === item.key ? "rotate-90" : "-rotate-90"}`
+                                        `${activeId === AccordionKey.PRICE ? "rotate-90" : "-rotate-90"}`
                                     )}
                                 />
                             </div>
                         }
-                        open={activeId === item.key}
-                        onToggle={handleToggle(item.key)}
+                        open={activeId === AccordionKey.PRICE}
+                        onToggle={handleToggle(AccordionKey.PRICE)}
                     >
-                        <LazySelect<any>
-                            fetchFn={item.fetchFn}
-                            getDisplayValue={(item) => item.name + ` (${item.totalBooks})`}
-                            onAdd={item.handleAdd}
-                            onRemove={item.handleRemove}
-                            selectedItems={item.items}
-                            placeholder={`Tìm kiếm ${item.name}`}
-                        />
+                        <div className="flex items-center gap-x-2">
+                            <SfInput
+                                type="number"
+                                placeholder="Từ"
+                                className="min-w-[40px]"
+                                value={minValue}
+                                onChange={(e) => setMinValue(+e.target.value)}
+                                slotSuffix={<span className="text-neutral-500">đ</span>}
+                            />
+                            <span>Đến</span>
+                            <SfInput
+                                type="number"
+                                placeholder="Đến"
+                                className="min-w-[40px]"
+                                value={maxValue}
+                                onChange={(e) => setMaxValue(+e.target.value)}
+                                slotSuffix={<span className="text-neutral-500">đ</span>}
+                            />
+                        </div>
                     </SfAccordionItem>
-                ))}
-            </div>
-            <hr className="my-4" />
-            <div className="flex justify-between">
-                <SfButton variant="secondary" className="w-full mr-3" onClick={handleReset}>
-                    Xoá lọc
-                </SfButton>
-                <SfButton className="w-full" onClick={handleApply}>
-                    Áp dụng
-                </SfButton>
+
+                    {listAccordions.map((item) => (
+                        <SfAccordionItem
+                            key={item.key}
+                            summary={
+                                <div className="flex justify-between p-2 mb-2">
+                                    <p className="mb-2 font-semibold typography-headline-5">{item.name}</p>
+                                    <SfIconChevronLeft
+                                        className={classNames(
+                                            "text-neutral-500",
+                                            `${activeId === item.key ? "rotate-90" : "-rotate-90"}`
+                                        )}
+                                    />
+                                </div>
+                            }
+                            open={activeId === item.key}
+                            onToggle={handleToggle(item.key)}
+                        >
+                            <LazySelect<any>
+                                fetchFn={item.fetchFn}
+                                getDisplayValue={(item) => item.name + ` (${item.totalBooks})`}
+                                onAdd={item.handleAdd}
+                                onRemove={item.handleRemove}
+                                selectedItems={item.items}
+                                placeholder={`Tìm kiếm ${item.name}`}
+                            />
+                        </SfAccordionItem>
+                    ))}
+                </div>
+                <hr className="my-4" />
+                <div className="flex justify-between">
+                    <SfButton variant="secondary" className="w-full mr-3" onClick={handleReset}>
+                        Xoá lọc
+                    </SfButton>
+                    <SfButton className="w-full" onClick={handleApply}>
+                        Áp dụng
+                    </SfButton>
+                </div>
             </div>
         </aside>
     );

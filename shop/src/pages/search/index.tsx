@@ -10,21 +10,49 @@ import { SfButton, SfIconChevronLeft, SfIconChevronRight, SfLoaderCircular, useP
 import classNames from "classnames";
 import Pagination from "@/components/Pagination";
 import { AdvancedSearchDto } from "@/core/types/server-dto/advancedSearchDto";
+import axios from "axios";
+import { CategoryDto } from "@/core/types/server-dto/categoryDto";
+import { AuthorDto } from "@/core/types/server-dto/authorDto";
+import { PublisherDto } from "@/core/types/server-dto/publisherDto";
+import { ProviderDto } from "@/core/types/server-dto/providerDto";
 interface Props {
     searchResult: PaginationDto<BookPreviewDto>;
-    params: AdvancedSearchDto;
+    defaultSelectedCategories: CategoryDto[];
+    defaultSelectedAuthors: AuthorDto[];
+    defaultSelectedPublishers: PublisherDto[];
+    defaultSelectedProviders: ProviderDto[];
 }
 
-export default function SearchPage({ searchResult: rawSearchResultRaw }: Props) {
+export default function SearchPage({
+    searchResult: rawSearchResultRaw,
+    defaultSelectedAuthors,
+    defaultSelectedCategories,
+    defaultSelectedProviders,
+    defaultSelectedPublishers,
+}: Props) {
+    console.log({
+        defaultSelectedAuthors,
+        defaultSelectedCategories,
+        defaultSelectedProviders,
+        defaultSelectedPublishers,
+    });
     const [searchResult, setSearchResult] = React.useState<PaginationDto<BookPreviewDto>>(rawSearchResultRaw);
-    const { push, query } = useRouter();
+    const { push, query, reload, replace } = useRouter();
     const handleApplyFilters = (params: OnApplyParams) => {
-        push({
-            pathname: "/search",
-            query: {
-                ...params,
+        push(
+            {
+                pathname: "/search",
+                query: {
+                    ...params,
+                },
             },
-        });
+            undefined,
+            { shallow: true }
+        );
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            reload();
+        }, 50);
     };
     const [currentPage, setCurrentPage] = React.useState(searchResult.currentPage);
     const [isLoading, setIsLoading] = React.useState(false);
@@ -75,7 +103,18 @@ export default function SearchPage({ searchResult: rawSearchResultRaw }: Props) 
     console.log("render", currentPage);
     return (
         <div className="flex mt-10 flex-col gap-x-10 lg:flex-row">
-            <FiltersSidePanel onApply={handleApplyFilters} />
+            <FiltersSidePanel
+                onApply={handleApplyFilters}
+                defaultAuthors={defaultSelectedAuthors ?? []}
+                defaultCategories={defaultSelectedCategories ?? []}
+                defaultPublishers={defaultSelectedPublishers ?? []}
+                defaultProviders={defaultSelectedProviders ?? []}
+                defaultIsAsc={query.isAsc === "true"}
+                defaultKeyword={query.keyword as string}
+                defaultMaxPrice={query.maxPrice && (Number(query.maxPrice) as any)}
+                defaultMinPrice={query.minPrice && (Number(query.minPrice) as any)}
+                defaultSortBy={query.sortBy as string}
+            />
             <div className="grow">
                 <h2 className="typography-headline-3 mb-5 font-semibold text-neutral-900">Kết quả tìm kiếm</h2>
                 {isLoading && (
@@ -124,9 +163,45 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             baseURL: process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL,
         }
     );
+
+    const [defaultSelectedCategories, defaultSelectedAuthors, defaultSelectedPublishers, defaultSelectedProviders] =
+        await Promise.all([
+            categoryIds
+                ? axios.get<CategoryDto[]>(`${process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL}/Category/list`, {
+                      params: {
+                          ids: categoryIds,
+                      },
+                  })
+                : null,
+            authorIds
+                ? axios.get<AuthorDto[]>(`${process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL}/Author/list`, {
+                      params: {
+                          ids: authorIds,
+                      },
+                  })
+                : null,
+            publisherIds
+                ? axios.get<PublisherDto[]>(`${process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL}/Publisher/list`, {
+                      params: {
+                          ids: publisherIds,
+                      },
+                  })
+                : null,
+            providerIds
+                ? axios.get<ProviderDto[]>(`${process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL}/Provider/list`, {
+                      params: {
+                          ids: providerIds,
+                      },
+                  })
+                : null,
+        ]);
     return {
         props: {
             searchResult,
+            defaultSelectedCategories: defaultSelectedCategories?.data || null,
+            defaultSelectedAuthors: defaultSelectedAuthors?.data || null,
+            defaultSelectedPublishers: defaultSelectedPublishers?.data || null,
+            defaultSelectedProviders: defaultSelectedProviders?.data || null,
         },
     };
 };
