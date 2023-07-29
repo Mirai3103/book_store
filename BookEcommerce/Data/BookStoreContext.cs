@@ -99,7 +99,7 @@ namespace BookStore.Data
                 var createdAtColumnName = entity.GetCreatedAtColumnName();
                 if (createdAtColumnName != null)
                 {
-                    entity.Property(createdAtColumnName).CurrentValue = DateTime.Now;
+                    entity.Property(createdAtColumnName).CurrentValue = DateTime.UtcNow;
                 }
             }
         }
@@ -112,7 +112,7 @@ namespace BookStore.Data
                 var updatedAtColumnName = entity.GetUpdatedAtColumnName();
                 if (updatedAtColumnName != null)
                 {
-                    entity.Property(updatedAtColumnName).CurrentValue = DateTime.Now;
+                    entity.Property(updatedAtColumnName).CurrentValue = DateTime.UtcNow;
                 }
             }
         }
@@ -128,7 +128,7 @@ namespace BookStore.Data
                 if (deletedAtColumnName != null)
                 {
                     entity.State = EntityState.Modified;
-                    entity.Property(deletedAtColumnName).CurrentValue = DateTime.Now;
+                    entity.Property(deletedAtColumnName).CurrentValue = DateTime.UtcNow;
                 }
             }
         }

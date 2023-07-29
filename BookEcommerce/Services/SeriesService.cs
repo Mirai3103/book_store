@@ -37,8 +37,8 @@ public class SeriesService : ISeriesService
         var series = new Series
         {
             Name = seriesDto.Name,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
             Slug = seriesDto.Name.GenerateSlug(),
             AuthorId = seriesDto.AuthorId,
             PublisherId = seriesDto.PublisherId,
@@ -180,7 +180,7 @@ public class SeriesService : ISeriesService
         try
         {
             series.Name = seriesDto.Name;
-            series.UpdatedAt = DateTime.Now;
+            series.UpdatedAt = DateTime.UtcNow;
             series.Slug = seriesDto.Name.GenerateSlug();
             series.AuthorId = seriesDto.AuthorId;
             series.PublisherId = seriesDto.PublisherId;

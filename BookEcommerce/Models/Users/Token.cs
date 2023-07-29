@@ -11,7 +11,7 @@ namespace BookStore.Models
         [MaxLength(1200)]
         public string TokenValue { get; set; } = null!;
         public bool IsRevoked { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public Guid UserId { get; set; }
         public virtual User User { get; set; } = null!;
         [MaxLength(500)]

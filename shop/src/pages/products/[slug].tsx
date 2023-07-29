@@ -1,18 +1,16 @@
-import axios from "axios";
-import { GetStaticPaths, GetStaticProps } from "next";
-import React, { useCallback } from "react";
-import type { BookDto } from "@appTypes/server-dto/bookDto";
-import ProductGallery, { DesktopGallery } from "@/components/products/ProductGallery";
-import ProductBuyDetail from "@/components/products/ProductBuyDetail";
-import Head from "next/head";
-import ProductDetail from "@/components/products/ProductDetail";
-import { BookPreviewDto } from "@/core/types/server-dto/bookPreviewDto";
-import RelatedVertical from "@/components/products/RelatedBook";
-import { PaginationDto } from "@/core/types/server-dto/paginationDto";
-import Separator from "@/components/Separator";
-import BookApiService from "@/core/services/bookApiService";
 import ProductSlider from "@/components/ProductSlider";
+import Separator from "@/components/Separator";
+import ProductBuyDetail from "@/components/products/ProductBuyDetail";
+import ProductDetail from "@/components/products/ProductDetail";
+import ProductGallery from "@/components/products/ProductGallery";
+import RelatedVertical from "@/components/products/RelatedBook";
 import { useToast } from "@/components/ui/use-toast";
+import BookApiService from "@/core/services/bookApiService";
+import type { BookDto } from "@appTypes/server-dto/bookDto";
+import axios from "axios";
+import { GetStaticProps } from "next";
+import Head from "next/head";
+import { useCallback } from "react";
 interface Props {
     book: BookDto;
 }

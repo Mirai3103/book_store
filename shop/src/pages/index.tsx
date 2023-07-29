@@ -1,15 +1,11 @@
-import Image from "next/image";
-import { signIn, useSession } from "next-auth/react";
-import { getServerSession } from "next-auth/next";
-import { GetServerSidePropsContext } from "next";
-import { AUTH_OPTIONS } from "./api/auth/[...nextauth]";
-import Hero, { IBannerItem } from "@/components/home/Hero";
 import ProductSlider from "@/components/ProductSlider";
-import axios from "axios";
-import { PaginationDto } from "@/core/types/server-dto/paginationDto";
-import { BookPreviewDto } from "@/core/types/server-dto/bookPreviewDto";
-import Head from "next/head";
+import Hero, { IBannerItem } from "@/components/home/Hero";
 import { SortBy } from "@/components/search/FilterSidePanel";
+import { BookPreviewDto } from "@/core/types/server-dto/bookPreviewDto";
+import { PaginationDto } from "@/core/types/server-dto/paginationDto";
+import axios from "axios";
+import { GetServerSidePropsContext } from "next";
+import Head from "next/head";
 interface Props {
     adBanners: IBannerItem[];
     relatedProducts: PaginationDto<BookPreviewDto>;

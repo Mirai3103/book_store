@@ -13,8 +13,8 @@ namespace BookStore.Models
         public virtual User User { get; set; } = null!;
         [ForeignKey("BookId")]
         public Book Book { get; set; } = null!;
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
     public partial class User
     {

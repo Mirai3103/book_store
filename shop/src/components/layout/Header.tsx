@@ -1,36 +1,53 @@
-import React, { useState } from "react";
+import type { AppSession } from "@/core/types/next-auth.type";
 import {
-    SfButton,
-    SfIconShoppingCart,
-    SfIconFavorite,
-    SfIconPerson,
-    SfIconExpandMore,
-    SfInput,
-    SfIconSearch,
-    SfIconMenu,
-    SfIconArrowBack,
     SfBadge,
+    SfButton,
+    SfIconExpandMore,
+    SfIconMenu,
+    SfIconPerson,
+    SfIconSearch,
+    SfIconShoppingCart,
+    SfInput,
     useDisclosure,
 } from "@storefront-ui/react";
-import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
-import type { AppSession } from "@/core/types/next-auth.type";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { CartItemDto } from "@/core/types/server-dto/cartItemDto";
-import CartApiService from "@/core/services/cartApiService";
-import CartDropDown from "../cart/CartDropDown";
+import React from "react";
+
 import useStore from "@/libs/hooks/useStore";
 import useCartStore from "@/store/cartStore";
 import useSessionStore from "@/store/sessionStore";
+import DropDown from "../DropDown";
+import CartDropDown from "../cart/CartDropDown";
+import { signOut } from "next-auth/react";
+
+const authMenu = [
+    {
+        children: "Thông tin tài khoản",
+        href: "/user/profile",
+    },
+    {
+        children: "Đơn hàng của tôi",
+        href: "/user/orders",
+    },
+    {
+        children: "Đăng xuất",
+        onClick: () => signOut({ callbackUrl: "/", redirect: true }),
+    },
+];
+
 export default function Header() {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const { data: session, status } = useSession();
     const { fetch, cartItems } = useStore(useCartStore, (state) => state);
     const { clearSession, setSession, setStatus } = useStore(useSessionStore, (state) => state);
+    console.log(session);
     React.useEffect(() => {
         if (session) {
+            if ((session as any).error === "RefreshAccessTokenError") {
+                signOut({ callbackUrl: "/", redirect: true });
+            }
             const accessToken = (session as AppSession).accessToken;
             fetch?.(accessToken);
         }
@@ -150,23 +167,41 @@ export default function Header() {
                                 </SfButton>
                             }
                         />
-                        <SfButton
-                            className="mr-2 -ml-0.5 rounded-md text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"
-                            aria-label={"auth"}
-                            variant="tertiary"
-                            square
-                            slotPrefix={<SfIconPerson />}
-                            onClick={() => {
-                                if (session) {
-                                } else {
+                        {!session && (
+                            <SfButton
+                                className="mr-2 -ml-0.5 rounded-md text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"
+                                aria-label={"auth"}
+                                variant="tertiary"
+                                square
+                                slotPrefix={<SfIconPerson />}
+                                onClick={() => {
                                     signIn();
+                                }}
+                            >
+                                <p className="hidden xl:inline-flex whitespace-nowrap">Đăng nhập</p>
+                            </SfButton>
+                        )}
+                        {session && (
+                            <DropDown
+                                target={
+                                    <SfButton
+                                        className="mr-2 -ml-0.5 rounded-md text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"
+                                        aria-label={"auth"}
+                                        variant="tertiary"
+                                        square
+                                        slotPrefix={<SfIconPerson />}
+                                    >
+                                        <p className="hidden xl:inline-flex whitespace-nowrap">
+                                            {session.user?.name || session.user?.email}
+                                        </p>
+                                    </SfButton>
                                 }
-                            }}
-                        >
-                            <p className="hidden xl:inline-flex whitespace-nowrap">
-                                {session ? session.user!.name : "Đăng nhập"}
-                            </p>
-                        </SfButton>
+                            >
+                                {authMenu.map((item, index) => (
+                                    <DropDown.Item key={index} {...item} />
+                                ))}
+                            </DropDown>
+                        )}
                     </div>
                 </nav>
             </div>

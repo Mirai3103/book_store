@@ -28,11 +28,7 @@ export const AUTH_OPTIONS: AuthOptions = {
                 const apiUrl = process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL || "http://localhost:5250";
                 if (!credentials) return null;
                 const { username, password, isRemember } = credentials;
-                console.log({
-                    username,
-                    password,
-                    isRemember: isRemember == "on",
-                });
+
                 const res = await axios.post(`${apiUrl}/Auth/login`, {
                     username,
                     password,
@@ -41,7 +37,6 @@ export const AUTH_OPTIONS: AuthOptions = {
                 const data = res.data;
 
                 const decoded: any = jwt_decode(data.accessToken);
-                console.log(decoded.exp);
                 if (data) {
                     const user: IAppUser = {
                         id: data.user.id,
@@ -68,9 +63,16 @@ export const AUTH_OPTIONS: AuthOptions = {
                 token.refreshToken = appUser.token.refreshToken;
                 token.accessTokenExpiry = appUser.token.accessTokenExpiry;
             }
-            const now = new Date().getTime();
-            const diffTime = new Date(token.accessTokenExpiry as Date).getTime() - now;
-            const shouldRefreshToken = diffTime < 60 * 1 * 1000;
+
+            const now = new Date();
+
+            const exp = token.accessTokenExpiry ? new Date(token.accessTokenExpiry as any) : now;
+            console.log({
+                exp: exp.getTime(),
+                now: now.getTime(),
+                diff: exp.getTime() - now.getTime(),
+            });
+            const shouldRefreshToken = exp.getTime() - now.getTime() < 60 * 1000 * 5;
             if (!shouldRefreshToken) {
                 return Promise.resolve(token);
             }
@@ -82,6 +84,7 @@ export const AUTH_OPTIONS: AuthOptions = {
             appSession.accessToken = token.accessToken;
             appSession.accessTokenExpiry = token.accessTokenExpiry;
             appSession.error = token.error || null;
+
             return Promise.resolve(session);
         },
     },
@@ -90,6 +93,7 @@ export const AUTH_OPTIONS: AuthOptions = {
 export default NextAuth(AUTH_OPTIONS);
 
 async function refreshToken(token: JWT) {
+    console.log("refreshToken");
     try {
         const res = await axios.post(`${process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL}/Auth/refresh-token`, {
             refreshToken: token.refreshToken,

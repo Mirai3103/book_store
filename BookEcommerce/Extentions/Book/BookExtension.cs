@@ -17,7 +17,8 @@ public static class BookExtensions
             book.Price,
             book.Episode,
             book.ThumbnailUrl,
-            book.CreatedAt
+            book.CreatedAt,
+            book.Stock
         );
     }
 

@@ -125,7 +125,7 @@ public class BookService : IBookService
         {
             AuthorId = createBookDto.AuthorId,
             CategoryId = createBookDto.CategoryId,
-            CreatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
             DeletedAt = null,
             Description = createBookDto.Description,
             Episode = createBookDto.Episode,

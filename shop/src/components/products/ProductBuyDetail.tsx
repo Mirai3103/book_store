@@ -25,6 +25,7 @@ import useCartStore from "@/store/cartStore";
 import useStore from "@/libs/hooks/useStore";
 import useSessionStore from "@/store/sessionStore";
 import { useToast } from "../ui/use-toast";
+import Link from "next/link";
 interface Props extends React.HTMLAttributes<HTMLElement> {
     book: BookDto;
 }
@@ -40,7 +41,7 @@ export default function ProductBuyDetail({ book, className = "" }: Props) {
         set(Number(clamp(nextValue, min, max)));
     }
     const { session } = useStore(useSessionStore, (state) => state);
-    const { addAsync } = useStore(useCartStore, (state) => state);
+    const { addAsync, cartItems } = useStore(useCartStore, (state) => state);
     const { toast } = useToast();
     const handleAddToCart = async () => {
         if (!session) {
@@ -64,6 +65,7 @@ export default function ProductBuyDetail({ book, className = "" }: Props) {
                 variant: "success",
                 description: "Thêm vào giỏ hàng thành công",
             });
+            set(1);
         });
     };
     return (
@@ -103,9 +105,13 @@ export default function ProductBuyDetail({ book, className = "" }: Props) {
                 </li>
             </ul>
             <div className="py-4 mb-4 border-gray-200 border-y">
-                <div className="bg-primary-100 text-primary-700 flex justify-center gap-1.5 py-1.5 typography-text-sm items-center mb-4 rounded-md">
-                    <SfIconShoppingCartCheckout />1 in cart
-                </div>
+                <Link
+                    href={"/user/cart"}
+                    className="bg-primary-100 text-primary-700 flex justify-center gap-1.5 py-1.5 typography-text-sm items-center mb-4 rounded-md"
+                >
+                    <SfIconShoppingCartCheckout />
+                    {`Có ${cartItems?.find((item) => item.bookId === book.id)?.quantity || 0}   trong giỏ hàng`}
+                </Link>
 
                 <div className="items-start xs:flex">
                     <div className="flex flex-col items-stretch xs:items-center xs:inline-flex">

@@ -70,7 +70,7 @@ namespace BookStore.Services
             {
                 AccessToken = token,
                 RefreshToken = refreshToken,
-                AccessTokenExpiry = DateTime.Now.AddMinutes(30),
+                AccessTokenExpiry = DateTime.UtcNow.AddMinutes(30),
                 User = new UserProfile
                 {
                     AvatarUrl = user.AvatarUrl,
@@ -82,7 +82,7 @@ namespace BookStore.Services
         }
 
 
-        public async Task<LoginResponse?> Register(RegisterRequest request, HttpContext context)
+        public async Task<UserDto?> Register(RegisterRequest request, HttpContext context)
         {
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
@@ -98,11 +98,7 @@ namespace BookStore.Services
             };
             await _context.Users.AddAsync(newUser);
             await _context.SaveChangesAsync();
-            return await Login(new LoginRequest
-            {
-                Username = request.Email,
-                Password = request.Password
-            }, context);
+            return newUser.AsDto();
 
         }
         public Task<bool> ValidateEmail(string token)
@@ -153,7 +149,7 @@ namespace BookStore.Services
             {
                 AccessToken = newToken,
                 RefreshToken = refreshToken,
-                AccessTokenExpiry = DateTime.Now.AddMinutes(30),
+                AccessTokenExpiry = DateTime.UtcNow.AddMinutes(30),
                 User = new UserProfile
                 {
                     AvatarUrl = user.AvatarUrl,

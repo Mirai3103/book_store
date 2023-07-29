@@ -1,9 +1,10 @@
 import { UpdateUserDto, UserDto } from "@appTypes/server-dto/userDto";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 class UserApiService {
-    static async getUserProfile(access_token: string) {
+    static async getUserProfile(access_token: string, axiosConfig: AxiosRequestConfig = {}) {
         const res = await axios.get(`User/MyProfile`, {
+            ...axiosConfig,
             headers: { Authorization: `Bearer ${access_token}` },
         });
         return res.data as Promise<UserDto>;

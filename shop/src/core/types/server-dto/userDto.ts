@@ -1,9 +1,3 @@
-export enum Gender {
-    MALE,
-    FEMALE,
-    UNKNOWN,
-}
-
 export interface UserDto {
     id: string;
     email: string;
@@ -23,4 +17,9 @@ export interface UpdateUserDto {
     phoneNumber: string | null;
     gender: Gender | null;
     birthday: Date | null;
+}
+export enum Gender {
+    MALE,
+    FEMALE,
+    UNKNOWN,
 }

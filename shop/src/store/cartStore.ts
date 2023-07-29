@@ -8,6 +8,7 @@ export interface CartState {
     addAsync(item: CartItemDto, accessToken: string): Promise<void>;
     removeAsync(id: number, accessToken: string): Promise<void>;
     clearAsync(accessToken: string): Promise<void>;
+    setQuantityAsync(id: number, quantity: number, accessToken: string): Promise<void>;
 }
 
 const createCartSlice: StateCreator<CartState> = (set, get) => ({
@@ -26,9 +27,14 @@ const createCartSlice: StateCreator<CartState> = (set, get) => ({
     addAsync: async (item: CartItemDto, accessToken) => {
         try {
             await CartApiService.addToCart(item, accessToken);
-            set({
-                cartItems: [...get().cartItems, item],
-            });
+            let existingItem = get().cartItems.find((i) => i.bookId == item.bookId);
+            if (existingItem) {
+                existingItem.quantity += item.quantity;
+            } else {
+                set({
+                    cartItems: [...get().cartItems, item],
+                });
+            }
         } catch (e) {
             console.log(e);
         }
@@ -52,6 +58,15 @@ const createCartSlice: StateCreator<CartState> = (set, get) => ({
         } catch (e) {
             console.log(e);
         }
+    },
+    async setQuantityAsync(id, quantity, accessToken) {
+        await CartApiService.setCartItemQuantity(
+            {
+                bookId: id,
+                quantity: quantity,
+            },
+            { accessToken }
+        );
     },
 });
 const useCartStore = create(persist(createCartSlice, { name: "cart" }));

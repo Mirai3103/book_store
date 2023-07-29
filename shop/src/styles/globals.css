@@ -8,3 +8,7 @@
         @apply px-2 mx-auto sm:px-6 lg:px-8 xl:px-12 2xl:px-16;
     }
 }
+
+.typography-label-sm {
+    @apply mb-2 inline-block;
+}

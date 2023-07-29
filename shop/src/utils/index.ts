@@ -20,7 +20,24 @@ export function camelCaseToPascalCase(str: string | null | undefined) {
     }
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
+export function getDiffField<T extends object>({ oldValue, newValue }: { oldValue: T; newValue: T }): Partial<T> {
+    const diff: Partial<T> = {};
+    for (const key in newValue) {
+        if (oldValue[key] !== newValue[key]) {
+            diff[key] = newValue[key];
+        }
+    }
+    return diff;
+}
+export function getServerImageURL(fileName: string | undefined | null): string {
+    if (!fileName) {
+        return "";
+    }
+    if (fileName.startsWith("http") || fileName.startsWith("blob")) {
+        return fileName;
+    }
+    return `${process.env.NEXT_PUBLIC_ASP_NET_PROXY_URL}/File/${fileName}`;
+}
 export class QueryParamsBuilder {
     private params: string[] = [];
 

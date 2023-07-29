@@ -1,4 +1,4 @@
-import { AuthorDto } from './authorDto';
+import { AuthorDto } from "./authorDto";
 
 export interface BookPreviewDto {
     id: number;
@@ -10,4 +10,5 @@ export interface BookPreviewDto {
     episode: string | null;
     thumbnailUrl: string;
     createdAt: string;
+    stock: number;
 }

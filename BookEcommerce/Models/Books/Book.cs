@@ -52,7 +52,7 @@ namespace BookStore.Models
 
         [ForeignKey("CategoryId")] public Category? Category { get; set; }
         [DataType(DataType.DateTime)]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [DataType(DataType.DateTime)]
         public DateTime? DeletedAt { get; set; } = null;
         public virtual ICollection<BookAttribute> BookAttributes { get; set; } = null!;

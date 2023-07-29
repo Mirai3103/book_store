@@ -11,10 +11,10 @@ public class BookPreviewDto
     public decimal Price { get; set; }
     public string? Episode { get; set; }
     public string ThumbnailUrl { get; set; } = null!;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public int Stock { get; set; }
 
-
-    public BookPreviewDto(int id, string title, string name, string slug, AuthorDto? author, decimal price, string? episode, string thumbnailUrl, DateTime createdAt)
+    public BookPreviewDto(int id, string title, string name, string slug, AuthorDto? author, decimal price, string? episode, string thumbnailUrl, DateTime createdAt, int stock = 999)
     {
         Id = id;
         Title = title;
@@ -25,5 +25,6 @@ public class BookPreviewDto
         Episode = episode;
         ThumbnailUrl = thumbnailUrl;
         CreatedAt = createdAt;
+        Stock = stock;
     }
 }
