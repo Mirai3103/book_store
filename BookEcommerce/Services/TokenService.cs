@@ -22,9 +22,10 @@ public class TokenService : ITokenService
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(expireMinutes),
+            expires: DateTimeOffset.Now.AddMinutes(expireMinutes).DateTime,
             signingCredentials: _credentials
         );
+
         return new JwtSecurityTokenHandler().WriteToken(token);
 
     }

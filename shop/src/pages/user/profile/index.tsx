@@ -11,11 +11,12 @@ import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import React from "react";
-import { getDiffField } from "@/utils";
+import { getDiffField, getServerImageURL } from "@/utils";
 import { useToast } from "@/components/ui/use-toast";
 import DateSelect from "@/components/DateSelect";
 import Image from "next/image";
 import { SfButton, SfInput, SfRadio } from "@storefront-ui/react";
+import FileService from "@/core/services/fileService";
 interface Props {
     user: UserDto;
 }
@@ -28,7 +29,6 @@ function ProfilePage({ user }: Props) {
         register,
         getValues,
         handleSubmit,
-
         watch,
         reset,
         formState: { errors },
@@ -39,7 +39,7 @@ function ProfilePage({ user }: Props) {
             birthday: user.birthday,
             displayName: user.displayName,
             email: user.email,
-            gender: user.gender || Gender.UNKNOWN,
+            gender: user.gender,
             phoneNumber: user.phoneNumber,
         },
         resetOptions: {
@@ -54,7 +54,9 @@ function ProfilePage({ user }: Props) {
             newValue: updateDto,
             oldValue: user,
         });
+
         diff.id = user.id;
+
         UserApiService.updateUserProfile(diff as any, session!.accessToken)
             .then((res) => {
                 if (res) {
@@ -73,6 +75,29 @@ function ProfilePage({ user }: Props) {
                 });
             });
     };
+    const handleRadioGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const checked = e.target.checked;
+        if (checked) {
+            setValue("gender", Number(value));
+        }
+    };
+
+    const onChangeAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setIsLoadingAvatar(true);
+        FileService.uploadFile(file, session?.accessToken || "")
+            .then((res) => {
+                if (res) {
+                    setValue("avatarUrl", res);
+                }
+            })
+            .finally(() => {
+                setIsLoadingAvatar(false);
+            });
+    };
+
     return (
         <>
             <h2 className="typography-headline-3 font-semibold">Thông tin tài khoản</h2>
@@ -80,15 +105,15 @@ function ProfilePage({ user }: Props) {
                 <div className="flex flex-col ">
                     <label
                         htmlFor="avatar-chosen"
-                        className="avatar cursor-pointer     justify-center items-center mx-auto"
+                        className="avatar cursor-pointer justify-center items-center mx-auto"
                     >
                         <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                             <Image
                                 src={
-                                    user?.avatarUrl ||
-                                    "https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                                    getServerImageURL(watch("avatarUrl")) ||
+                                    "https://icon-library.com/images/no-profile-picture-icon-female/no-profile-picture-icon-female-0.jpg"
                                 }
-                                className="rounded-full"
+                                className="rounded-full aspect-square"
                                 alt="x"
                                 width={200}
                                 height={200}
@@ -96,7 +121,7 @@ function ProfilePage({ user }: Props) {
                         </div>
                     </label>
                     <div className="flex justify-center">
-                        <SfButton className="bg-secondary-600  mt-4">
+                        <SfButton className="bg-secondary-600  mt-4" disabled={isLoadingAvatar}>
                             <label htmlFor="avatar-chosen" className="">
                                 Chọn ảnh đại diện
                             </label>
@@ -108,6 +133,8 @@ function ProfilePage({ user }: Props) {
                             className="file-input mx-auto mt-4 w-full max-w-xs"
                             hidden
                             accept=" image/png, image/jpeg"
+                            disabled={isLoadingAvatar}
+                            onChange={onChangeAvatar}
                         />
                     </div>
                 </div>
@@ -159,17 +186,32 @@ function ProfilePage({ user }: Props) {
                         <span className="typography-label-sm font-medium">Giới tính</span>
                         <div className="flex gap-4">
                             <label className="flex items-center mx-4 cursor-pointer">
-                                <SfRadio {...register("gender")} value={Gender.FEMALE} />
+                                <SfRadio
+                                    type="radio"
+                                    value={Gender.FEMALE}
+                                    checked={watch("gender") == Gender.FEMALE}
+                                    onChange={handleRadioGenderChange}
+                                />
 
                                 <span className="ml-2 text-base font-normal leading-6 font-body">{` Nữ`}</span>
                             </label>
                             <label className="flex items-center mx-4 cursor-pointer">
-                                <SfRadio {...register("gender")} value={Gender.MALE} />
+                                <SfRadio
+                                    type="radio"
+                                    value={Gender.MALE}
+                                    checked={watch("gender") == Gender.MALE}
+                                    onChange={handleRadioGenderChange}
+                                />
 
                                 <span className="ml-2 text-base font-normal leading-6 font-body">{` Nam`}</span>
                             </label>
                             <label className="flex items-center mx-4 cursor-pointer">
-                                <SfRadio {...register("gender")} value={Gender.UNKNOWN} />
+                                <SfRadio
+                                    type="radio"
+                                    value={Gender.UNKNOWN}
+                                    onChange={handleRadioGenderChange}
+                                    checked={watch("gender") == Gender.UNKNOWN}
+                                />
 
                                 <span className="ml-2 text-base font-normal leading-6 font-body">{`Không xác định`}</span>
                             </label>

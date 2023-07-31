@@ -27,7 +27,7 @@ namespace BookStore.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Token> Tokens { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
-
+        public DbSet<Address> Addresses { get; set; }
 
 
         protected BookStoreContext() : base()
@@ -36,6 +36,7 @@ namespace BookStore.Data
 
         public BookStoreContext(DbContextOptions options) : base(options)
         {
+            // disable log query
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

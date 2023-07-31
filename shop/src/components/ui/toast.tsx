@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ToastPrimitives from "@radix-ui/react-toast";
 
-import { cn } from "@/utils";
-import { SfIconClose, SfIconError, SfIconWarning } from "@storefront-ui/react";
+import { cn, mergeClassNames } from "@/utils";
+import { SfIconCheck, SfIconClose, SfIconError, SfIconInfo, SfIconWarning } from "@storefront-ui/react";
 
 const ToastProvider = ToastPrimitives.Provider;
 
@@ -27,9 +27,10 @@ const Toast = React.forwardRef<
         variant?: "info" | "success" | "warning" | "error";
     }
 >(({ className, variant = "info", ...props }, ref) => {
+    const id = React.useId();
     return (
         <ToastPrimitives.Root ref={ref}>
-            <AlertError id={"zz"} {...props} />
+            <Alert id={id} variant={variant} className={className} {...props} />
         </ToastPrimitives.Root>
     );
 });
@@ -45,14 +46,42 @@ type ToasterToast = ToastProps & {
     description?: React.ReactNode;
     action?: () => void;
 };
-export function AlertError({ id, title, description, action }: ToasterToast) {
+
+const AlertClassNameStyle: any = {
+    info: {
+        bg: "bg-primary-100 ring-primary-300",
+        icon: <SfIconInfo size="lg" className="mt-2 mr-2 text-primary-700 shrink-0" />,
+        text: "text-primary-700",
+    },
+    success: {
+        bg: "bg-green-100 ring-green-300",
+        icon: <SfIconCheck size="lg" className="mt-2 mr-2 text-green-700 shrink-0" />,
+        text: "text-green-700",
+    },
+    warning: {
+        bg: "bg-warning-100 ring-warning-300",
+        icon: <SfIconWarning size="lg" className="mt-2 mr-2 text-warning-700 shrink-0" />,
+        text: "text-warning-700",
+    },
+    error: {
+        bg: "bg-negative-100 ring-negative-300",
+        icon: <SfIconError size="lg" className="mt-2 mr-2 text-negative-700 shrink-0" />,
+        text: "text-negative-700",
+    },
+};
+
+export function Alert({ id, title, description, action, variant = "info", className = "" }: ToasterToast) {
     return (
         <div
             id={id}
             role="alert"
-            className="flex items-start md:items-center max-w-[600px] shadow-md bg-negative-100 pr-2 pl-4 ring-1 ring-negative-300 typography-text-sm md:typography-text-base py-1 rounded-md"
+            className={mergeClassNames(
+                "flex items-start md:items-center max-w-[600px] shadow-md pr-2 pl-4 ring-1 typography-text-sm md:typography-text-base py-1 rounded-md",
+                AlertClassNameStyle[variant].bg,
+                className
+            )}
         >
-            <SfIconError size="lg" className="mt-2 mr-2 text-negative-700 shrink-0" />
+            {AlertClassNameStyle[variant].icon}
             <div className="py-2 mr-2">
                 <p className="font-medium typography-text-base md:typography-text-lg">{title}</p>
                 <p>{description}</p>
@@ -60,7 +89,10 @@ export function AlertError({ id, title, description, action }: ToasterToast) {
             {action && (
                 <button
                     type="button"
-                    className="py-1.5 px-3 md:py-2 md:px-4 rounded-md text-warning-700 hover:bg-warning-200 active:bg-warning-300 hover:text-warning-800 active:text-warning-900 ml-auto font-medium focus-visible:outline focus-visible:outline-offset"
+                    className={mergeClassNames(
+                        "py-1.5 px-3 md:py-2 md:px-4 rounded-md hover:bg-warning-200 active:bg-warning-300 hover:text-warning-800 active:text-warning-900 ml-auto font-medium focus-visible:outline focus-visible:outline-offset",
+                        AlertClassNameStyle[variant].text
+                    )}
                     onClick={action}
                 ></button>
             )}
