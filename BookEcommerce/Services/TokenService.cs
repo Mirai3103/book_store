@@ -17,7 +17,7 @@ public class TokenService : ITokenService
     }
     public string GenerateToken(IEnumerable<Claim> claims, int expireMinutes = 60)
     {
-
+        _ = claims.Append(new Claim(ClaimTypes.Expired, DateTimeOffset.Now.AddMinutes(expireMinutes).ToUnixTimeSeconds().ToString()));
         var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],

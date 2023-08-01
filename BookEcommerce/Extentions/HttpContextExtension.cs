@@ -9,6 +9,13 @@ public static class HttpContextExtension
 {
     public static Guid GetUserId(this HttpContext httpContext)
     {
+        var exp = httpContext.User.Claims.FirstOrDefault(c => c.Type == "exp");
+        if (exp != null)
+        {
+
+            Console.WriteLine($"exprireInMinutes: {exp}");
+        }
+
         var userId = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
         if (userId == null)
         {

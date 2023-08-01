@@ -64,7 +64,7 @@ namespace BookStore.Services
             claims.AddRange(user.Roles.Select(r => new Claim(ClaimTypes.Role, r.Value)));
             claims.AddRange(user.Permissions.Select(p => new Claim("Permission", p.Value)));
             claims.AddRange(user.Roles.SelectMany(r => r.Permissions).Select(p => new Claim("Permission", p.Value)));
-            var token = _tokenService.GenerateToken(claims, 30);
+            var token = _tokenService.GenerateToken(claims, 60);
 
             return new LoginResponse
             {
@@ -144,12 +144,12 @@ namespace BookStore.Services
             claims.AddRange(user.Permissions.Select(p => new Claim("Permission", p.Value)));
 
             claims.AddRange(user.Roles.SelectMany(r => r.Permissions).Select(p => new Claim("Permission", p.Value)));
-            var newToken = _tokenService.GenerateToken(claims, 5);
+            var newToken = _tokenService.GenerateToken(claims, 60);
             return Task.FromResult(new LoginResponse
             {
                 AccessToken = newToken,
                 RefreshToken = refreshToken,
-                AccessTokenExpiry = DateTime.UtcNow.AddMinutes(30),
+                AccessTokenExpiry = DateTime.UtcNow.AddMinutes(60),
                 User = new UserProfile
                 {
                     AvatarUrl = user.AvatarUrl,
@@ -194,6 +194,29 @@ namespace BookStore.Services
             };
             var result = await _mailService.SendEmailAsync(mailRequest);
             return result;
+        }
+        //for only development
+        public string CreateAccessToken(string guid, int expiresInMinutes)
+        {
+            _ = Guid.TryParse(guid, out var userId);
+            var user = _context.Users.Include(u => u.Permissions).
+                Include(u => u.Roles).ThenInclude(r => r.Permissions).FirstOrDefault(u => u.Id == userId) ?? throw new BaseAppException("Invalid token", System.Net.HttpStatusCode.Unauthorized);
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Name, user.Email),
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.GivenName, user.DisplayName),
+                new("userId", user.Id.ToString()),
+                new("displayName", user.DisplayName),
+                new("email", user.Email),
+            };
+            claims.AddRange(user.Roles.Select(r => new Claim(ClaimTypes.Role, r.Value)));
+            claims.AddRange(user.Permissions.Select(p => new Claim("Permission", p.Value)));
+
+            claims.AddRange(user.Roles.SelectMany(r => r.Permissions).Select(p => new Claim("Permission", p.Value)));
+            var newToken = _tokenService.GenerateToken(claims, expiresInMinutes);
+            return newToken;
+
         }
     }
 }

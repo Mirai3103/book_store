@@ -10,5 +10,6 @@ namespace BookStore.Services.Interfaces
         Task<LoginResponse?> RefreshToken(string refreshToken, HttpContext context);
         Task Logout(string refreshToken, HttpContext context);
         Task<bool> SendVerificationEmail(Guid userId, string currentDomain);
+        string CreateAccessToken(string guid, int expiresInMinutes);
     }
 }

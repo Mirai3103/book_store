@@ -10,10 +10,6 @@ namespace BookStore.Data
 {
     public class BookStoreContext : DbContext
     {
-
-
-
-
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -28,6 +24,9 @@ namespace BookStore.Data
         public DbSet<Token> Tokens { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<PaymentDetail> PaymentDetails { get; set; }
 
 
         protected BookStoreContext() : base()
@@ -43,6 +42,8 @@ namespace BookStore.Data
         {
             modelBuilder.Entity<BookAttribute>()
                 .HasKey(c => new { c.BookId, c.AttributeName });
+            modelBuilder.Entity<OrderDetail>()
+            .HasKey(c => new { c.BookId, c.OrderId });
             modelBuilder.Entity<CartItem>()
   .HasKey(c => new { c.BookId, c.UserId });
             modelBuilder.HasDbFunction(typeof(LikeOperator).GetMethod(nameof(LikeOperator.ContainIgnoreAll)))

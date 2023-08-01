@@ -1,6 +1,7 @@
 using BookStore.Dto;
 using BookStore.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace BookStore.Controllers;
 
@@ -15,7 +16,16 @@ public class AuthController : ControllerBase
         _logger = logger;
         _authService = authService;
     }
-
+    [HttpGet("create-access-token")]
+    public IActionResult CreateAccessToken([FromQuery] string userId, [FromQuery] int expiresInMinutes = 60)
+    {
+        var result = _authService.CreateAccessToken(userId, expiresInMinutes);
+        if (result == null)
+        {
+            return BadRequest();
+        }
+        return Ok(result);
+    }
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {

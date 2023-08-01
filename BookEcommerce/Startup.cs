@@ -4,6 +4,7 @@ using BookStore.Data;
 using BookStore.Dto;
 using BookStore.Middleware;
 using BookStore.Services;
+using BookStore.Services.Checkout;
 using BookStore.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +57,16 @@ public class Startup
                 };
             });
         services.Configure<MailSetting>(Configuration.GetSection("MailSettings"));
+        services.AddHttpClient();
+        services.Configure<IConfiguration>(Configuration);
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IPermissionService, PermissionService>();
+
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAddressService, AddressService>();
+        services.AddScoped<IOrderService, OrderService>();
 
         services.AddTransient<IBookService, BookService>();
         services.AddTransient<ICategoryService, CategoryService>();
@@ -66,13 +77,10 @@ public class Startup
         services.AddTransient<IFileService, FileService>();
         services.AddTransient<IBookImageService, BookImageService>();
         services.AddTransient<IBookAttributeService, BookAttributeService>();
-        services.AddTransient<IAuthService, AuthService>();
-        services.AddTransient<ITokenService, TokenService>();
-        services.AddTransient<IRoleService, RoleService>();
-        services.AddTransient<IPermissionService, PermissionService>();
         services.AddTransient<ICartItemService, CartItemService>();
         services.AddTransient<IMailService, MailService>();
-        services.AddTransient<IUserService, UserService>();
+        services.AddTransient<IPaymentService, PaymentService>();
+        services.AddTransient<CheckoutStrategyFactory>();
 
     }
 
@@ -90,6 +98,8 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
+
+
         app.Run();
     }
 }
