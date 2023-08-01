@@ -72,7 +72,9 @@ export const AUTH_OPTIONS: AuthOptions = {
                 now: now.getTime(),
                 diff: exp.getTime() - now.getTime(),
             });
-            const shouldRefreshToken = exp.getTime() - now.getTime() < 60 * 1000 * 5;
+            const diff = exp.getTime() - now.getTime();
+            const ingoreExp = 60 * 1000 * 5;
+            const shouldRefreshToken = diff < ingoreExp;
             if (!shouldRefreshToken) {
                 return Promise.resolve(token);
             }
@@ -93,7 +95,7 @@ export const AUTH_OPTIONS: AuthOptions = {
 export default NextAuth(AUTH_OPTIONS);
 
 async function refreshToken(token: JWT) {
-    console.log("refreshToken");
+    console.log("refreshToken ne");
     try {
         const res = await axios.post(`${process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL}/Auth/refresh-token`, {
             refreshToken: token.refreshToken,

@@ -1,5 +1,7 @@
 import CartItem from "@/components/cart/CartItem";
 import OrderSummary from "@/components/cart/OrderSummary";
+import OrderPage from "@/components/order/page";
+import { useToast } from "@/components/ui/use-toast";
 import CartApiService from "@/core/services/cartApiService";
 import { CartItemDto } from "@/core/types/server-dto/cartItemDto";
 import useStore from "@/libs/hooks/useStore";
@@ -9,8 +11,13 @@ import { SfCheckbox } from "@storefront-ui/react";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
-import React from "react";
+import React, { useState } from "react";
 export type OrderItem = CartItemDto & { checked?: boolean };
+export enum Step {
+    Cart,
+    StartOrder,
+    Checkout,
+}
 export default function CartPage({ cartItems }: Props) {
     const { cartItems: upToDateCartItems } = useStore(useCartStore, (state) => state);
     const [cartItemsState, setCartItemsState] = React.useState<OrderItem[]>(cartItems);
@@ -43,6 +50,19 @@ export default function CartPage({ cartItems }: Props) {
             })
         );
     };
+    const { toast } = useToast();
+    const handleOrder = () => {
+        console.log(cartItemsState.length);
+        if (cartItemsState.filter((item) => item.checked).length == 0)
+            return toast({
+                variant: "error",
+                title: "Vui lòng chọn sản phẩm",
+            });
+        setStep(Step.StartOrder);
+    };
+    const [step, setStep] = useState(Step.Cart);
+    if (step == Step.StartOrder)
+        return <OrderPage orderItem={cartItemsState.filter((item) => item.checked)} setStep={setStep} />;
     return (
         <div className="flex gap-x-20 mt-8">
             <div className="flex-1 ">
@@ -74,7 +94,7 @@ export default function CartPage({ cartItems }: Props) {
                     </table>
                 </div>
             </div>
-            <OrderSummary className="grow-0 basis-1/3 shrink-0" orderItems={cartItemsState} />
+            <OrderSummary onOrder={handleOrder} className="grow-0 basis-1/3 shrink-0" orderItems={cartItemsState} />
         </div>
     );
 }

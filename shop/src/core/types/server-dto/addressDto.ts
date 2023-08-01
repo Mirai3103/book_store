@@ -1,4 +1,4 @@
-import { UserDto } from './userDto';
+import { UserDto } from "./userDto";
 
 export interface AddressDto {
     id: number;
@@ -10,5 +10,5 @@ export interface AddressDto {
     receiverName: string;
     particularAddress: string;
     isPrimary: boolean;
-    user: UserDto | null;
+    user?: UserDto;
 }

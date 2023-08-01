@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { SfButton, SfIconCheckCircle, SfIconClose, SfInput, SfLink } from "@storefront-ui/react";
 import { toVietnameseCurrency } from "@/utils";
 import { OrderItem } from "@/pages/user/cart";
+import OrderPage from "../order/page";
 
 // const orderDetails = {
 //     items: 3,
@@ -12,9 +13,10 @@ import { OrderItem } from "@/pages/user/cart";
 // };
 interface Props extends React.HTMLAttributes<HTMLElement> {
     orderItems: OrderItem[];
+    onOrder: () => void;
 }
 
-export default function OrderSummary({ className = "", orderItems, ...props }: Props) {
+export default function OrderSummary({ className = "", orderItems, onOrder, ...props }: Props) {
     const errorTimer = useRef(0);
     const positiveTimer = useRef(0);
     const informationTimer = useRef(0);
@@ -86,13 +88,13 @@ export default function OrderSummary({ className = "", orderItems, ...props }: P
                             <p>Thuế</p>
                         </div>
                         <div className="flex flex-col text-right">
-                            <p>{toVietnameseCurrency(originalPrice() - 20000)}</p>
+                            <p>{toVietnameseCurrency(originalPrice())}</p>
                             <p className="typography-text-xs text-neutral-500">
                                 {toVietnameseCurrency(originalPrice())}
                             </p>
-                            <p className="typography-text-xs text-secondary-700">{toVietnameseCurrency(20000)}</p>
+                            <p className="typography-text-xs text-secondary-700">{toVietnameseCurrency(0)}</p>
                             <p className="my-2">{toVietnameseCurrency(0)}</p>
-                            <p>{toVietnameseCurrency(2000)}</p>
+                            <p>{toVietnameseCurrency(0)}</p>
                         </div>
                     </div>
                     {promoCode ? (
@@ -121,9 +123,9 @@ export default function OrderSummary({ className = "", orderItems, ...props }: P
                     </p>
                     <div className="flex justify-between typography-headline-4 md:typography-headline-3 font-bold pb-4 mb-4 border-b border-neutral-200">
                         <p>Tổng</p>
-                        <p>{toVietnameseCurrency(originalPrice() - 20000 + 2000 + 15000)}</p>
+                        <p>{toVietnameseCurrency(originalPrice())}</p>
                     </div>
-                    <SfButton size="lg" className="w-full">
+                    <SfButton size="lg" className="w-full" onClick={onOrder}>
                         Tiến hành đặt hàng
                     </SfButton>
                     <div className="typography-text-sm mt-4 text-center">
