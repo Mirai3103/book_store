@@ -4,6 +4,7 @@ export enum PaymentProvider {
     Momo = "MOMO",
     // ZaloPay = 3,
 }
+export const PAYMENT_STATUS_STR = ["Đang chờ thanh toán", "Đã thanh toán", "Thanh toán thất bại"];
 export enum PaymentStatus {
     Pending = 0,
     Success = 1,

@@ -47,4 +47,9 @@ public class CODStrategy : ICheckoutStrategy
         _context.SaveChanges();
         return Task.FromResult(order.PaymentDetail);
     }
+
+    public Task<PaymentDetail> ReCreatePaymentIntentAsync(Order order)
+    {
+        throw new BadRequestException("Payment method not support recheckout");
+    }
 }

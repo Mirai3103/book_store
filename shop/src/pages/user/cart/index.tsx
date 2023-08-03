@@ -17,6 +17,7 @@ export enum Step {
     Cart,
     StartOrder,
     Checkout,
+    EndOrder,
 }
 export default function CartPage({ cartItems }: Props) {
     const { cartItems: upToDateCartItems } = useStore(useCartStore, (state) => state);

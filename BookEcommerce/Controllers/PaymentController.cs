@@ -17,12 +17,12 @@ namespace BookStore.Controllers
             _paymentService = paymentService;
         }
         [HttpGet("check-status")]
-        [Authorize]
         public async Task<IActionResult> CheckPaymentStatus([FromQuery] Guid paymentId, [FromQuery] Guid orderId)
         {
             var paymentDetail = await _paymentService.CheckPaymentStatusAsync(paymentId, orderId);
             return Ok(paymentDetail);
         }
+
         [HttpPost("momo/notify")]
         [AllowAnonymous]
         public async Task<IActionResult> MomoNotify()

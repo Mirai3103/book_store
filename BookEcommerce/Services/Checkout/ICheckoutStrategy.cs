@@ -7,5 +7,6 @@ public interface ICheckoutStrategy
     Task<PaymentDetail> CreatePaymentIntentAsync(Order order);
     Task<PaymentDetail> GetPaymentAsync(Guid paymentDetailId);
     Task<PaymentDetail> UpdatePaymentStatusAsync(Guid orderId, PaymentStatus status = PaymentStatus.Pending);
+    Task<PaymentDetail> ReCreatePaymentIntentAsync(Order order);
 
 }

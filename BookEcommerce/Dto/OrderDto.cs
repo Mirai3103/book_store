@@ -21,7 +21,7 @@ namespace BookStore.Controllers
     {
         public int Quantity { get; set; } = 0;
         public int BookId { get; set; }
-        public BookPreviewDto Book { get; set; } = null!;
+        public BookPreviewDto? Book { get; set; }
 
     }
 
@@ -36,6 +36,7 @@ namespace BookStore.Controllers
         public List<OrderDetailDto> OrderDetails { get; set; } = new List<OrderDetailDto>();
         public AddressDto Address { get; set; } = null!;
         public OrderStatus Status { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
     public static class OrderDtoExtension
     {
@@ -52,6 +53,7 @@ namespace BookStore.Controllers
                 OrderDetails = order.OrderDetails.Select(x => x.AsDto()).ToList(),
                 Address = order.Address.AsDto(),
                 Status = order.Status,
+                CreatedAt = order.CreatedAt
             };
         }
         public static OrderDetailDto AsDto(this OrderDetail orderDetail)

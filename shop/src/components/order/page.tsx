@@ -1,4 +1,5 @@
 import AddressApiService from "@/core/services/addressApiService";
+import { OrderApiService, OrderResponseHandleFactory } from "@/core/services/orderApiService";
 import { AddressDto } from "@/core/types/server-dto/addressDto";
 import { PaymentProvider } from "@/core/types/server-dto/checkoutDto";
 import useStore from "@/libs/hooks/useStore";
@@ -8,16 +9,18 @@ import { mergeClassNames, toVietnameseCurrency } from "@/utils";
 import { SfButton, SfRadio } from "@storefront-ui/react";
 import Image from "next/image";
 import React from "react";
+import { useToast } from "../ui/use-toast";
+
 interface Props {
     orderItem: OrderItem[];
     setStep: (step: Step) => void;
 }
 
-export default function OrderPage({ orderItem: order }: Props) {
+export default function OrderPage({ orderItem: order, setStep }: Props) {
     const orderItem = order.length == 0 ? defaultobj : order;
     console.log(orderItem);
     const [addresses, setAddresses] = React.useState<AddressDto[]>([]);
-    const token = useStore(useSessionStore, (state) => state.session?.accessToken)!;
+    const { accessToken: token, user } = useStore(useSessionStore, (state) => state.session)!;
     const [selectedAddress, setSelectedAddress] = React.useState<AddressDto | null>(null);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = React.useState<PaymentProvider>(PaymentProvider.COD);
     React.useEffect(() => {
@@ -31,7 +34,34 @@ export default function OrderPage({ orderItem: order }: Props) {
             setSelectedAddress(primaryAddress ?? res[0]);
         });
     }, [token]);
-    const handleCreateOrder = () => {};
+    const { toast } = useToast();
+    const handleCreateOrder = () => {
+        OrderApiService.createOrder({
+            accessToken: token!,
+            orderRequestDto: {
+                paymentProviderString: selectedPaymentMethod,
+                addressId: selectedAddress?.id!,
+                userId: user?.id!,
+                orderDetails: orderItem.map((item) => ({
+                    bookId: item.bookId,
+                    quantity: item.quantity,
+                })),
+            },
+        })
+            .then((res) => {
+                const handleResponse = OrderResponseHandleFactory.createOrderResponseHandle(selectedPaymentMethod);
+                handleResponse(res);
+                setStep(Step.EndOrder);
+            })
+            .catch((err) => {
+                toast({
+                    variant: "error",
+                    title: "Đặt hàng thất bại",
+                    description: err.message,
+                });
+                setStep(Step.Cart);
+            });
+    };
     return (
         <div className="flex gap-x-20 mt-8">
             <div className="flex-1 ">
@@ -168,7 +198,12 @@ export default function OrderPage({ orderItem: order }: Props) {
                                 </span>
                             </div>
                             <div className="flex min-w-[300px]">
-                                <SfButton className="mt-4 w-full text-lg" size="lg" variant="primary">
+                                <SfButton
+                                    className="mt-4 w-full text-lg"
+                                    size="lg"
+                                    variant="primary"
+                                    onClick={handleCreateOrder}
+                                >
                                     Đặt hàng
                                 </SfButton>
                             </div>

@@ -161,6 +161,11 @@ public class MomoStrategy : ICheckoutStrategy
         };
     }
 
+    public Task<PaymentDetail> ReCreatePaymentIntentAsync(Order order)
+    {
+        return this.CreatePaymentIntentAsync(order);
+    }
+
     private class MomoCheckPayResponse
     {
         public string partnerCode { get; set; }

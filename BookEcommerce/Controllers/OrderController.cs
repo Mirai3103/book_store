@@ -26,6 +26,13 @@ namespace BookStore.Controllers
             var orderDetail = await _orderService.CreateOrderAsync(order);
             return CreatedAtRoute("CreateOrder", orderDetail);
         }
+        [HttpPost("{orderId}/re-checkout")]
+        [Authorize]
+        public async Task<IActionResult> ReCheckout([FromRoute] Guid orderId)
+        {
+            var order = await this._orderService.ReCheckoutAsync(orderId);
+            return Ok(order);
+        }
         [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById([FromRoute] Guid id)
@@ -33,6 +40,14 @@ namespace BookStore.Controllers
             var userId = HttpContext.GetUserId();
             var orderDetail = await _orderService.GetOrderAsync(id);
             return Ok(orderDetail);
+        }
+        [Authorize]
+        [HttpGet("my-orders")]
+        public async Task<IActionResult> GetOrdersByUser()
+        {
+            var userId = HttpContext.GetUserId();
+            var orderDetails = await _orderService.GetOrdersByUser(userId);
+            return Ok(orderDetails);
         }
     }
 }

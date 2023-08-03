@@ -10,15 +10,25 @@ import { useStore } from "zustand";
 import useCartStore from "@/store/cartStore";
 import useSessionStore from "@/store/sessionStore";
 import { OrderItem } from "@/pages/user/cart";
+import { useToast } from "../ui/use-toast";
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     cartItem: OrderItem;
     handleToggleCheck?: () => void;
 }
 export default function CartItem({ cartItem, className = "", handleToggleCheck }: Props) {
     const setQuantityAsync = useStore(useCartStore, (state) => state.setQuantityAsync);
+    const removeAsync = useStore(useCartStore, (state) => state.removeAsync);
     const accessToken = useStore(useSessionStore, (state) => state.session?.accessToken);
     const handleChangedQuantity = async (quantity: number) => {
         await setQuantityAsync(cartItem.bookId, quantity, accessToken || "");
+    };
+    const { toast } = useToast();
+    const handleRemove = async () => {
+        await removeAsync(cartItem.bookId, accessToken || "");
+        toast({
+            variant: "success",
+            title: "Xóa sản phẩm thành công",
+        });
     };
     return (
         <tr
@@ -70,7 +80,7 @@ export default function CartItem({ cartItem, className = "", handleToggleCheck }
                 />
             </td>
             <td className="flex items-center">
-                <BsFillTrashFill className="text-2xl text-red-500 cursor-pointer" />
+                <BsFillTrashFill className="text-2xl text-red-500 cursor-pointer" onClick={handleRemove} />
             </td>
         </tr>
     );

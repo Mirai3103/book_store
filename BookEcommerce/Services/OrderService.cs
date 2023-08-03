@@ -34,6 +34,7 @@ public class OrderService : IOrderService
         };
         _context.Orders.Add(order);
         var total = order.ShippingFee;
+        var bookIdsList = orderRequestDto.OrderDetails.Select(od => od.BookId).ToArray();
         orderRequestDto.OrderDetails.ForEach(od =>
         {
             var book = _context.Books.Find(od.BookId) ?? throw new NotFoundException("Book not found");
@@ -53,15 +54,31 @@ public class OrderService : IOrderService
         _context.SaveChanges();
 
         var paymentDetail = await checkoutStrategy.CreatePaymentIntentAsync(order);
+        _context.CartItems.RemoveRange(_context.CartItems.Where(ci => bookIdsList.Contains(ci.BookId) && ci.UserId == order.UserId));
+        _context.SaveChanges();
         return order.AsDto();
 
 
     }
 
+    public async Task<OrderDto> ReCheckoutAsync(Guid orderId)
+    {
+        var order = _context.Orders.Include(o => o.PaymentDetail).Include(o => o.OrderDetails).FirstOrDefault(o => o.Id == orderId) ?? throw new NotFoundException("Order not found");
+        var checkoutStrategy = _checkoutStrategyFactory.GetCheckoutStrategy(order.PaymentDetail!.Provider);
 
+        var paymentDetail = await checkoutStrategy.ReCreatePaymentIntentAsync(order);
+        _context.PaymentDetails.Remove(order.PaymentDetail);
+        _context.SaveChanges();
+        return order.AsDto();
 
+    }
     public Task<OrderDto> GetOrderAsync(Guid orderId)
     {
         return _context.Orders.Include(o => o.PaymentDetail).Include(o => o.OrderDetails).ThenInclude(od => od.Book).Where(o => o.Id == orderId).Select(o => o.AsDto()).FirstOrDefaultAsync() ?? throw new NotFoundException("Order not found");
+    }
+
+    public async Task<ICollection<OrderDto>> GetOrdersByUser(Guid userId)
+    {
+        return await _context.Orders.Include(o => o.PaymentDetail).Include(o => o.Address).Include(o => o.OrderDetails).ThenInclude(od => od.Book).Where(o => o.UserId == userId).Select(o => o.AsDto()).ToListAsync();
     }
 }

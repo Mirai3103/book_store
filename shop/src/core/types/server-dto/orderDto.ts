@@ -8,10 +8,10 @@ export enum OrderStatus {
     Delivered = 2,
     Cancelled = 3,
 }
+export const OrderStatusString = ["Đang chờ xử lý", "Đang giao hàng", "Đã giao hàng", "Đã hủy"];
 
 export interface OrderRequestDto {
     paymentProviderString: string;
-    getPaymentProviderEnum: PaymentProvider;
     userId: string;
     addressId: number;
     orderDetails: OrderDetailDto[];
@@ -20,10 +20,11 @@ export interface OrderRequestDto {
 export interface OrderDetailDto {
     quantity: number;
     bookId: number;
-    book: BookPreviewDto;
+    book?: BookPreviewDto;
 }
 
 export interface OrderDto {
+    createdAt: Date;
     id: string;
     userId: string;
     addressId: number;
