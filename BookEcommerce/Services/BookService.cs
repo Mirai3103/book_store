@@ -186,11 +186,11 @@ public class BookService : IBookService
         return book;
     }
 
-    public Task<PaginationDto<BookPreviewDto>> GetBooksPreviewAsync(int page, int limit)
+    public  Task<PaginationDto<BookPreviewDto>> GetBooksPreviewAsync(int page, int limit)
     {
         var bookPreviews = _context.Books.Include(b => b.Author).SortBy(nameof(Book.CreatedAt), false).Select(b => b.SelectPreview())
-        .ToPaginationAsync<BookPreviewDto>(page, limit);
-        return bookPreviews;
+        .ToPagination<BookPreviewDto>(page, limit);
+        return Task.FromResult(bookPreviews);
     }
 
     public async Task<BookPreviewDto> UpdateBookAsync(int id, UpdateBookDto updateBookDto)

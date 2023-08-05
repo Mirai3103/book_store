@@ -38,6 +38,10 @@ public class Startup
         {
             c.EnableAnnotations();
         });
+        services.AddCors(p => p.AddPolicy("corsapp", builder =>
+    {
+        builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    }));
         var connectionString = Configuration.GetConnectionString("MySQLConnectionString") ?? Environment.GetEnvironmentVariable("MySQLConnectionString");
         services.AddDbContextPool<BookStoreContext>(
             options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)), 24
@@ -93,6 +97,7 @@ public class Startup
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+        app.UseCors("corsapp");
         app.UseExceptionMiddleware();
         app.UseHttpsRedirection();
         app.UseAuthentication();
