@@ -18,7 +18,7 @@ temp
 /node_modules
 /.pnp
 .pnp.js
-
+appsettings.Development.json
 # testing
 /coverage
 
@@ -538,3 +538,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+BookEcommerce/appsettings.Development.json
