@@ -1,12 +1,11 @@
-import { DateOnly } from './dateOnly';
-import { Role } from './role';
-import { Permission } from './permission';
-import { Token } from './token';
+import { Role } from "./role";
+import { Permission } from "./permission";
+import { Token } from "./token";
 
 export enum Gender {
     MALE,
     FEMALE,
-    UNKNOWN
+    UNKNOWN,
 }
 
 export interface User {
@@ -16,7 +15,7 @@ export interface User {
     phoneNumber: string | null;
     avatarUrl: string | null;
     gender: Gender;
-    birthday: DateOnly | null;
+    birthday: Date | null;
     isValidateEmail: boolean;
     isValidatePhoneNumber: boolean;
     displayName: string;

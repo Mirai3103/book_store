@@ -3,6 +3,7 @@ import {
     SfBadge,
     SfButton,
     SfIconExpandMore,
+    SfIconFavorite,
     SfIconMenu,
     SfIconPerson,
     SfIconSearch,
@@ -21,6 +22,7 @@ import useSessionStore from "@/store/sessionStore";
 import DropDown from "../DropDown";
 import CartDropDown from "../cart/CartDropDown";
 import { signOut } from "next-auth/react";
+import MegaMenu from "./MegaMenu";
 
 const authMenu = [
     {
@@ -40,6 +42,7 @@ const authMenu = [
 export default function Header() {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const { data: session, status } = useSession();
+
     const { fetch, cartItems } = useStore(useCartStore, (state) => state);
     const { clearSession, setSession, setStatus } = useStore(useSessionStore, (state) => state);
     console.log(session);
@@ -105,22 +108,8 @@ export default function Header() {
                         />
                     </picture>
                 </Link>
-                <SfButton
-                    aria-label="Open categories"
-                    className="lg:hidden order-first lg:order-1 mr-4 text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"
-                    square
-                    variant="tertiary"
-                >
-                    <SfIconMenu />
-                </SfButton>
-                <SfButton
-                    className="hidden lg:flex lg:mr-4 text-white hover:text-white active:text-white hover:bg-primary-800 active:bg-primary-900"
-                    type="button"
-                    variant="tertiary"
-                    slotSuffix={<SfIconExpandMore className="hidden lg:block" />}
-                >
-                    <span className="hidden lg:flex whitespace-nowrap">Browse products</span>
-                </SfButton>
+
+                <MegaMenu />
                 <form
                     role="search"
                     className="flex flex-[100%] order-last lg:order-3 mt-2 lg:mt-0 pb-2 lg:pb-0"

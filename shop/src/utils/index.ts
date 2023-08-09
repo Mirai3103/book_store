@@ -36,7 +36,7 @@ export function getServerImageURL(fileName: string | undefined | null): string {
     if (fileName.startsWith("http") || fileName.startsWith("blob")) {
         return fileName;
     }
-    return `${process.env.NEXT_PUBLIC_ASP_NET_PROXY_URL}/File/${fileName}`;
+    return `${process.env.NEXT_PUBLIC_ASP_NET_SERVER_URL}/File/${fileName}`;
 }
 export class QueryParamsBuilder {
     private params: string[] = [];

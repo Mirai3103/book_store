@@ -16,12 +16,46 @@ import {
 } from "@storefront-ui/react";
 import Image from "next/image";
 import Link from "next/link";
+import useStore from "@/libs/hooks/useStore";
+import useCartStore from "@/store/cartStore";
+import { CartItemDto } from "@/core/types/server-dto/cartItemDto";
+import useSessionStore from "@/store/sessionStore";
+import { useToast } from "../ui/use-toast";
 
 interface IProductCartProps extends React.HTMLAttributes<HTMLElement> {
     product: BookPreviewDto;
 }
 
 export default function ProductCard({ product, className = "" }: IProductCartProps) {
+    const { addAsync: addToCartAsync } = useStore(useCartStore, (state) => state);
+    const accessToken = useStore(useSessionStore, (state) => state.session?.accessToken);
+    const { toast } = useToast();
+    const handleAddToCart = async () => {
+        if (!accessToken) {
+            toast({
+                title: "Bạn chưa đăng nhập",
+                description: "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng",
+                variant: "error",
+                duration: 5000,
+            });
+            return;
+        }
+        const itemDto: CartItemDto = {
+            bookId: product.id,
+            book: product,
+            createdAt: new Date().toLocaleString(),
+            quantity: 1,
+            updatedAt: new Date().toLocaleString(),
+        } as CartItemDto;
+        await addToCartAsync?.(itemDto, accessToken);
+        toast({
+            title: "Thêm sản phẩm vào giỏ hàng thành công",
+            description: "Bạn có thể xem giỏ hàng tại trang giỏ hàng",
+            variant: "success",
+            duration: 5000,
+        });
+    };
+
     return (
         <div className={mergeClassNames("border border-neutral-200 rounded-md hover:shadow-lg ", className)}>
             <div className="relative">
@@ -50,7 +84,7 @@ export default function ProductCard({ product, className = "" }: IProductCartPro
                     {product.author?.name}
                 </p>
                 <div className=" items-center hidden md:flex pt-1">
-                    <SfRating size="xs" value={4.5} max={5} />
+                    <SfRating size="xs" value={Math.round(((Math.random() * 100) % 3) + 2 + Math.random())} max={5} />
                     <SfLink
                         href={`/products/${product.slug}`}
                         as={Link}
@@ -62,7 +96,12 @@ export default function ProductCard({ product, className = "" }: IProductCartPro
                 </div>
 
                 <span className="block pb-2 font-bold typography-text-lg">{toVietnameseCurrency(product.price)}</span>
-                <SfButton type="button" size="sm" slotPrefix={<SfIconShoppingCart size="sm" />}>
+                <SfButton
+                    type="button"
+                    size="sm"
+                    slotPrefix={<SfIconShoppingCart size="sm" />}
+                    onClick={handleAddToCart}
+                >
                     Thêm vào giỏ hàng
                 </SfButton>
             </div>

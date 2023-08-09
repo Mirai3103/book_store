@@ -17,8 +17,12 @@ interface Props {
 }
 
 export default function OrderPage({ orderItem: order, setStep }: Props) {
-    const orderItem = order.length == 0 ? defaultobj : order;
-    console.log(orderItem);
+    React.useEffect(() => {
+        if (order.length === 0) {
+            setStep(Step.Cart);
+        }
+    }, [order, setStep]);
+    const orderItem = order;
     const [addresses, setAddresses] = React.useState<AddressDto[]>([]);
     const { accessToken: token, user } = useStore(useSessionStore, (state) => state.session)!;
     const [selectedAddress, setSelectedAddress] = React.useState<AddressDto | null>(null);
@@ -34,6 +38,7 @@ export default function OrderPage({ orderItem: order, setStep }: Props) {
             setSelectedAddress(primaryAddress ?? res[0]);
         });
     }, [token]);
+
     const { toast } = useToast();
     const handleCreateOrder = () => {
         OrderApiService.createOrder({
@@ -67,7 +72,7 @@ export default function OrderPage({ orderItem: order, setStep }: Props) {
             <div className="flex-1 ">
                 <div className="flex flex-col border shadow-md p-4 rounded-lg">
                     <h2 className="typography-headline-3 mx-2 my-4 font-semibold">
-                        Thông tin đơn hàng ({orderItem.reduce((acc, item) => acc + item.quantity, 0)} sản phẩm)
+                        {`Thông tin đơn hàng (${orderItem.reduce((acc, item) => acc + item.quantity, 0)} sản phẩm)`}
                     </h2>
                     <h3 className="typography-headline-4 mx-2 my-4 font-semibold">Chi tiết sản phẩm</h3>
                     <table className="w-full mx-4">

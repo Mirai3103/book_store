@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 public class Startup
@@ -99,7 +98,7 @@ public class Startup
         }
         app.UseCors("corsapp");
         app.UseExceptionMiddleware();
-        app.UseHttpsRedirection();
+        //    app.UseHttpsRedirection();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
