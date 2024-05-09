@@ -1,7 +1,9 @@
 namespace BookStore.Services;
 using BookStore.Controllers;
 using BookStore.Data;
+using BookStore.Dto;
 using BookStore.Exceptions;
+using BookStore.Extensions;
 using BookStore.Models;
 using BookStore.Services.Checkout;
 using BookStore.Services.Interfaces;
@@ -80,5 +82,25 @@ public class OrderService : IOrderService
     public async Task<ICollection<OrderDto>> GetOrdersByUser(Guid userId)
     {
         return await _context.Orders.Include(o => o.PaymentDetail).Include(o => o.Address).Include(o => o.OrderDetails).ThenInclude(od => od.Book).Where(o => o.UserId == userId).Select(o => o.AsDto()).ToListAsync();
+    }
+
+    public async Task<Dto.PaginationDto<OrderDto>> GetOrders(OrderStatus? orderStatus, int page = 1, int limit = 24, string sortBy = "CreatedAt", bool isAsc = false)
+    {
+        var query = _context.Orders.Include(o => o.PaymentDetail).Include(o => o.Address).Include(o => o.OrderDetails).ThenInclude(od => od.Book).AsQueryable();
+        if (orderStatus.HasValue)
+        {
+            query = query.Where(o => o.Status == orderStatus.Value);
+        }
+        if (isAsc)
+        {
+            query = query.OrderBy(b => EF.Property<object>(b, sortBy) ?? b.CreatedAt);
+        }
+        else
+        {
+            query = query.OrderByDescending(b => EF.Property<object>(b, sortBy) ?? b.CreatedAt);
+        }
+        var newQuery = query.Select(o => o.AsDto());
+        var result = newQuery.ToPagination(page, limit);
+        return await Task.FromResult(result);
     }
 }

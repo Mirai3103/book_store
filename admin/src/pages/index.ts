@@ -5,6 +5,7 @@ import { default as ProviderRoute } from './Provider';
 import { default as SeriesRoute } from './Series';
 import { default as BookRoute } from './Book';
 import { default as TestRoute } from './Test';
+import { default as OrderRoute } from './Order';
 
 const router = [
   ...AuthorRoute,
@@ -14,6 +15,7 @@ const router = [
   ...SeriesRoute,
   ...BookRoute,
   ...TestRoute,
+  ...OrderRoute,
 ];
 
 export default router;

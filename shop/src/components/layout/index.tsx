@@ -12,13 +12,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const { toast } = useToast();
     React.useEffect(() => {
         if (typeof window !== "undefined") {
-            const handleNotify = (event: MessageEvent) => {
-                const { type, title, description } = event.data;
-                toast({
-                    variant: type,
-                    title: title,
-                    description: description,
-                });
+            const handleNotify = (event: any) => {
+                const { type, title, description } = event.detail || {};
+                console.log(event);
+                title &&
+                    toast({
+                        variant: type,
+                        title: title,
+                        description: description,
+                    });
             };
             window.addEventListener("notify" as any, handleNotify);
             return () => {

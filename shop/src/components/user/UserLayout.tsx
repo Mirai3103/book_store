@@ -17,7 +17,7 @@ const profileTabs = [
         label: "Địa chỉ",
     },
     {
-        href: "/user/order",
+        href: "/user/orders",
         label: "Đơn hàng",
     },
 ];

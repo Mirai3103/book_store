@@ -2,8 +2,17 @@ using BookStore.Dto;
 using BookStore.Models;
 using Microsoft.AspNetCore.Mvc;
 using BookStore.Extensions;
-namespace BookStore.Controllers
+namespace BookStore.Dto
 {
+    public record OrdersQuery
+    {
+        public OrderStatus? OrderStatus { get; set; }
+        public int Page { get; set; } = 1;
+        public int Limit { get; set; } = 24;
+        public string SortBy { get; set; } = "CreatedAt";
+        public bool IsAsc { get; set; } = false;
+
+    }
     public class OrderRequestDto
     {
         public string PaymentProviderString { get; set; } = null!;

@@ -167,7 +167,7 @@ const bottomLinks = [
 export default function Footer() {
     return (
         <footer className="pt-10 mt-20 bg-neutral-100">
-            <div className="grid justify-center grid-cols-[1fr_1fr] md:grid-cols-[repeat(4,1fr)] px-4 md:px-6 pb-10 max-w-[1536px] mx-auto">
+            {/* <div className="grid justify-center grid-cols-[1fr_1fr] md:grid-cols-[repeat(4,1fr)] px-4 md:px-6 pb-10 max-w-[1536px] mx-auto">
                 {categories.map(({ label, subcategories }) => (
                     <div className="grid grid-cols xs:pb-4" key={label}>
                         <div className="ml-4 text-lg font-medium leading-7 text-neutral-900 font-body">{label}</div>
@@ -188,8 +188,8 @@ export default function Footer() {
                     </div>
                 ))}
             </div>
-            <hr />
-            <div className="py-10 md:flex md:mx-auto max-w-[1536px]">
+            <hr /> */}
+            {/* <div className="py-10 md:flex md:mx-auto max-w-[1536px]">
                 {contactOptions.map(({ label, icon: Icon, link, details }) => (
                     <div className="mx-auto my-4 text-center" key={label}>
                         <Icon />
@@ -209,7 +209,7 @@ export default function Footer() {
                         ))}
                     </div>
                 ))}
-            </div>
+            </div> */}
             <div className="bg-neutral-900 justify-end px-4 py-10 md:flex md:py-6 max-w-[1536px] mx-auto">
                 <div className="flex justify-center py-2 gap-x-4 md:self-start">
                     {socialMedia.map(({ icon: Icon, label, link }) => (

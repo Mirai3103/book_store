@@ -3,6 +3,7 @@ using BookStore.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BookStore.Extensions;
+using BookStore.Models;
 
 namespace BookStore.Controllers
 {
@@ -25,6 +26,15 @@ namespace BookStore.Controllers
             order.UserId = userId;
             var orderDetail = await _orderService.CreateOrderAsync(order);
             return CreatedAtRoute("CreateOrder", orderDetail);
+        }
+        [HttpGet(Name = "GetOrders")]
+        //OrderStatus? orderStatus, int page = 1, int limit = 24, string sortBy = "CreatedAt", bool isAsc = false
+        public async Task<IActionResult> GetOrders([FromQuery] OrdersQuery ordersQuery)
+        {
+            // var userId = HttpContext.GetUserId();
+            // order.UserId = userId;
+            var orders = await _orderService.GetOrders(ordersQuery.OrderStatus, ordersQuery.Page, ordersQuery.Limit, ordersQuery.SortBy, ordersQuery.IsAsc);
+            return Ok(orders);
         }
         [HttpPost("{orderId}/re-checkout")]
         [Authorize]
